@@ -27,6 +27,16 @@ const djangoSetup = (app) => [named('manage\\.py'), file(new RegExp(`(^|/)${app}
 const MAP_EMBED = code(`${BLADE}|html|jsx|tsx`, /<iframe[^>]*(google\.com\/maps|openstreetmap)/)
 
 // The same goal (title) can have one card per stack, each with steps specific to that stack.
+// Every project fills the same project page template. Only id, title and stack are required:
+//   {
+//     id: 'unique-id',              // used in the URL: /projects/unique-id
+//     title: 'Build a ...',
+//     description: 'One sentence.', // optional, the page shows a placeholder without it
+//     stack: 'react',               // one of the STACKS ids
+//     steps: [                      // optional, the page shows a placeholder without it
+//       { id: 'step-id', title: 'Do this', tip: 'How to do it.', check: file(/regex/) },
+//     ],
+//   },
 export const OBJECTIVES = [
   // Portfolio
   {

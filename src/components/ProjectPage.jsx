@@ -36,16 +36,18 @@ export default function ProjectPage({ project }) {
   const stack = STACKS.find((s) => s.id === project.stack)
   const [completed, updateCompleted] = useProgress(project.id)
   const folder = useLinkedFolder(project.id)
+  const steps = project.steps ?? []
   const syncing = folder.status === 'linked' && folder.files !== null
-  const doneCount = project.steps.filter((s) => completed.includes(s.id)).length
-  const autoCount = project.steps.filter(isAutoTracked).length
+  const doneCount = steps.filter((s) => completed.includes(s.id)).length
+  const autoCount = steps.filter(isAutoTracked).length
 
   // While a folder is linked, auto-tracked steps follow the files; manual steps are left alone.
   // The result is saved, so progress still shows after the folder is unlinked.
   useEffect(() => {
     if (!syncing) return
-    const detected = detectSteps(project.steps, folder.files)
-    const autoIds = project.steps.filter(isAutoTracked).map((s) => s.id)
+    const projectSteps = project.steps ?? []
+    const detected = detectSteps(projectSteps, folder.files)
+    const autoIds = projectSteps.filter(isAutoTracked).map((s) => s.id)
     updateCompleted((current) => {
       const next = [...current.filter((id) => !autoIds.includes(id)), ...detected]
       return sameIds(next, current) ? current : next
@@ -58,6 +60,7 @@ export default function ProjectPage({ project }) {
     )
   }
 
+  // Project page template: every project fills the same sections, with placeholders for missing details.
   return (
     <main className="project-page">
       <header className="page-header">
@@ -65,45 +68,65 @@ export default function ProjectPage({ project }) {
           ← {stack.label} projects
         </Link>
         <h1>{project.title}</h1>
-        <p>{project.description}</p>
         <p className="project-meta">
           <StackBadge stackId={stack.id} />
           <a href={stack.docs} target="_blank" rel="noreferrer">
             {stack.label} docs ↗
           </a>
         </p>
-        <ProgressBar done={doneCount} total={project.steps.length} />
-        {doneCount === project.steps.length && <p className="complete">Project complete!</p>}
       </header>
+
+      <section className="project-overview">
+        <h2>About this project</h2>
+        <p>{project.description || 'No description yet.'}</p>
+        <p>
+          Built with <strong>{stack.label}</strong>: {stack.description}
+        </p>
+        <p>
+          {steps.length} steps, {autoCount} tracked automatically when you link a folder.
+        </p>
+      </section>
+
+      <section className="project-progress">
+        <h2>Progress</h2>
+        <ProgressBar done={doneCount} total={steps.length} />
+        {steps.length > 0 && doneCount === steps.length && (
+          <p className="complete">Project complete!</p>
+        )}
+      </section>
 
       <FolderSync folder={folder} autoCount={autoCount} />
 
-      <ol className="steps">
-        {project.steps.map((step) => {
-          const done = completed.includes(step.id)
-          const auto = syncing && isAutoTracked(step)
-          return (
-            <li key={step.id} className={`step ${done ? 'done' : ''} ${auto ? 'auto' : ''}`}>
-              <label className="step-title">
-                <input
-                  type="checkbox"
-                  checked={done}
-                  disabled={auto}
-                  onChange={() => toggleStep(step.id)}
-                />
-                <span>{step.title}</span>
-              </label>
-              {auto && (
-                <p className="step-status">{done ? 'Detected in your files' : 'Not detected yet'}</p>
-              )}
-              {syncing && !isAutoTracked(step) && (
-                <p className="step-status">Tick this one off yourself</p>
-              )}
-              <p className="tip">{step.tip}</p>
-            </li>
-          )
-        })}
-      </ol>
+      <section className="project-steps">
+        <h2>Steps</h2>
+        {steps.length === 0 && <p className="placeholder">No steps added yet.</p>}
+        <ol className="steps">
+          {steps.map((step) => {
+            const done = completed.includes(step.id)
+            const auto = syncing && isAutoTracked(step)
+            return (
+              <li key={step.id} className={`step ${done ? 'done' : ''} ${auto ? 'auto' : ''}`}>
+                <label className="step-title">
+                  <input
+                    type="checkbox"
+                    checked={done}
+                    disabled={auto}
+                    onChange={() => toggleStep(step.id)}
+                  />
+                  <span>{step.title}</span>
+                </label>
+                {auto && (
+                  <p className="step-status">{done ? 'Detected in your files' : 'Not detected yet'}</p>
+                )}
+                {syncing && !isAutoTracked(step) && (
+                  <p className="step-status">Tick this one off yourself</p>
+                )}
+                {step.tip && <p className="tip">{step.tip}</p>}
+              </li>
+            )
+          })}
+        </ol>
+      </section>
     </main>
   )
 }
