@@ -87,6 +87,19 @@
   background: #333;
 }
 
+.folder-sync {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.folder-actions {
+  display: flex;
+  gap: 8px;
+}
+
 .steps {
   padding-left: 0;
   list-style: none;
