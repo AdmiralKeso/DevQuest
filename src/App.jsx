@@ -5,9 +5,19 @@ import Sidebar from './components/Sidebar.jsx'
 import { OBJECTIVES, STACKS } from './data/objectives.js'
 import './App.css'
 
+// Main page: stack sidebar next to the project cards. Project pages don't show the sidebar.
+function MainPage({ stackId }) {
+  return (
+    <div className="app-layout">
+      <Sidebar />
+      <ProjectList stackId={stackId} />
+    </div>
+  )
+}
+
 function StackRoute() {
   const { stackId } = useParams()
-  return STACKS.some((s) => s.id === stackId) ? <ProjectList stackId={stackId} /> : <NotFound />
+  return STACKS.some((s) => s.id === stackId) ? <MainPage stackId={stackId} /> : <NotFound />
 }
 
 function ProjectRoute() {
@@ -34,15 +44,12 @@ function App() {
           DevQuest
         </Link>
       </header>
-      <div className="app-layout">
-        <Sidebar />
-        <Routes>
-          <Route path="/" element={<ProjectList />} />
-          <Route path="/stack/:stackId" element={<StackRoute />} />
-          <Route path="/projects/:projectId" element={<ProjectRoute />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+        <Route path="/stack/:stackId" element={<StackRoute />} />
+        <Route path="/projects/:projectId" element={<ProjectRoute />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </>
   )
 }
