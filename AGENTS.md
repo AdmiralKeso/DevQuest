@@ -15,10 +15,19 @@ Categories (sidebar on the left) are tech stacks:
 - The same goal can have one card per stack with the same title (e.g. "Build a portfolio" has `portfolio-react` and `portfolio-node`)
 - Picking a stack shows its projects; "All projects" shows everything
 - Clicking a card only routes to the project's own page. Nothing opens or expands on the list itself.
+- The sidebar is only on the main page (`/` and `/stack/:stackId`), not on project pages.
+
+Project page template
+- Every project fills the same page: header (back link, title, stack badge, docs link), About this project, Progress, Project folder, Steps
+- Only `id`, `title` and `stack` are required; a missing description or steps shows a placeholder. A commented template for new projects is above OBJECTIVES in `objectives.js`.
 
 2. Syncing of files
-- Import files into objective (not built yet)
-- App tracks progress and objectives
+- Import files into objective: on a project page the user links the folder they code in ("Link folder"). Each project remembers its own folder.
+- App tracks progress and objectives: while linked, the folder is rescanned every 2 seconds and steps are ticked off automatically when their code is found (and unticked if it is removed)
+- Steps with a `check` in `objectives.js` are auto-tracked; steps without one (deploying, Lighthouse, etc.) stay manual checkboxes
+- Uses the browser File System Access API: works in Chrome and Edge only. Other browsers show a note and all steps stay manual.
+- Files are only read in the browser, never uploaded. `node_modules`, `vendor`, `.git`, `dist`, `venv` and similar folders are skipped.
+- Browsers forget folder permission between visits, so the user may need to click "Reconnect folder"
 - Tips and tricks
 - Progress bar
 
@@ -39,10 +48,15 @@ Routes
 
 Structure
 - `src/data/objectives.js`: all content. STACKS and OBJECTIVES (projects with `stack`, steps and tips). Add or change content here, not in components.
-- `src/App.jsx`: header, layout (sidebar always visible) and routes
+- `src/App.jsx`: header and routes; `MainPage` puts the sidebar next to the project list
 - `src/components/Sidebar.jsx`: tech stack links (no collapse for now)
 - `src/components/ProjectList.jsx`: project cards, each a link to its project page
-- `src/components/ProjectPage.jsx`: checklist, tips, progress bar, saved progress
+- `src/components/ProjectPage.jsx`: the project page template (sections with placeholders), saved progress; applies folder detection to auto-tracked steps
+- `src/components/FolderSync.jsx`: link / reconnect / unlink folder UI
+- `src/hooks/useLinkedFolder.js`: linked folder state per project and the 2-second rescan
+- `src/sync/handleStore.js`: saves folder handles in IndexedDB (they can't go in localStorage)
+- `src/sync/readFolder.js`: reads the folder's files, skipping installed/generated folders, caching unchanged files
+- `src/sync/detectSteps.js`: matches step `check` rules (file path regex + optional content regex) against the files
 - `src/components/StackBadge.jsx`: stack label with a `data-stack` attribute for per-stack styling
 - `src/App.css`: layout-only styles
 
