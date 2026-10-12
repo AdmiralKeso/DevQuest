@@ -71,3 +71,4 @@ Commit rules.
 - Accurate and small commit that only explains a certain feature
 - Use add, update, fix, remove
 - Always ask before commiting or wait when told to.
+- Push to main directly
