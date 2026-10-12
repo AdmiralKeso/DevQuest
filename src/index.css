@@ -1,0 +1,22 @@
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+}
+
+/* The app fills the window exactly; pages scroll inside their own areas, not the whole page. */
+#root {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  padding: 16px 24px;
+  box-sizing: border-box;
+}
+
+/* Narrow screens can't fit everything, so the page scrolls normally there. */
+@media (max-width: 720px) {
+  #root {
+    height: auto;
+    min-height: 100dvh;
+    padding: 16px;
+  }
+}

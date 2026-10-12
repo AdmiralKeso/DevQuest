@@ -1,0 +1,250 @@
+/* Layout only — no colors or decoration, so you can add your own styling. */
+
+/* Every page fills the space under the site header; `min-height: 0` lets areas shrink and scroll inside. */
+
+/* Site header */
+.site-header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #ddd;
+}
+
+.site-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Main page: sidebar + project list */
+.app-layout {
+  display: grid;
+  flex: 1;
+  grid-template-columns: auto 1fr;
+  gap: 24px;
+  min-height: 0;
+}
+
+/* The project list scrolls inside its own area when there are many cards */
+.app-layout > main {
+  min-width: 0;
+  overflow-y: auto;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+}
+
+.category-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.category {
+  display: flex;
+  justify-content: space-between;
+}
+
+.category.active {
+  font-weight: bold;
+}
+
+/* Project list */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Project page: compact header, then two columns that fill the rest of the window */
+.project-page {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.project-page .page-header {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 16px;
+}
+
+.project-page .page-header h1,
+.project-page .page-header p {
+  margin: 0;
+}
+
+.project-page h2 {
+  margin: 0 0 8px;
+  font-size: 1.2em;
+}
+
+.project-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.project-layout {
+  display: grid;
+  flex: 1;
+  grid-template-columns: 1fr 340px;
+  grid-template-rows: minmax(0, 1fr);
+  gap: 24px;
+  min-height: 0;
+  margin-top: 16px;
+}
+
+.project-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  min-height: 0;
+}
+
+.stats {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Circles are part of the layout; restyle freely. They shrink on short screens. */
+.stat-circle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: clamp(90px, 15vh, 120px);
+  height: clamp(90px, 15vh, 120px);
+  padding: 8px;
+  box-sizing: border-box;
+  text-align: center;
+  border: 2px solid;
+  border-radius: 50%;
+}
+
+.stat-circle.stat-progress {
+  width: clamp(110px, 20vh, 160px);
+  height: clamp(110px, 20vh, 160px);
+}
+
+.complete {
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.objectives,
+.project-panel,
+.project-panel > section {
+  padding: 16px;
+  border: 2px solid;
+}
+
+/* Boxes scroll inside themselves if their content doesn't fit */
+.objectives {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.pager {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.project-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+}
+
+.project-panel > section {
+  flex-shrink: 0;
+}
+
+.project-panel > .todo {
+  flex: 1;
+  flex-shrink: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.folder-sync {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.folder-sync p,
+.section-note {
+  margin: 0 0 8px;
+}
+
+.folder-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.steps {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.step {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  padding: 4px 0;
+}
+
+.step.done .step-title span {
+  text-decoration: line-through;
+}
+
+/* Narrow screens: columns stack and the page scrolls normally */
+@media (max-width: 720px) {
+  .app-layout,
+  .project-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+  }
+
+  .app-layout > main,
+  .objectives,
+  .project-panel > .todo {
+    overflow-y: visible;
+  }
+
+  .sidebar {
+    width: auto;
+  }
+}
