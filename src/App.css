@@ -1,0 +1,108 @@
+/* Layout only — no colors or decoration, so you can add your own styling. */
+
+/* Site header */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #ddd;
+}
+
+.site-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Layout: sidebar + page content */
+.app-layout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Page content: min-width stops long content from stretching the grid */
+.app-layout > main {
+  min-width: 0;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+}
+
+.category-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.category {
+  display: flex;
+  justify-content: space-between;
+}
+
+.category.active {
+  font-weight: bold;
+}
+
+/* Project list */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Project page */
+.project-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+}
+
+.progress-track {
+  height: 8px;
+  background: #ddd;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #333;
+}
+
+.steps {
+  padding-left: 0;
+  list-style: none;
+}
+
+.step.done .step-title span {
+  text-decoration: line-through;
+}
+
+/* Narrow screens: sidebar stacks above the content */
+@media (max-width: 720px) {
+  .app-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    width: auto;
+  }
+}
