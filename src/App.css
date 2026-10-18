@@ -65,12 +65,27 @@
     gap: 12px;
   }
 
+  /* Each project is a white card with a black border, like the main menu tiles */
   .project-card {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    color: inherit;
+    gap: 8px;
+    padding: 16px;
+    border: 2px solid #000;
+    background: #fff;
+    color: #000;
     text-decoration: none;
+  }
+
+  .project-card h2,
+  .project-card p {
+    margin: 0;
+  }
+
+  /* Badge sits at the bottom, so badges line up across a row */
+  .project-card .stack-badge {
+    margin-top: auto;
   }
 
   /* Project page: compact header, then two columns that fill the rest of the window */
