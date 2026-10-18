@@ -1,10 +1,35 @@
 // Tech stacks shown as categories in the sidebar. Each project is built with exactly one stack.
+// `requirements` are what you need installed or set up before starting any project in that stack.
+// `docLinks` are the documentation shown in the Docs section of every project in that stack.
+const doc = (label, url) => ({ label, url })
 export const STACKS = [
-  { id: 'laravel', label: 'Laravel', description: 'PHP framework with routing, Blade templates and Eloquent ORM built in.', docs: 'https://laravel.com/docs' },
-  { id: 'django', label: 'Django', description: 'Python framework with an admin panel, ORM and templates out of the box.', docs: 'https://docs.djangoproject.com' },
-  { id: 'node', label: 'Node', description: 'JavaScript on the server, usually with Express for routing.', docs: 'https://nodejs.org/en/learn' },
-  { id: 'react', label: 'React', description: 'Component-based UI library for building interactive front ends.', docs: 'https://react.dev/learn' },
+  {
+    id: 'laravel', label: 'Laravel', description: 'PHP framework with routing, Blade templates and Eloquent ORM built in.', docs: 'https://laravel.com/docs',
+    requirements: ['PHP 8.2 or newer', 'Composer', 'Basic PHP'],
+    docLinks: [doc('Laravel', 'https://laravel.com/docs'), doc('Blade', 'https://laravel.com/docs/blade'), doc('Eloquent', 'https://laravel.com/docs/eloquent')],
+  },
+  {
+    id: 'django', label: 'Django', description: 'Python framework with an admin panel, ORM and templates out of the box.', docs: 'https://docs.djangoproject.com',
+    requirements: ['Python 3.10 or newer', 'pip', 'Basic Python'],
+    docLinks: [doc('Django', 'https://docs.djangoproject.com/en/stable/'), doc('Django tutorial', 'https://docs.djangoproject.com/en/stable/intro/tutorial01/'), doc('Django forms', 'https://docs.djangoproject.com/en/stable/topics/forms/')],
+  },
+  {
+    id: 'node', label: 'Node', description: 'JavaScript on the server, usually with Express for routing.', docs: 'https://nodejs.org/en/learn',
+    requirements: ['Node.js 20 or newer', 'npm', 'Basic JavaScript'],
+    docLinks: [doc('Node.js', 'https://nodejs.org/en/learn'), doc('Express', 'https://expressjs.com/en/guide/routing.html'), doc('EJS', 'https://github.com/mde/ejs')],
+  },
+  {
+    id: 'react', label: 'React', description: 'Component-based UI library for building interactive front ends.', docs: 'https://react.dev/learn',
+    requirements: ['Node.js 20 or newer', 'npm', 'Basic JavaScript'],
+    docLinks: [doc('React', 'https://react.dev/learn'), doc('Vite', 'https://vite.dev/guide/'), doc('React Router', 'https://reactrouter.com/home')],
+  },
 ]
+
+// Needed for every project: progress is tracked by linking a public GitHub repository.
+export const COMMON_REQUIREMENTS = ['Git', 'A public GitHub repository']
+
+// Shown in the Docs section of every project, before the stack's and the project's own docs.
+export const COMMON_DOC_LINKS = [doc('MDN Web Docs', 'https://developer.mozilla.org/en-US/docs/Web')]
 
 // Step checks: when a folder is linked, a step with a `check` is ticked off automatically once the
 // files match (see src/sync/detectSteps.js). A check is one rule or a list of rules that must all match.
@@ -45,6 +70,8 @@ export const SKILLS = [
 //     title: 'Build a ...',
 //     description: 'One sentence.', // optional, the page shows a placeholder without it
 //     stack: 'react',               // one of the STACKS ids
+//     requirements: ['...'],        // optional, extra requirements on top of the stack's
+//     docLinks: [doc('Label', 'https://...')], // optional, extra docs on top of the stack's
 //     steps: [                      // optional, the page shows a placeholder without it
 //       { id: 'step-id', title: 'Do this', tip: 'How to do it.', check: file(/regex/), skill: SEMANTIC_HTML },
 //     ],
@@ -73,6 +100,8 @@ export const OBJECTIVES = [
     title: 'Build a portfolio',
     description: 'A server-rendered portfolio with Node and Express.',
     stack: 'node',
+    requirements: ['An email account with SMTP access (for Nodemailer)'],
+    docLinks: [doc('Nodemailer', 'https://nodemailer.com/')],
     steps: [
       { id: 'setup', title: 'Set up an Express server', tip: 'npm init, npm install express, then a server.js that listens on a port.', check: [pkg('express'), code(JS, /\.listen\(/)], skill: COMPREHENSION },
       { id: 'static', title: 'Serve your CSS and images as static files', tip: 'app.use(express.static("public")) serves everything in the public folder.', check: code(JS, /express\.static\(/), skill: COMPREHENSION },
@@ -91,6 +120,8 @@ export const OBJECTIVES = [
     title: 'Create an online store',
     description: 'Products in a database, a session cart and checkout with Laravel.',
     stack: 'laravel',
+    requirements: ['A Stripe account (test mode is free)'],
+    docLinks: [doc('Laravel Cashier', 'https://laravel.com/docs/billing')],
     steps: [
       { id: 'setup', title: 'Create a Laravel project', tip: 'composer create-project laravel/laravel store, then php artisan serve.', check: LARAVEL_SETUP, skill: COMPREHENSION },
       { id: 'model', title: 'Add a Product model, migration and seeder', tip: 'php artisan make:model Product -ms creates all three at once.', check: [named('app/Models/Product\\.php'), migration('products'), named('ProductSeeder\\.php')], skill: COMPREHENSION },
@@ -123,6 +154,8 @@ export const OBJECTIVES = [
     title: 'Create an online store',
     description: 'An Express server with product pages, a cart and Stripe checkout.',
     stack: 'node',
+    requirements: ['A Stripe account (test mode is free)'],
+    docLinks: [doc('Stripe Checkout', 'https://docs.stripe.com/payments/checkout'), doc('express-session', 'https://github.com/expressjs/session')],
     steps: [
       { id: 'setup', title: 'Set up Express with a template engine', tip: 'EJS is the simplest: app.set("view engine", "ejs").', check: [pkg('express'), code(JS, /set\(\s*["']view engine/)], skill: COMPREHENSION },
       { id: 'data', title: 'Store products in a database', tip: 'SQLite needs no server; better-sqlite3 is fast and easy to use.', check: pkg('(better-sqlite3|sqlite3|mongoose|pg|mysql2)'), skill: COMPREHENSION },
@@ -155,6 +188,7 @@ export const OBJECTIVES = [
     title: 'Launch a landing page',
     description: 'One React page that convinces visitors to take a single action.',
     stack: 'react',
+    docLinks: [doc('Lighthouse', 'https://developer.chrome.com/docs/lighthouse/overview')],
     steps: [
       { id: 'setup', title: 'Create a React app with Vite', tip: 'Run npm create vite@latest and pick the React template.', check: REACT_SETUP, skill: COMPREHENSION },
       { id: 'headline', title: 'Write a headline and subheadline', tip: 'Say what it does and who it is for.', check: code('jsx|tsx', /<h1/), skill: SEMANTIC_HTML },
@@ -172,6 +206,7 @@ export const OBJECTIVES = [
     title: 'Build a blog',
     description: 'Posts stored in a database and rendered with Blade.',
     stack: 'laravel',
+    docLinks: [doc('Starter kits', 'https://laravel.com/docs/starter-kits')],
     steps: [
       { id: 'setup', title: 'Create a Laravel project', tip: 'composer create-project laravel/laravel blog, then php artisan serve.', check: LARAVEL_SETUP, skill: COMPREHENSION },
       { id: 'model', title: 'Add a Post model and migration', tip: 'Give posts a unique slug column for readable URLs.', check: [named('app/Models/Post\\.php'), migration('posts')], skill: COMPREHENSION },
@@ -188,6 +223,7 @@ export const OBJECTIVES = [
     title: 'Build a blog',
     description: 'Write posts in the Django admin and publish them with templates.',
     stack: 'django',
+    docLinks: [doc('django-taggit', 'https://django-taggit.readthedocs.io/'), doc('Feeds', 'https://docs.djangoproject.com/en/stable/ref/contrib/syndication/')],
     steps: [
       { id: 'setup', title: 'Start a Django project and a blog app', tip: 'django-admin startproject, then python manage.py startapp blog.', check: djangoSetup('blog'), skill: COMPREHENSION },
       { id: 'model', title: 'Add a Post model with a slug', tip: 'prepopulated_fields in the admin fills the slug from the title.', check: code('py', /class\s+Post\s*\([\s\S]*SlugField/), skill: COMPREHENSION },
@@ -204,6 +240,7 @@ export const OBJECTIVES = [
     title: 'Build a blog',
     description: 'Markdown files turned into pages by an Express server.',
     stack: 'node',
+    docLinks: [doc('marked', 'https://marked.js.org/'), doc('gray-matter', 'https://github.com/jonschlinkert/gray-matter')],
     steps: [
       { id: 'setup', title: 'Set up Express with a template engine', tip: 'EJS is the simplest: app.set("view engine", "ejs").', check: [pkg('express'), code(JS, /set\(\s*["']view engine/)], skill: COMPREHENSION },
       { id: 'posts', title: 'Store posts as Markdown files', tip: 'gray-matter reads the title and date from the front matter at the top of each file.', check: [pkg('gray-matter'), file(/(^|\/)posts\/[^/]+\.md$/)], skill: COMPREHENSION },
@@ -219,6 +256,8 @@ export const OBJECTIVES = [
     title: 'Build a blog',
     description: 'A React blog with Markdown posts and client-side routing.',
     stack: 'react',
+    requirements: ['GitHub Discussions turned on for your repository (for Giscus)'],
+    docLinks: [doc('react-markdown', 'https://github.com/remarkjs/react-markdown'), doc('Giscus', 'https://giscus.app/')],
     steps: [
       { id: 'setup', title: 'Create a React app with Vite', tip: 'Run npm create vite@latest and pick the React template.', check: REACT_SETUP, skill: COMPREHENSION },
       { id: 'post-list', title: 'Show a list of posts', tip: 'Show the title, date and a one-line summary.', check: file(/(^|\/)(PostList|Posts)\.(jsx|tsx)$/), skill: SEMANTIC_HTML },
@@ -236,6 +275,8 @@ export const OBJECTIVES = [
     title: 'Create a business website',
     description: 'A multi-page site with a contact form and bookings in Laravel.',
     stack: 'laravel',
+    requirements: ['An email account with SMTP access (for the contact form)'],
+    docLinks: [doc('Laravel Mail', 'https://laravel.com/docs/mail')],
     steps: [
       { id: 'setup', title: 'Create a Laravel project', tip: 'composer create-project laravel/laravel business, then php artisan serve.', check: LARAVEL_SETUP, skill: COMPREHENSION },
       { id: 'layout', title: 'Make a Blade layout with navigation', tip: 'Use a layout component and request()->routeIs() to highlight the current page.', check: file(/resources\/views\/(layouts|components)\/.*\.blade\.php$/, /<nav/), skill: SEMANTIC_HTML },
@@ -251,6 +292,7 @@ export const OBJECTIVES = [
     title: 'Create a business website',
     description: 'Pages from templates, with services you edit in the Django admin.',
     stack: 'django',
+    docLinks: [doc('Sending email', 'https://docs.djangoproject.com/en/stable/topics/email/')],
     steps: [
       { id: 'setup', title: 'Start a Django project and a pages app', tip: 'django-admin startproject, then python manage.py startapp pages.', check: djangoSetup('pages'), skill: COMPREHENSION },
       { id: 'layout', title: 'Make a base template with navigation', tip: 'Other templates extend base.html and fill in {% block content %}.', check: file(/(^|\/)base\.html$/, /<nav/), skill: SEMANTIC_HTML },
