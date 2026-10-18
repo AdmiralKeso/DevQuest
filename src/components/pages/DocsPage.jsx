@@ -1,5 +1,5 @@
-import { GETTING_STARTED_DOC_LINKS, STACKS } from '../data/objectives.js'
-import InfoPage from './InfoPage.jsx'
+import { GETTING_STARTED_DOC_LINKS, STACKS } from '../../data/objectives.js'
+import InfoPage from '../InfoPage.jsx'
 
 function DocList({ links }) {
   return (

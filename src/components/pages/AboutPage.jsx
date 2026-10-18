@@ -1,6 +1,6 @@
 import { Link } from 'react-router'
-import { OBJECTIVES, SKILLS, STACKS } from '../data/objectives.js'
-import InfoPage from './InfoPage.jsx'
+import { OBJECTIVES, SKILLS, STACKS } from '../../data/objectives.js'
+import InfoPage from '../InfoPage.jsx'
 
 export default function AboutPage() {
   return (

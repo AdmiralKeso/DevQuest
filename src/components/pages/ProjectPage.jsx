@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
-import { COMMON_DOC_LINKS, COMMON_REQUIREMENTS, SKILLS, STACKS } from '../data/objectives.js'
-import { useProjectLink } from '../hooks/useProjectLink.js'
-import { useLocalStorage } from '../hooks/useLocalStorage.js'
-import { detectSteps, isAutoTracked } from '../sync/detectSteps.js'
-import ProjectLink from './ProjectLink.jsx'
-import StackBadge from './StackBadge.jsx'
-import StatCircle from './StatCircle.jsx'
-import StepList from './StepList.jsx'
+import { COMMON_DOC_LINKS, COMMON_REQUIREMENTS, SKILLS, STACKS } from '../../data/objectives.js'
+import { useProjectLink } from '../../hooks/useProjectLink.js'
+import { useLocalStorage } from '../../hooks/useLocalStorage.js'
+import { detectSteps, isAutoTracked } from '../../sync/detectSteps.js'
+import ProjectLink from '../ProjectLink.jsx'
+import StackBadge from '../StackBadge.jsx'
+import StatCircle from '../StatCircle.jsx'
+import StepList from '../StepList.jsx'
 
 // Progress for every project is kept in one object: { [projectId]: [completed step ids] }
 const asObject = (saved) => (saved && typeof saved === 'object' && !Array.isArray(saved) ? saved : {})

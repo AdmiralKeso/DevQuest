@@ -1,7 +1,7 @@
 import { Link } from 'react-router'
-import { OBJECTIVES, STACKS } from '../data/objectives.js'
-import { useLocalStorage } from '../hooks/useLocalStorage.js'
-import SiteHeader from './SiteHeader.jsx'
+import { OBJECTIVES, STACKS } from '../../data/objectives.js'
+import { useLocalStorage } from '../../hooks/useLocalStorage.js'
+import SiteHeader from '../SiteHeader.jsx'
 
 // Worked out once when the app loads, for the footer.
 const YEAR = new Date().getFullYear()
