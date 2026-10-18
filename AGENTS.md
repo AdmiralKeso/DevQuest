@@ -42,6 +42,8 @@ Developing
 
 Tech
 - React + Vite (JavaScript, no TypeScript), React Router for pages
+- Tailwind CSS v4 via `@tailwindcss/vite` (no config file; customise with `@theme` in `src/index.css`). Style with utility classes in `className`.
+- CSS layers, lowest to highest: `base` (`src/index.css`: root layout and plain defaults after Tailwind's reset), `components` (`src/App.css`: layout rules), `utilities` (Tailwind classes). Utility classes always win, so styling never needs `!important`.
 - `npm run dev` to develop, `npm run build` outputs to `dist/` (gitignored, don't commit or edit)
 - Progress is saved per project in the browser via localStorage, key `devquest.progress`: `{ [projectId]: [completed step ids] }`
 - Linked repositories are saved in localStorage, key `devquest.links`: `{ [projectId]: { owner, repo, branch, path } }`
