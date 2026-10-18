@@ -20,18 +20,19 @@ Categories (sidebar on the left) are tech stacks:
 Project page template
 - Every project fills the same page. Header (back link, title, description, stack badge, docs link), then two columns:
   - Left: stat circles (All objectives progress, Knowledge, Redundant, Complexity), then the "All objectives" box with the auto-tracked steps, 5 per page with < > buttons
-  - Right panel: "Link to project" (just the button plus "Files stay in your browser."), then "To do" (steps that can't be tracked, ticked by hand), which takes the rest of the height
+  - Right panel: "Link to project" (GitHub URL field and button, plus "Public GitHub repositories only."), then "To do" (steps that can't be tracked, ticked by hand), which takes the rest of the height
 - Knowledge, Redundant and Complexity are placeholders ("-") until it's decided what they measure
 - The app fills the browser window with no page scroll (`#root` is `100dvh`). Areas that can overflow (project list, All objectives, To do) scroll inside themselves. Below 720px wide the columns stack and the page scrolls normally.
 - Only `id`, `title` and `stack` are required; a missing description or steps shows a placeholder. A commented template for new projects is above OBJECTIVES in `objectives.js`.
 
 2. Syncing of files
-- Import files into objective: on a project page the user links the folder they code in ("Link folder"). Each project remembers its own folder.
-- App tracks progress and objectives: while linked, the folder is rescanned every 2 seconds and steps are ticked off automatically when their code is found (and unticked if it is removed)
+- Import files into objective: on a project page the user pastes a public GitHub repository URL and clicks "Link to project". Each project remembers its own repository.
+- GitHub only, read-only through the GitHub API. No local folders and no folder storage.
+- Accepted URLs: `github.com/{owner}/{repo}`, optionally `.git` or `/tree/{branch}/{subfolder}` (default branch if none; branch names with a slash aren't supported)
+- App tracks progress and objectives: while linked, the repository is checked every 30 seconds (plus a "Check now" button), and steps are ticked off automatically when their code is found in the latest commit (and unticked if it is removed)
+- GitHub allows 60 API requests an hour without a login. One check = one request for the latest commit (unchanged answers don't count, via ETag) and, only on a new commit, one request for the file tree. File contents come from raw.githubusercontent.com (no limit) and are cached by blob sha, so only changed files are downloaded.
 - Steps with a `check` in `objectives.js` are auto-tracked; steps without one (deploying, Lighthouse, etc.) stay manual checkboxes
-- Uses the browser File System Access API: works in Chrome and Edge only. Other browsers show a note and all steps stay manual.
-- Files are only read in the browser, never uploaded. `node_modules`, `vendor`, `.git`, `dist`, `venv` and similar folders are skipped.
-- Browsers forget folder permission between visits, so the user may need to click "Reconnect folder"
+- `node_modules`, `vendor`, `.git`, `dist`, `venv` and similar folders are skipped. Private repositories aren't supported (they would need a GitHub token).
 - Tips and tricks: removed from the project page for now. Every step still has a `tip` in `objectives.js` for when it comes back.
 - Progress bar (now the "All objectives progress" circle)
 
@@ -43,6 +44,7 @@ Tech
 - React + Vite (JavaScript, no TypeScript), React Router for pages
 - `npm run dev` to develop, `npm run build` outputs to `dist/` (gitignored, don't commit or edit)
 - Progress is saved per project in the browser via localStorage, key `devquest.progress`: `{ [projectId]: [completed step ids] }`
+- Linked repositories are saved in localStorage, key `devquest.links`: `{ [projectId]: { owner, repo, branch, path } }`
 
 Routes
 - `/` all projects
@@ -55,13 +57,12 @@ Structure
 - `src/App.jsx`: header and routes; `MainPage` puts the sidebar next to the project list
 - `src/components/Sidebar.jsx`: tech stack links (no collapse for now)
 - `src/components/ProjectList.jsx`: project cards, each a link to its project page
-- `src/components/ProjectPage.jsx`: the project page template (sections with placeholders), saved progress; applies folder detection to auto-tracked steps
+- `src/components/ProjectPage.jsx`: the project page template (sections with placeholders), saved progress; applies repository detection to auto-tracked steps
 - `src/components/StatCircle.jsx`: round stat with a value and label
 - `src/components/StepList.jsx`: step checklist, optional paging (< >)
-- `src/components/FolderSync.jsx`: "Link to project" box: link / reconnect / unlink folder
-- `src/hooks/useLinkedFolder.js`: linked folder state per project and the 2-second rescan
-- `src/sync/handleStore.js`: saves folder handles in IndexedDB (they can't go in localStorage)
-- `src/sync/readFolder.js`: reads the folder's files, skipping installed/generated folders, caching unchanged files
+- `src/components/ProjectLink.jsx`: "Link to project" box: GitHub URL form, or the linked repository with Check now / Unlink
+- `src/hooks/useProjectLink.js`: linked repository per project (saved in localStorage) and the 30-second check
+- `src/sync/readGitHub.js`: parses GitHub URLs, checks the repository exists, reads its files through the GitHub API (skipping installed/generated folders, caching unchanged files)
 - `src/sync/detectSteps.js`: matches step `check` rules (file path regex + optional content regex) against the files
 - `src/components/StackBadge.jsx`: stack label with a `data-stack` attribute for per-stack styling
 - `src/App.css`: layout-only styles
