@@ -44,7 +44,9 @@ export default function MainMenu() {
         <div className="menu-column column-left">
           <Link to={lastProject ? `/projects/${lastProject.id}` : '/projects'} className="menu-tile tile-continue">
           <div className='menu-title-container'>
-            <span className="tile-label">Continue</span>
+            <span className="tile-label">
+              <i className="fa-solid fa-forward" aria-hidden="true"></i> Continue
+            </span>
             <span className="tile-detail">
               {lastProject ? `${lastProject.title}` : 'Start your first quest'}
             </span>
@@ -52,7 +54,9 @@ export default function MainMenu() {
           </Link>
           <Link to="/projects" className="menu-tile tile-new-project">
             <div className="menu-title-container">
-              <span className="tile-label">Start a new project</span>
+              <span className="tile-label">
+                <i className="fa-solid fa-plus" aria-hidden="true"></i> Start a new project
+              </span>
             </div>
           </Link>
         </div>
@@ -60,7 +64,9 @@ export default function MainMenu() {
         <div className="menu-column column-middle">
           <Link to="/about" className="menu-tile tile-about">
             <div className="menu-title-container">
-              <span className="tile-label">Usefull links</span>
+              <span className="tile-label">
+                <i className="fa-solid fa-link" aria-hidden="true"></i> Usefull links
+              </span>
             </div>
           </Link>
           <Link to="/how-to-play" className="menu-tile tile-how-to-play">
@@ -70,7 +76,9 @@ export default function MainMenu() {
           </Link>
           <Link to="/achievements" className="menu-tile tile-achievements">
             <div className="menu-title-container">
-              <span className="tile-label">Achievements</span>
+              <span className="tile-label">
+                <i className="fa-solid fa-trophy" aria-hidden="true"></i> Achievements
+              </span>
             </div>
           </Link>
         </div>
@@ -78,12 +86,16 @@ export default function MainMenu() {
         <div className="menu-column column-right">
           <Link to="/profile" className="menu-tile tile-profile">
             <div className="menu-title-container">
-              <span className="tile-label">Profile</span>
+              <span className="tile-label">
+                <i className="fa-solid fa-circle-user" aria-hidden="true"></i> Profile
+              </span>
             </div>
           </Link>
           <Link to="/docs" className="menu-tile tile-docs">
             <div className="menu-title-container">
-              <span className="tile-label">Instructions</span>
+              <span className="tile-label">
+                <i className="fa-brands fa-readme" aria-hidden="true"></i> Instructions
+              </span>
             </div>
           </Link>
         </div>

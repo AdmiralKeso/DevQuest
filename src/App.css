@@ -381,8 +381,10 @@
   }
 
   /* Smaller text in the Continue and New Project buttons */
+  /* Kept on one line, so an icon stays to the left of its label */
   .menu-title-container .tile-label {
     font-size: clamp(0.5rem, 2vw, 1rem);
+    white-space: nowrap;
   }
 
   /* Project name sits at the right end of the bar, the label stays on the left */
