@@ -29,6 +29,7 @@
     grid-template-columns: auto 1fr;
     gap: 24px;
     min-height: 0;
+    margin: 0 2% 0 2%;
   }
 
   /* The project list scrolls inside its own area when there are many cards */
@@ -78,6 +79,7 @@
     flex: 1;
     flex-direction: column;
     min-height: 0;
+    margin: 0 2% 2% 2%;
   }
 
   .project-page .page-header {
@@ -324,6 +326,378 @@
     text-decoration: line-through;
   }
 
+  /*
+    Main menu: white tiles with a black border on a white background, filling the whole window.
+    Three columns of different widths; each column stacks its tiles with the same gap and splits at
+    different heights (flex-grow below), so tiles are uneven but fit together without empty space.
+  */
+  /* One gap between tiles, between columns and above/below the board; the sides use the universal --side-margin */
+  .main-menu {
+    --menu-gap: clamp(12px, 2vw, 24px);
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--menu-gap);
+    padding: var(--menu-gap) var(--side-margin);
+    /* The board shrinks to fit the window, so the menu never scrolls (phones scroll, see below) */
+    overflow: hidden;
+    /*
+      Two background layers (the first is drawn on top), behind the tiles:
+      attachment2: developer illustration in the bottom-left corner, one --menu-gap in from the edges, about 36% of the width (at most 520px);
+      attachment1: white with a sand wave in the top-right corner, kept in that corner on any screen shape.
+    */
+    --content-max: 1000px;
+    --side-margin: max(clamp(16px, 3vw, 48px), calc((100vw - var(--content-max)) / 2));
+    background:
+      url('./assets/images/attachments/attachment2.png') no-repeat left var(--menu-gap) bottom var(--menu-gap) /
+        min(36vw, 520px) auto,
+      #fff url('./assets/images/attachments/attachment1.png') no-repeat right top / cover;
+  }
+
+  /* Header: title and tagline on the left, nav justified to the right, same gap below it as everywhere else */
+  .menu-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 24px;
+  }
+
+  .menu-title-container{
+    display: flex;
+    background: #ffd9a8;
+    transition: background-color 0.4s ease, right 0.4s ease;
+    /* An arrow along the bottom of the tile, half the width and pointing right; on hover it slides across to the right edge */
+    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 50%, calc(100% - 16px) 100%, 0 100%);
+    padding: 4px 26px 4px 10px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 50%;
+    align-items: baseline;
+    gap: 8px;
+    color: black;
+  }
+
+  /* Smaller text in the Continue and New Project buttons */
+  .menu-title-container .tile-label {
+    font-size: clamp(0.5rem, 2vw, 1rem);
+  }
+
+  /* Project name sits at the right end of the bar, the label stays on the left */
+  .menu-title-container .tile-detail {
+    font-size: clamp(0.35rem, 2vw, 0.85rem);
+    margin-left: auto;
+    text-align: right;
+  }
+  
+  /* Logo on the left, title and tagline stacked next to it so they share one left edge */
+  .menu-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .menu-title {
+    margin: 0;
+    line-height: 1;
+  }
+
+  /* As tall as the title and tagline together (decorative, the title already says DevQuest).
+     Negative margins cancel the white space inside the image, so the circles sit at the left edge and close to the text */
+  .menu-logo {
+    height: 4.5em;
+    width: auto;
+    margin-left: -1.1em;
+    margin-right: -2.2em;
+  }
+
+  .menu-tagline {
+    margin: 4px 0 0;
+  }
+
+  /* margin-left: auto keeps the nav on the right even when it wraps under the title on narrow screens */
+  .menu-nav {
+    margin-left: auto;
+  }
+
+  /* Nav links have no underline */
+  .menu-nav a {
+    text-decoration: none;
+  }
+
+  /* Sign up has a border so it stands out as a button; the language dropdown has none */
+  .nav-signup {
+    display: inline-block;
+    padding: 2px 10px;
+    border: 1px solid;
+  }
+
+  /* Sized to the selected language (not the longest one) with little padding, so the arrow sits close to the text */
+  .language-select {
+    field-sizing: content;
+    padding: 2px 0 2px 4px;
+    border: 0;
+  }
+
+  .menu-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px 20px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Footer: one slim line under the tiles, same gap above it as everywhere else */
+  .menu-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 4px 16px;
+    font-size: 0.85em;
+  }
+
+  .menu-board {
+    display: flex;
+    flex: 1;
+    gap: var(--menu-gap);
+    min-height: 0;
+    margin: 40px
+  }
+
+  .menu-column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--menu-gap);
+  }
+
+  .column-left {
+    flex: 1.6;
+  }
+
+  .column-middle {
+    flex: 1.2;
+  }
+
+  .column-right {
+    flex: 0.95;
+  }
+
+  .menu-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px;
+    border: 2px solid #000;
+    background: #fff;
+    color: #000;
+    text-align: center;
+    text-decoration: none;
+    /* Page load: the top tile of each column slides down from above, the others slide up from below */
+    animation: tile-slide-up 0.7s ease-out both;
+  }
+
+  .menu-tile:first-child {
+    animation-name: tile-slide-down;
+  }
+
+  /* Columns come in one after another, left to right */
+  .column-middle .menu-tile {
+    animation-delay: 0.1s;
+  }
+
+  .column-right .menu-tile {
+    animation-delay: 0.2s;
+  }
+
+  @keyframes tile-slide-down {
+    from {
+      opacity: 0;
+      transform: translateY(-60px);
+    }
+  }
+
+  @keyframes tile-slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(60px);
+    }
+  }
+
+  /* The tile's button turns orange on hover and keyboard focus */
+  .menu-tile:hover .menu-title-container,
+  .menu-tile:focus-visible .menu-title-container {
+    background-color: #ff8f16;
+    right: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .menu-title-container {
+      transition: none;
+    }
+
+    .menu-tile {
+      animation: none;
+    }
+  }
+
+  .tile-label {
+    font-size: clamp(0.55rem, 2.6vw, 1.25rem);
+  }
+
+  .tile-detail {
+    font-size: clamp(0.35rem, 2.6vw, 1rem);
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Share of each column's height per tile */
+  .tile-continue {
+    flex: 2.0;
+    margin-top: 50px;
+    background: url('./assets/images/background/code.jpg');
+    background-size: cover;
+    color: #fff;
+    text-shadow: #000;
+    position: relative;
+  }
+
+  /* Continue's arrow starts wider, to fit the project name next to the label */
+  .tile-continue .menu-title-container {
+    right: 35%;
+  }
+  .tile-new-project {
+    flex: 0.85;
+    margin-bottom: 40px;
+    background: #fff url('./assets/images/attachments/create.png') no-repeat center;
+    background-size: cover;
+    position: relative;
+  }
+
+  .tile-about {
+    flex: 0.6;
+    /* Green from the picture's own edges fills the space beside it */
+    background:
+      url('./assets/images/background/url.png') no-repeat center / contain,
+      linear-gradient(to right, #0f8644, #55bd48);
+    position: relative;
+  }
+
+  .tile-how-to-play {
+    flex: 1.6;
+  }
+
+  .tile-how-to-play .tile-label {
+    font-size: clamp(1rem, 2.4vw, 1.75rem);
+  }
+
+  .tile-brand {
+    font-weight: 700;
+    font-style: italic;
+  }
+
+  .tile-achievements {
+    flex: 1;
+    background: #fff url('./assets/images/background/achievements.jpg') no-repeat center;
+    background-size: cover;
+    position: relative;
+  }
+
+  .tile-profile {
+    background: #fff url('./assets/images/background/profile.png') no-repeat center;
+    background-size: cover;
+    position: relative;
+    flex: 0.4;
+    margin-top: 60px;
+  }
+
+  .tile-docs {
+    /* The book's image is transparent, so it can be shown smaller with the tile's white around it */
+    background: #fff url('./assets/images/background/instructions.png') no-repeat center;
+    background-size: auto 85%;
+    position: relative;
+    flex: 0.3;
+    margin-bottom: 40px;
+  }
+
+  /* Narrow screens: columns stack into one list of tiles and the menu scrolls */
+  @media (max-width: 720px) {
+    /* Grow to fill the screen but never shrink below the tiles, so the footer always sits under them */
+    .menu-board {
+      flex: 1 0 auto;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    /* Tall screens: scale the backgrounds to the width so the illustration and the wave stay corner accents */
+    .main-menu {
+      overflow: auto;
+      background-size: 55vw auto, 100% auto;
+    }
+
+    /* Tiles keep a minimum height and stretch to fill the screen, so the bottom edge gap matches the others */
+    .menu-column {
+      flex: auto;
+    }
+
+    .menu-tile {
+      flex: 1 1 auto;
+      min-height: 110px;
+    }
+
+    .tile-continue {
+      min-height: 200px;
+    }
+  }
+
+  /* How to play, Docs, About: back link and title stay put, the content scrolls */
+  .info-page {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .info-content {
+    flex: 1;
+    min-height: 0;
+    max-width: 760px;
+    margin-top: 16px;
+    overflow-y: auto;
+  }
+
+  .info-content > * + * {
+    margin-top: 24px;
+  }
+
+  .info-content h2 {
+    margin: 0 0 4px;
+    font-size: 1.2em;
+  }
+
+  .info-content ul:not(.doc-list),
+  .play-steps {
+    padding-left: 20px;
+  }
+
+  .info-content ul:not(.doc-list) {
+    list-style: disc;
+  }
+
+  .play-steps {
+    list-style: decimal;
+  }
+
+  .play-steps > li + li {
+    margin-top: 16px;
+  }
+
   /* Narrow screens: columns stack and the page scrolls normally */
   @media (max-width: 720px) {
     .app-layout,
@@ -333,6 +707,7 @@
     }
 
     .app-layout > main,
+    .info-content,
     .objectives-scroll,
     .project-panel > .todo {
       overflow-y: visible;

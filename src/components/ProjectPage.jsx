@@ -38,6 +38,10 @@ export default function ProjectPage({ project }) {
   const [completed, updateCompleted] = useProgress(project.id)
   const link = useProjectLink(project.id)
 
+  // Remembered for "Continue" on the main menu.
+  const [, setLastProject] = useLocalStorage('devquest.lastProject', null)
+  useEffect(() => setLastProject(project.id), [project.id, setLastProject])
+
   const steps = project.steps ?? []
   // Everything needed before starting: common to all projects, then the stack's, then this project's extras.
   const requirements = [

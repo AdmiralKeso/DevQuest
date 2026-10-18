@@ -5,6 +5,12 @@
   So a Tailwind class on an element always wins over the rules in these files.
 */
 @layer base {
+  /*
+    One side margin for every page (left and right), including the main menu.
+    Laptops get a small margin; on wider screens the content stays laptop-sized (--content-max)
+    and the extra width becomes margin.
+  */
+
   body {
     font-family: system-ui, sans-serif;
   }
@@ -14,7 +20,7 @@
     display: flex;
     flex-direction: column;
     height: 100dvh;
-    padding: 16px 24px;
+    padding: 16px var(--side-margin);
   }
 
   /* Narrow screens can't fit everything, so the page scrolls normally there. */
@@ -22,7 +28,6 @@
     #root {
       height: auto;
       min-height: 100dvh;
-      padding: 16px;
     }
   }
 
@@ -42,7 +47,8 @@
   }
 
   button,
-  input {
+  input,
+  select {
     padding: 2px 8px;
     border: 1px solid;
   }

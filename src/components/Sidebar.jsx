@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router'
 import { STACKS, getProjectsForStack } from '../data/objectives.js'
 
-const CATEGORIES = [{ id: 'all', label: 'All projects', to: '/' }, ...STACKS.map((s) => ({ ...s, to: `/stack/${s.id}` }))]
+const CATEGORIES = [{ id: 'all', label: 'All projects', to: '/projects' }, ...STACKS.map((s) => ({ ...s, to: `/stack/${s.id}` }))]
 
 // NavLink adds the `active` class to the link for the current page.
 export default function Sidebar() {
