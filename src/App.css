@@ -88,6 +88,25 @@
     margin-top: auto;
   }
 
+  /* Difficulty is a tab sitting on top of the card's top-right corner, sharing its top border */
+  .project-card {
+    position: relative;
+    /* Room for the tab above, so it doesn't overlap the row above */
+    margin-top: 30px;
+  }
+
+  .difficulty-badge {
+    position: absolute;
+    bottom: 100%;
+    right: 16px;
+    padding: 2px 8px;
+    border: 2px solid #000;
+    border-bottom: 0;
+    background: #fff;
+    font-weight: bold;
+    line-height: 24px;
+  }
+
   /* Stack label (Laravel, Django, Node, React) in its own small bordered box */
   .stack-badge {
     padding: 2px 8px;

@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import { STACKS, getProjectsForStack } from '../data/objectives.js'
+import { DIFFICULTIES, STACKS, getProjectsForStack } from '../data/objectives.js'
 import StackBadge from './StackBadge.jsx'
 
 export default function ProjectList({ stackId = 'all' }) {
@@ -20,6 +20,11 @@ export default function ProjectList({ stackId = 'all' }) {
       <section className="project-grid">
         {projects.map((o) => (
           <Link key={o.id} to={`/projects/${o.id}`} className="project-card">
+            {o.difficulty && (
+              <span className="difficulty-badge" data-difficulty={o.difficulty}>
+                {DIFFICULTIES.find((d) => d.id === o.difficulty).label}
+              </span>
+            )}
             <h2>{o.title}</h2>
             <p>{o.description}</p>
             <StackBadge stackId={o.stack} />

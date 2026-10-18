@@ -58,6 +58,13 @@ const migration = (table) => file(new RegExp(`database/migrations/.*create_${tab
 const djangoSetup = (app) => [named('manage\\.py'), file(new RegExp(`(^|/)${app}/apps\\.py$`))]
 const MAP_EMBED = code(`${BLADE}|html|jsx|tsx`, /<iframe[^>]*(google\.com\/maps|openstreetmap)/)
 
+// Difficulty shown on the project cards. A project's `difficulty` is one of these ids.
+export const DIFFICULTIES = [
+  { id: 'easy', label: 'Easy' },
+  { id: 'medium', label: 'Medium' },
+  { id: 'hard', label: 'Hard' },
+]
+
 // Skills: each step trains one. They're the rings on the project page and the categories of the "All objectives" list.
 const COMPREHENSION = 'comprehension'
 const SEMANTIC_HTML = 'semantic-html'
@@ -77,6 +84,7 @@ export const SKILLS = [
 //     title: 'Build a ...',
 //     description: 'One sentence.', // optional, the page shows a placeholder without it
 //     stack: 'react',               // one of the STACKS ids
+//     difficulty: 'easy',           // optional: easy, medium or hard, shown on the card
 //     requirements: ['...'],        // optional, extra requirements on top of the stack's
 //     docLinks: [doc('Label', 'https://...')], // optional, extra docs on top of the stack's
 //     steps: [                      // optional, the page shows a placeholder without it
@@ -90,6 +98,7 @@ export const OBJECTIVES = [
     title: 'Build a portfolio',
     description: 'A single-page portfolio built from React components.',
     stack: 'react',
+    difficulty: 'easy',
     steps: [
       { id: 'setup', title: 'Create a React app with Vite', tip: 'Run npm create vite@latest and pick the React template.', check: REACT_SETUP, skill: COMPREHENSION },
       { id: 'hero', title: 'Build a Hero component with your name and role', tip: 'Keep it to one sentence. Visitors decide in seconds whether to keep reading.', check: component('Hero'), skill: SEMANTIC_HTML },
@@ -107,6 +116,7 @@ export const OBJECTIVES = [
     title: 'Build a portfolio',
     description: 'A server-rendered portfolio with Node and Express.',
     stack: 'node',
+    difficulty: 'medium',
     requirements: ['An email account with SMTP access (for Nodemailer)'],
     docLinks: [doc('Nodemailer', 'https://nodemailer.com/')],
     steps: [
@@ -127,6 +137,7 @@ export const OBJECTIVES = [
     title: 'Create an online store',
     description: 'Products in a database, a session cart and checkout with Laravel.',
     stack: 'laravel',
+    difficulty: 'hard',
     requirements: ['A Stripe account (test mode is free)'],
     docLinks: [doc('Laravel Cashier', 'https://laravel.com/docs/billing')],
     steps: [
@@ -145,6 +156,7 @@ export const OBJECTIVES = [
     title: 'Create an online store',
     description: 'Manage products in the Django admin and sell them with a session cart.',
     stack: 'django',
+    difficulty: 'hard',
     steps: [
       { id: 'setup', title: 'Start a Django project and a shop app', tip: 'django-admin startproject, then python manage.py startapp shop.', check: djangoSetup('shop'), skill: COMPREHENSION },
       { id: 'model', title: 'Add a Product model and run migrations', tip: 'Use DecimalField for prices, never FloatField.', check: [code('py', /class\s+Product\s*\(/), file(/migrations\/0001_initial\.py$/)], skill: COMPREHENSION },
@@ -161,6 +173,7 @@ export const OBJECTIVES = [
     title: 'Create an online store',
     description: 'An Express server with product pages, a cart and Stripe checkout.',
     stack: 'node',
+    difficulty: 'hard',
     requirements: ['A Stripe account (test mode is free)'],
     docLinks: [doc('Stripe Checkout', 'https://docs.stripe.com/payments/checkout'), doc('express-session', 'https://github.com/expressjs/session')],
     steps: [
@@ -178,6 +191,7 @@ export const OBJECTIVES = [
     title: 'Create an online store',
     description: 'A React front end with a product grid, cart and checkout form.',
     stack: 'react',
+    difficulty: 'hard',
     steps: [
       { id: 'setup', title: 'Create a React app with Vite', tip: 'Run npm create vite@latest and pick the React template.', check: REACT_SETUP, skill: COMPREHENSION },
       { id: 'catalog', title: 'Render a product grid from an array', tip: 'Keep products in a data file and map them into a ProductCard component.', check: component('ProductCard'), skill: COMPREHENSION },
@@ -195,6 +209,7 @@ export const OBJECTIVES = [
     title: 'Launch a landing page',
     description: 'One React page that convinces visitors to take a single action.',
     stack: 'react',
+    difficulty: 'easy',
     docLinks: [doc('Lighthouse', 'https://developer.chrome.com/docs/lighthouse/overview')],
     steps: [
       { id: 'setup', title: 'Create a React app with Vite', tip: 'Run npm create vite@latest and pick the React template.', check: REACT_SETUP, skill: COMPREHENSION },
@@ -213,6 +228,7 @@ export const OBJECTIVES = [
     title: 'Build a blog',
     description: 'Posts stored in a database and rendered with Blade.',
     stack: 'laravel',
+    difficulty: 'medium',
     docLinks: [doc('Starter kits', 'https://laravel.com/docs/starter-kits')],
     steps: [
       { id: 'setup', title: 'Create a Laravel project', tip: 'composer create-project laravel/laravel blog, then php artisan serve.', check: LARAVEL_SETUP, skill: COMPREHENSION },
@@ -230,6 +246,7 @@ export const OBJECTIVES = [
     title: 'Build a blog',
     description: 'Write posts in the Django admin and publish them with templates.',
     stack: 'django',
+    difficulty: 'medium',
     docLinks: [doc('django-taggit', 'https://django-taggit.readthedocs.io/'), doc('Feeds', 'https://docs.djangoproject.com/en/stable/ref/contrib/syndication/')],
     steps: [
       { id: 'setup', title: 'Start a Django project and a blog app', tip: 'django-admin startproject, then python manage.py startapp blog.', check: djangoSetup('blog'), skill: COMPREHENSION },
@@ -247,6 +264,7 @@ export const OBJECTIVES = [
     title: 'Build a blog',
     description: 'Markdown files turned into pages by an Express server.',
     stack: 'node',
+    difficulty: 'medium',
     docLinks: [doc('marked', 'https://marked.js.org/'), doc('gray-matter', 'https://github.com/jonschlinkert/gray-matter')],
     steps: [
       { id: 'setup', title: 'Set up Express with a template engine', tip: 'EJS is the simplest: app.set("view engine", "ejs").', check: [pkg('express'), code(JS, /set\(\s*["']view engine/)], skill: COMPREHENSION },
@@ -263,6 +281,7 @@ export const OBJECTIVES = [
     title: 'Build a blog',
     description: 'A React blog with Markdown posts and client-side routing.',
     stack: 'react',
+    difficulty: 'medium',
     requirements: ['GitHub Discussions turned on for your repository (for Giscus)'],
     docLinks: [doc('react-markdown', 'https://github.com/remarkjs/react-markdown'), doc('Giscus', 'https://giscus.app/')],
     steps: [
@@ -282,6 +301,7 @@ export const OBJECTIVES = [
     title: 'Create a business website',
     description: 'A multi-page site with a contact form and bookings in Laravel.',
     stack: 'laravel',
+    difficulty: 'medium',
     requirements: ['An email account with SMTP access (for the contact form)'],
     docLinks: [doc('Laravel Mail', 'https://laravel.com/docs/mail')],
     steps: [
@@ -299,6 +319,7 @@ export const OBJECTIVES = [
     title: 'Create a business website',
     description: 'Pages from templates, with services you edit in the Django admin.',
     stack: 'django',
+    difficulty: 'medium',
     docLinks: [doc('Sending email', 'https://docs.djangoproject.com/en/stable/topics/email/')],
     steps: [
       { id: 'setup', title: 'Start a Django project and a pages app', tip: 'django-admin startproject, then python manage.py startapp pages.', check: djangoSetup('pages'), skill: COMPREHENSION },
@@ -315,6 +336,7 @@ export const OBJECTIVES = [
     title: 'Create a business website',
     description: 'A multi-page React site with routing and a contact section.',
     stack: 'react',
+    difficulty: 'easy',
     steps: [
       { id: 'setup', title: 'Create a React app with Vite', tip: 'Run npm create vite@latest and pick the React template.', check: REACT_SETUP, skill: COMPREHENSION },
       { id: 'routing', title: 'Add pages with React Router', tip: 'NavLink adds an active class to the link for the current page.', check: [pkg('react-router(-dom)?'), code(JSX, /<NavLink/)], skill: COMPREHENSION },
