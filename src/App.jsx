@@ -1,4 +1,5 @@
 import { Link, Route, Routes, useParams } from 'react-router'
+import JsLinterPage from './components/JsLinterPage.jsx'
 import ProjectList from './components/ProjectList.jsx'
 import ProjectPage from './components/ProjectPage.jsx'
 import Sidebar from './components/Sidebar.jsx'
@@ -27,6 +28,12 @@ function ProjectRoute() {
   return project ? <ProjectPage key={project.id} project={project} /> : <NotFound />
 }
 
+function JsLinterRoute() {
+  const { projectId } = useParams()
+  const project = OBJECTIVES.find((o) => o.id === projectId)
+  return project ? <JsLinterPage project={project} /> : <NotFound />
+}
+
 function NotFound() {
   return (
     <main className="not-found">
@@ -48,6 +55,7 @@ function App() {
         <Route path="/" element={<MainPage />} />
         <Route path="/stack/:stackId" element={<StackRoute />} />
         <Route path="/projects/:projectId" element={<ProjectRoute />} />
+        <Route path="/projects/:projectId/js-linter" element={<JsLinterRoute />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
