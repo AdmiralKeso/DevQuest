@@ -23,7 +23,7 @@ export default function StepList({ steps, completed, syncing, onToggle, pageSize
                 <input
                   type="checkbox"
                   checked={done}
-                  disabled={auto}
+                  disabled={true}
                   onChange={() => onToggle(step.id)}
                 />
                 <span>{step.title}</span>
