@@ -50,7 +50,7 @@ Project page template
 - Progress bar (now the "All objectives progress" circle)
 
 Developing
-- No emotes: no emoji or icon symbols anywhere in the UI or data
+- No emotes: no emoji or icon symbols anywhere in the UI or data if not explicitly told so.
 - Simple design: the user styles the app themselves. CSS is layout only (no colors, shadows, rounded corners, animations). Keep class names on elements and use modifier classes (.active, .done) for state so they can be styled later.
 
 Tech
