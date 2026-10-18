@@ -13,11 +13,17 @@ export default function ProjectLink({ project }) {
     setLinking(false)
   }
 
+  // While linking, the box's contents are hidden (keeping its size) and one spinner fills the whole box.
+  const hiddenWhileLinking = linking ? 'invisible' : ''
+
   return (
-    <section className={`project-link ${repo ? 'linked' : 'none'}`}>
+    <section
+      className={`project-link relative ${repo ? 'linked' : 'none'} ${linking ? 'linking' : ''}`}
+      aria-busy={linking}
+    >
       {!repo && (
         <>
-          <form className="github-form" onSubmit={submit}>
+          <form className={`github-form ${hiddenWhileLinking}`} onSubmit={submit}>
             <input
               type="url"
               value={url}
@@ -27,11 +33,21 @@ export default function ProjectLink({ project }) {
               required
             />
             <button type="submit" disabled={linking}>
-              {linking ? 'Linking…' : 'Link to project'}
+              Link to project
             </button>
           </form>
-          <p className="link-note">Public GitHub repositories only.</p>
+          <p className={`link-note ${hiddenWhileLinking}`}>Public GitHub repositories only.</p>
         </>
+      )}
+
+      {linking && (
+        <div className="absolute inset-0 flex items-center justify-center p-2">
+          <span
+            className="loading-spinner aspect-square h-1/2 animate-spin rounded-full border-4 border-current border-t-transparent"
+            role="status"
+            aria-label="Linking"
+          />
+        </div>
       )}
 
       {repo && (
@@ -62,7 +78,7 @@ export default function ProjectLink({ project }) {
         </>
       )}
 
-      {error && <p className="link-error">{error}</p>}
+      {error && <p className={`link-error ${hiddenWhileLinking}`}>{error}</p>}
     </section>
   )
 }
