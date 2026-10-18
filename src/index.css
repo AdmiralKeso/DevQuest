@@ -1,22 +1,53 @@
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-}
+@import 'tailwindcss';
 
-/* The app fills the window exactly; pages scroll inside their own areas, not the whole page. */
-#root {
-  display: flex;
-  flex-direction: column;
-  height: 100dvh;
-  padding: 16px 24px;
-  box-sizing: border-box;
-}
+/*
+  Layers, lowest to highest priority: base (here), components (App.css), utilities (Tailwind classes).
+  So a Tailwind class on an element always wins over the rules in these files.
+*/
+@layer base {
+  body {
+    font-family: system-ui, sans-serif;
+  }
 
-/* Narrow screens can't fit everything, so the page scrolls normally there. */
-@media (max-width: 720px) {
+  /* The app fills the window exactly; pages scroll inside their own areas, not the whole page. */
   #root {
-    height: auto;
-    min-height: 100dvh;
-    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    padding: 16px 24px;
+  }
+
+  /* Narrow screens can't fit everything, so the page scrolls normally there. */
+  @media (max-width: 720px) {
+    #root {
+      height: auto;
+      min-height: 100dvh;
+      padding: 16px;
+    }
+  }
+
+  /* Plain defaults so the page stays readable after Tailwind's reset. Replace them when styling. */
+  h1 {
+    font-size: 2em;
+    font-weight: bold;
+  }
+
+  h2 {
+    font-size: 1.5em;
+    font-weight: bold;
+  }
+
+  a {
+    text-decoration: underline;
+  }
+
+  button,
+  input {
+    padding: 2px 8px;
+    border: 1px solid;
+  }
+
+  button:not(:disabled) {
+    cursor: pointer;
   }
 }
