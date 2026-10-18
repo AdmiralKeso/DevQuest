@@ -168,6 +168,42 @@
     border: 2px solid;
   }
 
+  /* Requirements and Docs: small boxes in the panel under Link to project, label above the wrapping items */
+  .project-page .requirements,
+  .project-page .docs {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    gap: 4px;
+    padding: 8px 12px;
+    font-size: 0.85em;
+  }
+
+  .project-page .requirements h2,
+  .project-page .docs h2 {
+    margin: 0;
+    font-size: 1em;
+    white-space: nowrap;
+  }
+
+  /* Items flow as one line of text separated by dots, wrapping like a sentence */
+  .requirement-list,
+  .doc-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .requirement-list li,
+  .doc-list li {
+    display: inline;
+  }
+
+  .requirement-list li + li::before,
+  .doc-list li + li::before {
+    content: ' · ';
+  }
+
   /* All objectives: title and category header stay put, the category list below them scrolls */
   .objectives {
     display: flex;
@@ -255,6 +291,14 @@
   .github-form input {
     flex: 1;
     min-width: 0;
+  }
+
+  /* "Js Linter" is a link (it changes page) that looks like the other buttons */
+  .js-linter-link {
+    display: inline-block;
+    padding: 2px 8px;
+    border: 1px solid;
+    text-decoration: none;
   }
 
   .link-actions {

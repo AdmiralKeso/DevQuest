@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
-import { SKILLS, STACKS } from '../data/objectives.js'
+import { COMMON_DOC_LINKS, COMMON_REQUIREMENTS, SKILLS, STACKS } from '../data/objectives.js'
 import { useProjectLink } from '../hooks/useProjectLink.js'
 import { useLocalStorage } from '../hooks/useLocalStorage.js'
 import { detectSteps, isAutoTracked } from '../sync/detectSteps.js'
@@ -39,8 +39,13 @@ export default function ProjectPage({ project }) {
   const link = useProjectLink(project.id)
 
   const steps = project.steps ?? []
+  // Everything needed before starting: common to all projects, then the stack's, then this project's extras.
+  const requirements = [
+    ...new Set([...COMMON_REQUIREMENTS, ...(stack.requirements ?? []), ...(project.requirements ?? [])]),
+  ]
+  // Docs in the same order: common, the stack's, then this project's tools.
+  const docLinks = [...COMMON_DOC_LINKS, ...(stack.docLinks ?? []), ...(project.docLinks ?? [])]
   const tracked = steps.filter(isAutoTracked)
-  const manual = steps.filter((s) => !isAutoTracked(s))
   const syncing = link.repo !== null && link.files !== null
   const doneCount = steps.filter((s) => completed.includes(s.id)).length
   const percent = steps.length === 0 ? 0 : Math.round((doneCount / steps.length) * 100)
@@ -129,7 +134,6 @@ export default function ProjectPage({ project }) {
           ← {stack.label} projects
         </Link>
         <h1>{project.title}</h1>
-        <p>{project.description || 'No description yet.'}</p>
         <p className="project-meta">
           <StackBadge stackId={stack.id} />
           <a href={stack.docs} target="_blank" rel="noreferrer">
@@ -217,10 +221,33 @@ export default function ProjectPage({ project }) {
         <aside className="project-panel">
           <ProjectLink project={{ ...link, unlink }} />
 
-          <section className="todo">
-            <h2>To do</h2>
-            <p className="section-note">Not detectable from files, tick these off yourself.</p>
-            <StepList {...listProps} steps={manual} emptyText="Nothing to tick off by hand." />
+          <section className="requirements">
+            <h2>Requirements:</h2>
+            <ul className="requirement-list">
+              {requirements.map((requirement) => (
+                <li key={requirement}>{requirement}</li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="docs">
+            <h2>Docs:</h2>
+            <ul className="doc-list">
+              {docLinks.map((docLink) => (
+                <li key={docLink.url}>
+                  <a href={docLink.url} target="_blank" rel="noreferrer">
+                    {docLink.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="todo static-analysis">
+            <h2>Static Analysis</h2>
+            <Link to={`/projects/${project.id}/js-linter`} className="js-linter-link">
+              Js Linter
+            </Link>
           </section>
         </aside>
       </div>
