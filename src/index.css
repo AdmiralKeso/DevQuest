@@ -1,5 +1,10 @@
 @import 'tailwindcss';
 
+/* PT Serif (loaded from Google Fonts in index.html) is the font for the whole app, including Tailwind's font-sans */
+@theme {
+  --font-sans: 'PT Serif', Georgia, serif;
+}
+
 /*
   Layers, lowest to highest priority: base (here), components (App.css), utilities (Tailwind classes).
   So a Tailwind class on an element always wins over the rules in these files.
@@ -17,7 +22,7 @@
   }
 
   body {
-    font-family: system-ui, sans-serif;
+    font-family: var(--font-sans);
   }
 
   /* The app fills the window exactly; pages scroll inside their own areas, not the whole page. */
