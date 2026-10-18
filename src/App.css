@@ -195,19 +195,34 @@
   overflow-y: auto;
 }
 
-.folder-sync {
+.project-link {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
 }
 
-.folder-sync p,
+.project-link p,
 .section-note {
   margin: 0 0 8px;
 }
 
-.folder-actions {
+.project-link a {
+  overflow-wrap: anywhere;
+}
+
+.github-form {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.github-form input {
+  flex: 1;
+  min-width: 0;
+}
+
+.link-actions {
   display: flex;
   gap: 8px;
 }

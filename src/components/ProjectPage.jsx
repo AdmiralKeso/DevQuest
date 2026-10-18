@@ -1,10 +1,10 @@
 import { useCallback, useEffect } from 'react'
 import { Link } from 'react-router'
 import { STACKS } from '../data/objectives.js'
-import { useLinkedFolder } from '../hooks/useLinkedFolder.js'
+import { useProjectLink } from '../hooks/useProjectLink.js'
 import { useLocalStorage } from '../hooks/useLocalStorage.js'
 import { detectSteps, isAutoTracked } from '../sync/detectSteps.js'
-import FolderSync from './FolderSync.jsx'
+import ProjectLink from './ProjectLink.jsx'
 import StackBadge from './StackBadge.jsx'
 import StatCircle from './StatCircle.jsx'
 import StepList from './StepList.jsx'
@@ -38,27 +38,27 @@ const sameIds = (a, b) => a.length === b.length && a.every((id) => b.includes(id
 export default function ProjectPage({ project }) {
   const stack = STACKS.find((s) => s.id === project.stack)
   const [completed, updateCompleted] = useProgress(project.id)
-  const folder = useLinkedFolder(project.id)
+  const link = useProjectLink(project.id)
 
   const steps = project.steps ?? []
   const tracked = steps.filter(isAutoTracked)
   const manual = steps.filter((s) => !isAutoTracked(s))
-  const syncing = folder.status === 'linked' && folder.files !== null
+  const syncing = link.repo !== null && link.files !== null
   const doneCount = steps.filter((s) => completed.includes(s.id)).length
   const percent = steps.length === 0 ? 0 : Math.round((doneCount / steps.length) * 100)
 
-  // While a folder is linked, auto-tracked steps follow the files; manual steps are left alone.
-  // The result is saved, so progress still shows after the folder is unlinked.
+  // While a repository is linked, auto-tracked steps follow its files; manual steps are left alone.
+  // The result is saved, so progress still shows after the repository is unlinked.
   useEffect(() => {
     if (!syncing) return
     const projectSteps = project.steps ?? []
-    const detected = detectSteps(projectSteps, folder.files)
+    const detected = detectSteps(projectSteps, link.files)
     const autoIds = projectSteps.filter(isAutoTracked).map((s) => s.id)
     updateCompleted((current) => {
       const next = [...current.filter((id) => !autoIds.includes(id)), ...detected]
       return sameIds(next, current) ? current : next
     })
-  }, [syncing, folder.files, project, updateCompleted])
+  }, [syncing, link.files, project, updateCompleted])
 
   function toggleStep(stepId) {
     updateCompleted((current) =>
@@ -105,7 +105,7 @@ export default function ProjectPage({ project }) {
 
           <section className="objectives">
             <h2>All objectives</h2>
-            <p className="section-note">Ticked off automatically when you link your project folder.</p>
+            <p className="section-note">Ticked off automatically when you link your GitHub repository.</p>
             <StepList
               {...listProps}
               steps={tracked}
@@ -116,7 +116,7 @@ export default function ProjectPage({ project }) {
         </div>
 
         <aside className="project-panel">
-          <FolderSync folder={folder} />
+          <ProjectLink project={link} />
 
           <section className="todo">
             <h2>To do</h2>
