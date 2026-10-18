@@ -1,6 +1,6 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
-import { STACKS } from '../data/objectives.js'
+import { SKILLS, STACKS } from '../data/objectives.js'
 import { useProjectLink } from '../hooks/useProjectLink.js'
 import { useLocalStorage } from '../hooks/useLocalStorage.js'
 import { detectSteps, isAutoTracked } from '../sync/detectSteps.js'
@@ -8,8 +8,6 @@ import ProjectLink from './ProjectLink.jsx'
 import StackBadge from './StackBadge.jsx'
 import StatCircle from './StatCircle.jsx'
 import StepList from './StepList.jsx'
-
-const OBJECTIVES_PER_PAGE = 5
 
 // Progress for every project is kept in one object: { [projectId]: [completed step ids] }
 const asObject = (saved) => (saved && typeof saved === 'object' && !Array.isArray(saved) ? saved : {})
@@ -46,6 +44,52 @@ export default function ProjectPage({ project }) {
   const syncing = link.repo !== null && link.files !== null
   const doneCount = steps.filter((s) => completed.includes(s.id)).length
   const percent = steps.length === 0 ? 0 : Math.round((doneCount / steps.length) * 100)
+
+  // Skill rings: the share of each skill's steps (tracked and to do) that are done.
+  const skillStats = SKILLS.map((skill) => {
+    const skillSteps = steps.filter((s) => s.skill === skill.id)
+    const done = skillSteps.filter((s) => completed.includes(s.id)).length
+    return { ...skill, total: skillSteps.length, done }
+  })
+
+  // "All objectives" lists every category (skill) in one scrolling list. The category header and the
+  // skill rings scroll to a category; the header highlights the one in view. Tracked steps without a skill go in "Other".
+  const categories = [
+    ...SKILLS.map((skill) => ({ ...skill, steps: tracked.filter((s) => s.skill === skill.id) })),
+    { id: 'other', label: 'Other', steps: tracked.filter((s) => !SKILLS.some((skill) => skill.id === s.skill)) },
+  ].filter((c) => c.steps.length > 0)
+  const listRef = useRef(null)
+  const [visibleCategory, setVisibleCategory] = useState(null)
+  const activeCategory = visibleCategory ?? categories[0]?.id
+
+  const sectionOf = (categoryId) => listRef.current?.querySelector(`[data-category="${categoryId}"]`)
+
+  // While a click-started scroll is moving, scroll events don't change the highlight, so a category near the
+  // bottom (which can't reach the top of the list) stays highlighted instead of jumping to the last one.
+  const clickScroll = useRef({ active: false, timer: null })
+
+  function scrollToCategory(categoryId) {
+    const list = listRef.current
+    const section = sectionOf(categoryId)
+    if (!list || !section) return
+    clearTimeout(clickScroll.current.timer)
+    clickScroll.current = { active: true, timer: setTimeout(() => (clickScroll.current.active = false), 800) }
+    list.scrollTo({ top: section.offsetTop, behavior: 'smooth' })
+    setVisibleCategory(categoryId)
+  }
+
+  // The category in view is the last one whose heading has scrolled to (or past) the top of the list.
+  // Section positions are relative to the list (it is position: relative in App.css).
+  function updateVisibleCategory() {
+    const list = listRef.current
+    if (!list || clickScroll.current.active) return
+    const top = list.scrollTop + 8
+    const atBottom = list.scrollTop + list.clientHeight >= list.scrollHeight - 2
+    const current = atBottom
+      ? categories.at(-1)
+      : categories.findLast((c) => (sectionOf(c.id)?.offsetTop ?? Infinity) <= top)
+    setVisibleCategory(current?.id ?? categories[0]?.id ?? null)
+  }
 
   // While a repository is linked, auto-tracked steps follow its files; manual steps are left alone.
   useEffect(() => {
@@ -99,14 +143,22 @@ export default function ProjectPage({ project }) {
           <section className="stats">
             <StatCircle
               className="stat-progress"
-              label="All objectives progress"
+              label={project.title}
               value={`${percent}%`}
-              detail={`${doneCount} of ${steps.length} steps`}
             />
-            {/* Placeholders until these stats are defined. */}
-            <StatCircle className="stat-knowledge" label="Knowledge" value="-" />
-            <StatCircle className="stat-redundant" label="Redundant" value="-" />
-            <StatCircle className="stat-complexity" label="Complexity" value="-" />
+            {skillStats.map((skill) => {
+              const hasCategory = categories.some((c) => c.id === skill.id)
+              return (
+                <StatCircle
+                  key={skill.id}
+                  className={`stat-${skill.label.toLowerCase().replaceAll(' ', '-')}`}
+                  label={skill.label}
+                  value={skill.total ? `${Math.round((skill.done / skill.total) * 100)}%` : '-'}
+                  onClick={hasCategory ? () => scrollToCategory(skill.id) : undefined}
+                  selected={hasCategory && activeCategory === skill.id}
+                />
+              )
+            })}
           </section>
           {steps.length > 0 && doneCount === steps.length && (
             <p className="complete">Project complete!</p>
@@ -115,12 +167,50 @@ export default function ProjectPage({ project }) {
           <section className="objectives">
             <h2>All objectives</h2>
             <p className="section-note">Ticked off automatically when you link your GitHub repository.</p>
-            <StepList
-              {...listProps}
-              steps={tracked}
-              pageSize={OBJECTIVES_PER_PAGE}
-              emptyText="No objectives that can be tracked yet."
-            />
+
+            {categories.length === 0 && (
+              <p className="placeholder">No objectives that can be tracked yet.</p>
+            )}
+
+            {categories.length > 0 && (
+              <>
+                <nav className="category-nav" aria-label="Categories">
+                  <ul>
+                    {categories.map((c) => (
+                      <li key={c.id}>
+                        <button
+                          type="button"
+                          className={`category-link ${c.id === activeCategory ? 'active' : ''}`}
+                          aria-current={c.id === activeCategory}
+                          onClick={() => scrollToCategory(c.id)}
+                        >
+                          {c.label}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+
+                {/* Only this list scrolls; the title and category header above stay in place. */}
+                <div className="objectives-scroll" ref={listRef} onScroll={updateVisibleCategory}>
+                  {categories.map((c) => {
+                    const done = c.steps.filter((s) => completed.includes(s.id)).length
+                    return (
+                      <section key={c.id} className={`objective-category category-${c.id}`} data-category={c.id}>
+                        <h3 className="category-title">
+                          {c.label}
+                          <span className="category-progress">
+                            {' '}
+                            · {done} of {c.steps.length} done
+                          </span>
+                        </h3>
+                        <StepList {...listProps} steps={c.steps} />
+                      </section>
+                    )
+                  })}
+                </div>
+              </>
+            )}
           </section>
         </div>
 

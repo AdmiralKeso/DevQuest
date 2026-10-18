@@ -150,6 +150,12 @@
     height: clamp(110px, 20vh, 160px);
   }
 
+  /* Smaller, tighter labels so two-word skills fit inside the circle on short screens */
+  .stat-label {
+    font-size: 0.85em;
+    line-height: 1.2;
+  }
+
   .complete {
     flex-shrink: 0;
     margin: 0;
@@ -162,21 +168,48 @@
     border: 2px solid;
   }
 
-  /* Boxes scroll inside themselves if their content doesn't fit */
+  /* All objectives: title and category header stay put, the category list below them scrolls */
   .objectives {
     display: flex;
     flex: 1;
     flex-direction: column;
     min-height: 0;
+  }
+
+  .category-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+    margin: 0 0 8px;
+    padding: 0 0 8px;
+    list-style: none;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .category-link {
+    padding: 0;
+    border: 0;
+  }
+
+  .category-link.active {
+    font-weight: bold;
+  }
+
+  /* position: relative so category positions are measured from the top of this list */
+  .objectives-scroll {
+    position: relative;
+    flex: 1;
+    min-height: 0;
     overflow-y: auto;
   }
 
-  .pager {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-    margin-top: auto;
+  .objective-category + .objective-category {
+    margin-top: 16px;
+  }
+
+  .category-title {
+    margin: 0 0 4px;
+    font-weight: bold;
   }
 
   .project-panel {
@@ -256,7 +289,7 @@
     }
 
     .app-layout > main,
-    .objectives,
+    .objectives-scroll,
     .project-panel > .todo {
       overflow-y: visible;
     }
