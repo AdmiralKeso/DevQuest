@@ -7,7 +7,7 @@ Users start with a goal instead of a blank canvas.
 - Launch a landing page
 - Build a blog
 - Create a business website
-- Easy, Medium, Hard (removed for now, will be added back later)
+- Easy, Medium, Hard: each project has an optional `difficulty` (`DIFFICULTIES` in `objectives.js`), shown as a bold tab sitting on top of the card's top-right corner (`.difficulty-badge` with `data-difficulty`)
 
 Categories (sidebar on the left) are tech stacks:
 - Laravel, Django, Node, React
@@ -15,14 +15,15 @@ Categories (sidebar on the left) are tech stacks:
 - The same goal can have one card per stack with the same title (e.g. "Build a portfolio" has `portfolio-react` and `portfolio-node`)
 - Picking a stack shows its projects; "All projects" shows everything
 - Clicking a card only routes to the project's own page. Nothing opens or expands on the list itself.
+- Cards look like the main menu tiles: white with a 2px black border, title, description, and the stack badge (also with a 2px border) at the bottom.
 - The sidebar is only on the projects page (`/projects` and `/stack/:stackId`), not on project pages.
 
 Main menu
 - `/` is a board of white tiles with a 2px black border on a white background with `src/assets/images/attachments/attachment1.png` (a sand wave) pinned to the top-right corner (cover; on phones scaled to the width) and `attachment2.png` (developer illustration) in the bottom-left corner, one `--menu-gap` in from the edges, up to 36% of the width / 520px (55% on phones); both sit behind the tiles; filling the window, from the user's sketch: three columns of different widths whose tiles split at different heights, so they are uneven but fit together.
-- One gap (`--menu-gap`) between all tiles and above/below the board; the left and right edges use the universal `--side-margin`. This page has real colours by request; other pages stay layout-only.
-- Tiles: left Continue (big) + New Project; middle What is DevQuest (About) + How to play + Achievements; right Profile + Docs. On phones they stack in one column. Image tiles (Continue, New Project, Useful links, Achievements, Profile, Instructions) have a light orange arrow along the bottom with the label, half the tile's width from the left and pointing right; on hover and keyboard focus it slides across to the right edge and fades to orange. When the page loads the top tile of each column slides down from above and the others slide up from below, column by column (both off with reduced motion).
+- One gap (`--menu-gap`) between all tiles and above/below the board; the left and right edges use `--header-side-margin`, so the board lines up with the header on every page. This page, the project cards and the shared header have real colours by request; other pages stay layout-only.
+- Tiles: left Continue (big) + New Project; middle What is DevQuest (About) + How to play + Achievements; right Profile + Docs. On phones they stack in one column. Image tiles (Continue, New Project, Useful links, Achievements, Profile, Instructions) have a light orange arrow along the bottom with a Font Awesome icon (loaded from cdnjs in `index.html`) and the label, half the tile's width from the left and pointing right; on hover and keyboard focus it slides across to the right edge and fades to orange. When the page loads the top tile of each column slides down from above and the others slide up from below, column by column (both off with reduced motion).
 - Continue opens the last opened project, or the project list ("Start your first quest") when none has been opened yet.
-- Header above the tiles (same gap above and below): the logo (`src/assets/images/logo/logodevquest.png`) on the left, then the "DevQuest" title with the tagline "Pick a quest. Build a real website. Level up your skills." under it, both on one left edge; a nav justified to the right (Log in, Sign up, Docs, About, then a language dropdown; nav links have no underline, only Sign up has a border), lined up with the right edge of the tiles and kept on the right when it wraps on phones. The small site header used on other pages is hidden here.
+- Header (`src/components/SiteHeader.jsx`, the same on every page and in the same place): the logo (`src/assets/images/logo/logodevquest.png`) on the left, then the "DevQuest" title with the tagline "Pick a quest. Build a real website. Level up your skills." under it, both on one left edge; a nav justified to the right (Docs, About, then a language dropdown; nav links have no underline), kept on the right when it wraps on phones. On the main menu it sits inside the board (the title is the page's h1); on other pages the logo and title link back to the menu.
 - Footer under the tiles (same gap above and below): "© <year> DevQuest · Terms and conditions" (link to /terms) and "Learn web development one quest at a time".
 
 Project page template
@@ -31,7 +32,7 @@ Project page template
   - Right panel: "Link to project" (GitHub URL field and button, plus "Public GitHub repositories only."), then a small "Requirements" box (what you need before starting, as one dot-separated line), then a small "Docs" box (documentation links, same style), then "Static Analysis" (just a "Js Linter" button to the project's Js Linter page), which takes the rest of the height
 - Skills (categories): every step has a `skill` (Code Comprehension, Semantic HTML, Defensive Programming or Responsive; deploy steps have none). Each skill ring shows the % of that skill's steps that are done (tracked and to do), or "-" when the project has no steps for it.
 - Rings and "All objectives" are linked: clicking a category name in the header or a skill ring scrolls the list to that category, and the header and ring highlight the category in view (classes `.category-link.active`, `.stat-circle.selected`). Categories with no tracked steps are skipped, and tracked steps without a skill go in "Other".
-- Universal side margin: `--side-margin` in `src/index.css` sets the left and right margin of every page, including the main menu. Laptops get a small margin (3% of the width, 16-48px); on wider screens content stays at most `--content-max` (currently 1000px) wide and the rest becomes margin.
+- Universal page structure in `src/index.css`: `.site-header` (margin `--header-side-margin`, header at most `--header-max`, 1000px, wide) and `.page-content` around every page (margin `--side-margin`, content at most `--content-max`, 1600px, wide); `--menu-gap` above the header. Laptops get a small margin (3% of the width, 16-48px); on wider screens the rest becomes margin. On the main menu `.page-content.home` has no margin and the menu fills the window.
 - The app fills the browser window with no page scroll (`#root` is `100dvh`). Areas that can overflow (project list, All objectives, Static Analysis) scroll inside themselves. Below 720px wide the columns stack and the page scrolls normally.
 - Requirements = `COMMON_REQUIREMENTS` (Git, a public GitHub repository) + the stack's `requirements` + the project's optional `requirements` (e.g. a Stripe account for store payments), all in `objectives.js`.
 - Docs = `COMMON_DOC_LINKS` (MDN Web Docs) + the stack's `docLinks` + the project's optional `docLinks` (e.g. Stripe Checkout, Giscus), all in `objectives.js`. Links open in a new tab.
@@ -50,7 +51,8 @@ Project page template
 - Progress bar (now the "All objectives progress" circle)
 
 Developing
-- No emotes: no emoji or icon symbols anywhere in the UI or data if not explicitly told so.
+- No emotes: no emoji or icon symbols anywhere in the UI or data if not explicitly told so (the main menu tile icons were asked for).
+- Font: PT Serif from Google Fonts (linked in `index.html`), set as `--font-sans` in `@theme` in `src/index.css`.
 - Simple design: the user styles the app themselves. CSS is layout only (no colors, shadows, rounded corners, animations). Keep class names on elements and use modifier classes (.active, .done) for state so they can be styled later.
 
 Tech
@@ -64,10 +66,9 @@ Tech
 - Linked repositories are saved in localStorage, key `devquest.links`: `{ [projectId]: { owner, repo, branch, path } }`
 
 Routes
-- `/` main menu (tile board, no site header): Continue, New Project, What is DevQuest, How to play, Achievements, Profile, Docs
+- `/` main menu (tile board, header inside the board): Continue, New Project, What is DevQuest, How to play, Achievements, Profile, Docs
 - `/how-to-play`, `/docs`, `/about`, `/achievements`, `/profile` pages from the main menu (Achievements and Profile are empty placeholders for now)
 - `/terms` terms and conditions, linked from the main menu footer
-- `/login`, `/signup` from the main menu header nav (empty placeholders; there are no accounts yet)
 - `/projects` all projects
 - `/stack/:stackId` projects for one stack
 - `/projects/:projectId` project page (see Project page template)
@@ -76,16 +77,17 @@ Routes
 
 Structure
 - `src/data/objectives.js`: all content. STACKS (with requirements and docLinks), COMMON_REQUIREMENTS, COMMON_DOC_LINKS, SKILLS and OBJECTIVES (projects with `stack`, steps with tips and a `skill`). Add or change content here, not in components.
-- `src/App.jsx`: header (hidden on the main menu) and routes; `ProjectsPage` puts the sidebar next to the project list
-- `src/components/MainMenu.jsx`: the main menu tile board
+- `src/App.jsx`: site header (inside the board on the main menu), `.page-content` wrapper and routes; `ProjectsPage` puts the sidebar next to the project list
+- `src/components/pages/`: one component per page (MainMenu, HowToPlay, DocsPage, AboutPage, AchievementsPage, ProfilePage, TermsPage, ProjectPage, JsLinterPage); shared pieces stay in `src/components/`
+- `src/components/SiteHeader.jsx`: the header on every page (logo, title, tagline, nav)
+- `src/components/pages/MainMenu.jsx`: the main menu tile board
 - `src/components/InfoPage.jsx`: shared layout for How to play, Docs and About (back link to the menu, title, scrolling content)
-- `src/components/HowToPlay.jsx`, `DocsPage.jsx`, `AboutPage.jsx`, `AchievementsPage.jsx`, `ProfilePage.jsx`: the menu pages (Docs uses `GETTING_STARTED_DOC_LINKS` and each stack's `docLinks`; Achievements and Profile are empty for now)
-- `src/components/TermsPage.jsx`: terms and conditions (empty placeholder for now; the terms will be added later)
-- `src/components/LoginPage.jsx`, `SignupPage.jsx`: Log in and Sign up pages (empty placeholders until accounts are added)
+- `src/components/pages/HowToPlay.jsx`, `DocsPage.jsx`, `AboutPage.jsx`, `AchievementsPage.jsx`, `ProfilePage.jsx`: the menu pages (Docs uses `GETTING_STARTED_DOC_LINKS` and each stack's `docLinks`; Achievements and Profile are empty for now)
+- `src/components/pages/TermsPage.jsx`: terms and conditions (empty placeholder for now; the terms will be added later)
 - `src/components/LanguageSelect.jsx`: language dropdown in the main menu nav (remembers the choice; translations to be added)
 - `src/components/Sidebar.jsx`: tech stack links (no collapse for now)
-- `src/components/ProjectList.jsx`: project cards, each a link to its project page
-- `src/components/ProjectPage.jsx`: the project page template (sections with placeholders), saved progress; applies repository detection to auto-tracked steps
+- `src/components/ProjectList.jsx`: project cards (difficulty tab, title, description, stack badge), each a link to its project page
+- `src/components/pages/ProjectPage.jsx`: the project page template (sections with placeholders), saved progress; applies repository detection to auto-tracked steps
 - `src/components/StatCircle.jsx`: round stat with a value and label; a button when given `onClick` (skill rings)
 - `src/components/StepList.jsx`: step checklist (auto-tracked steps can only be ticked by the repository)
 - `src/components/ProjectLink.jsx`: "Link to project" box: GitHub URL form, or the linked repository with Check now / Unlink
@@ -93,9 +95,9 @@ Structure
 - `src/hooks/useCooldown.js`: short wait after an action before it can run again (used by the Link to project and Check now buttons)
 - `src/sync/readGitHub.js`: parses GitHub URLs, checks the repository exists, reads its files through the GitHub API (skipping installed/generated folders, caching unchanged files)
 - `src/sync/detectSteps.js`: matches step `check` rules (file path regex + optional content regex) against the files
-- `src/components/JsLinterPage.jsx`: Js Linter page for a project (empty placeholder; the linter will be added later)
+- `src/components/pages/JsLinterPage.jsx`: Js Linter page for a project (empty placeholder; the linter will be added later)
 - `src/components/StackBadge.jsx`: stack label with a `data-stack` attribute for per-stack styling
-- `src/App.css`: layout-only styles
+- `src/App.css`: layout styles (plus the colours asked for on the main menu, header and project cards)
 
 Commit rules.
 - Commit per feature, break it down in steps
