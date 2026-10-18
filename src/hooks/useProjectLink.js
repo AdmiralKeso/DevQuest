@@ -18,6 +18,7 @@ export function useProjectLink(projectId) {
   const [error, setError] = useState(null)
   const [scanRequest, setScanRequest] = useState(0)
   const state = useRef({})
+  const linking = useRef(false)
 
   const owner = repo?.owner
   const name = repo?.repo
@@ -70,13 +71,18 @@ export function useProjectLink(projectId) {
   }
 
   // Returns true when linked, so the form can keep the URL if it failed.
+  // Only one link request runs at a time; extra calls while it's running are ignored.
   async function link(url) {
+    if (linking.current) return false
+    linking.current = true
     try {
       save(await resolveGitHubRepo(url))
       return true
     } catch (e) {
       setError(e.message)
       return false
+    } finally {
+      linking.current = false
     }
   }
 

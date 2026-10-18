@@ -1,16 +1,43 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import { useCooldown } from '../hooks/useCooldown.js'
+
+// Every click on "Link to project" or "Check now" calls the GitHub API (60 requests an hour without a login),
+// so each is blocked for a few seconds after use.
+const COOLDOWN_MS = 5000
 
 // "Link to project" box: link a public GitHub repository, or show the linked one with Check now / Unlink.
 export default function ProjectLink({ project }) {
   const { repo, files, lastScan, error, link, unlink, checkNow } = project
   const [url, setUrl] = useState('')
   const [linking, setLinking] = useState(false)
+  // A ref also blocks clicks that land before React re-renders the button as disabled.
+  const busy = useRef(false)
+  const linkCooldown = useCooldown(COOLDOWN_MS)
+  const checkCooldown = useCooldown(COOLDOWN_MS)
+  // Set when "Link to project" is clicked during the cooldown; the message shows until the cooldown ends.
+  const [triedTooSoon, setTriedTooSoon] = useState(false)
+  const tooManyRequests = triedTooSoon && linkCooldown.active
 
   async function submit(event) {
     event.preventDefault()
+    if (busy.current) return
+    if (linkCooldown.active) {
+      setTriedTooSoon(true)
+      return
+    }
+    setTriedTooSoon(false)
+    busy.current = true
     setLinking(true)
     if (await link(url)) setUrl('')
     setLinking(false)
+    linkCooldown.start()
+    busy.current = false
+  }
+
+  function check() {
+    if (checkCooldown.active) return
+    checkNow()
+    checkCooldown.start()
   }
 
   // While linking, the box's contents are hidden (keeping its size) and one spinner fills the whole box.
@@ -36,7 +63,11 @@ export default function ProjectLink({ project }) {
               Link to project
             </button>
           </form>
-          <p className={`link-note ${hiddenWhileLinking}`}>Public GitHub repositories only.</p>
+          <p className={`link-note ${tooManyRequests ? 'too-many-requests' : ''} ${hiddenWhileLinking}`}>
+            {tooManyRequests
+              ? 'Too many requests. Please wait a moment before trying again.'
+              : 'Public GitHub repositories only.'}
+          </p>
         </>
       )}
 
@@ -68,8 +99,8 @@ export default function ProjectLink({ project }) {
             )}
           </p>
           <div className="link-actions">
-            <button type="button" onClick={checkNow}>
-              Check now
+            <button type="button" onClick={check} disabled={checkCooldown.active}>
+              {checkCooldown.active ? `Check now (${checkCooldown.secondsLeft}s)` : 'Check now'}
             </button>
             <button type="button" onClick={unlink}>
               Unlink
