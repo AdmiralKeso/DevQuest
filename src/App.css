@@ -4,20 +4,8 @@
 @layer components {
   /* Every page fills the space under the site header; `min-height: 0` lets areas shrink and scroll inside. */
 
-  /* Site header */
-  .site-header {
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: 12px;
-    margin-bottom: 16px;
-    border-bottom: 1px solid #ddd;
-  }
-
-  .site-title {
-    font-size: 20px;
-    font-weight: bold;
+  /* Logo and title link back to the main menu on pages other than the main menu (margins: .site-header in index.css) */
+  .site-header .menu-brand {
     color: inherit;
     text-decoration: none;
   }
@@ -29,7 +17,6 @@
     grid-template-columns: auto 1fr;
     gap: 24px;
     min-height: 0;
-    margin: 0 2% 0 2%;
   }
 
   /* The project list scrolls inside its own area when there are many cards */
@@ -119,7 +106,8 @@
     flex: 1;
     flex-direction: column;
     min-height: 0;
-    margin: 0 2% 2% 2%;
+    /* The sides come from the universal .page-content margin only */
+    margin: 0 0 2%;
   }
 
   .project-page .page-header {
@@ -371,15 +359,15 @@
     Three columns of different widths; each column stacks its tiles with the same gap and splits at
     different heights (flex-grow below), so tiles are uneven but fit together without empty space.
   */
-  /* One gap between tiles, between columns and above/below the board; the sides use the universal --side-margin */
+  /* One gap between tiles, between columns and above/below the board; the sides use the universal --header-side-margin */
   .main-menu {
-    --menu-gap: clamp(12px, 2vw, 24px);
-    position: fixed;
-    inset: 0;
+    /* Fills .page-content, which covers the whole window on the main menu */
+    flex: 1;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     gap: var(--menu-gap);
-    padding: var(--menu-gap) var(--side-margin);
+    padding: var(--menu-gap) var(--header-side-margin);
     /* The board shrinks to fit the window, so the menu never scrolls (phones scroll, see below) */
     overflow: hidden;
     /*
@@ -387,8 +375,6 @@
       attachment2: developer illustration in the bottom-left corner, one --menu-gap in from the edges, about 36% of the width (at most 520px);
       attachment1: white with a sand wave in the top-right corner, kept in that corner on any screen shape.
     */
-    --content-max: 1000px;
-    --side-margin: max(clamp(16px, 3vw, 48px), calc((100vw - var(--content-max)) / 2));
     background:
       url('./assets/images/attachments/attachment2.png') no-repeat left var(--menu-gap) bottom var(--menu-gap) /
         min(36vw, 520px) auto,
@@ -443,8 +429,11 @@
     gap: 8px;
   }
 
+  /* Same size on every page, whether it's the main menu's h1 or a plain paragraph elsewhere */
   .menu-title {
     margin: 0;
+    font-size: 2em;
+    font-weight: bold;
     line-height: 1;
   }
 

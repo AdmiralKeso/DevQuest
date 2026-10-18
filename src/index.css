@@ -11,10 +11,18 @@
 */
 @layer base {
   /*
-    One side margin for every page (left and right), including the main menu.
-    Laptops get a small margin; on wider screens the content stays laptop-sized (--content-max)
-    and the extra width becomes margin.
+    Universal page structure, the same on every page: the header (and the main menu board) is at most
+    --header-max wide, the page content under it at most --content-max. Laptops get a small margin
+    (3% of the width, 16-48px); on wider screens the extra width becomes margin.
   */
+  :root {
+    /* Space above the header (and between the main menu tiles), so the header sits in the same place on every page */
+    --menu-gap: clamp(12px, 2vw, 24px);
+    --header-max: 1000px;
+    --content-max: 1600px;
+    --header-side-margin: max(clamp(16px, 3vw, 48px), calc((100vw - var(--header-max)) / 2));
+    --side-margin: max(clamp(16px, 3vw, 48px), calc((100vw - var(--content-max)) / 2));
+  }
 
   /* Black scrollbars everywhere (inherited by every scrolling area). */
   html {
@@ -30,7 +38,26 @@
     display: flex;
     flex-direction: column;
     height: 100dvh;
-    padding: 16px var(--side-margin);
+  }
+
+  /* Header on every page except the main menu (which has it inside its board) */
+  .site-header {
+    flex-shrink: 0;
+    margin: var(--menu-gap) var(--header-side-margin) 0;
+  }
+
+  /* Every page's content, under the header; fills the rest of the window */
+  .page-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+    margin: 0 var(--side-margin) 16px;
+  }
+
+  /* The main menu covers the whole window (it has its own gaps and margins) */
+  .page-content.home {
+    margin: 0;
   }
 
   /* Narrow screens can't fit everything, so the page scrolls normally there. */

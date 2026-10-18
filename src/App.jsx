@@ -9,6 +9,7 @@ import ProfilePage from './components/ProfilePage.jsx'
 import ProjectList from './components/ProjectList.jsx'
 import ProjectPage from './components/ProjectPage.jsx'
 import Sidebar from './components/Sidebar.jsx'
+import SiteHeader from './components/SiteHeader.jsx'
 import TermsPage from './components/TermsPage.jsx'
 import { OBJECTIVES, STACKS } from './data/objectives.js'
 import './App.css'
@@ -56,27 +57,23 @@ function App() {
 
   return (
     <>
-      {!onMainMenu && (
-        <header className="site-header">
-          <Link to="/" className="site-title">
-            DevQuest
-          </Link>
-        </header>
-      )}
-      <Routes>
-        <Route path="/" element={<MainMenu />} />
-        <Route path="/how-to-play" element={<HowToPlay />} />
-        <Route path="/docs" element={<DocsPage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/achievements" element={<AchievementsPage />} />
-        <Route path="/terms" element={<TermsPage />} />
-        <Route path="/projects" element={<ProjectsPage />} />
-        <Route path="/stack/:stackId" element={<StackRoute />} />
-        <Route path="/projects/:projectId" element={<ProjectRoute />} />
-        <Route path="/projects/:projectId/js-linter" element={<JsLinterRoute />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      {!onMainMenu && <SiteHeader />}
+      <div className={onMainMenu ? 'page-content home' : 'page-content'}>
+        <Routes>
+          <Route path="/" element={<MainMenu />} />
+          <Route path="/how-to-play" element={<HowToPlay />} />
+          <Route path="/docs" element={<DocsPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/achievements" element={<AchievementsPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/stack/:stackId" element={<StackRoute />} />
+          <Route path="/projects/:projectId" element={<ProjectRoute />} />
+          <Route path="/projects/:projectId/js-linter" element={<JsLinterRoute />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </div>
     </>
   )
 }

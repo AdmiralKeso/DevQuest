@@ -1,8 +1,7 @@
 import { Link } from 'react-router'
 import { OBJECTIVES, STACKS } from '../data/objectives.js'
 import { useLocalStorage } from '../hooks/useLocalStorage.js'
-import LanguageSelect from './LanguageSelect.jsx'
-import logo from '../assets/images/logo/logodevquest.png'
+import SiteHeader from './SiteHeader.jsx'
 
 // Worked out once when the app loads, for the footer.
 const YEAR = new Date().getFullYear()
@@ -17,28 +16,7 @@ export default function MainMenu() {
 
   return (
     <main className="main-menu">
-      <header className="menu-header">
-        <div className="menu-brand">
-          <img src={logo} alt="" className="menu-logo" />
-          <div className="menu-brand-text">
-            <h1 className="menu-title">DevQuest</h1>
-            <p className="menu-tagline">Pick a quest. Build a real website. Level up your skills.</p>
-          </div>
-        </div>
-        <nav className="menu-nav" aria-label="Site">
-          <ul>
-            <li>
-              <Link to="/docs">Docs</Link>
-            </li>
-            <li>
-              <Link to="/about">About</Link>
-            </li>
-            <li>
-              <LanguageSelect />
-            </li>
-          </ul>
-        </nav>
-      </header>
+      <SiteHeader home />
 
       <nav className="menu-board" aria-label="Main menu">
         <div className="menu-column column-left">
