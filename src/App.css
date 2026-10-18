@@ -88,6 +88,12 @@
     margin-top: auto;
   }
 
+  /* Stack label (Laravel, Django, Node, React) in its own small bordered box */
+  .stack-badge {
+    padding: 2px 8px;
+    border: 2px solid #000;
+  }
+
   /* Project page: compact header, then two columns that fill the rest of the window */
   .project-page {
     display: flex;
