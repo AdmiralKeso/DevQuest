@@ -11,6 +11,11 @@
     and the extra width becomes margin.
   */
 
+  /* Black scrollbars everywhere (inherited by every scrolling area). */
+  html {
+    scrollbar-color: black transparent;
+  }
+
   body {
     font-family: system-ui, sans-serif;
   }
