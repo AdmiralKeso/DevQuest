@@ -375,6 +375,8 @@
     bottom: 0;
     left: 0;
     right: 50%;
+    /* Never narrower than its text, so labels aren't cut off on smaller tiles */
+    min-width: max-content;
     align-items: baseline;
     gap: 8px;
     color: black;
@@ -572,7 +574,11 @@
 
   /* Continue's arrow starts wider, to fit the project name next to the label */
   .tile-continue .menu-title-container {
-    right: 35%;
+    right: 20%;
+  }
+
+  .tile-continue .tile-detail {
+    white-space: nowrap;
   }
   .tile-new-project {
     flex: 0.85;
