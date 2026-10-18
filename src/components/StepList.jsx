@@ -29,7 +29,7 @@ export default function StepList({ steps, completed, syncing, onToggle, pageSize
                 <span>{step.title}</span>
               </label>
               {auto && (
-                <span className="step-status">{done ? 'Detected in your files' : 'Not detected yet'}</span>
+                <span className="step-status">{done}</span>
               )}
             </li>
           )
