@@ -31,6 +31,13 @@ export const COMMON_REQUIREMENTS = ['Git', 'A public GitHub repository']
 // Shown in the Docs section of every project, before the stack's and the project's own docs.
 export const COMMON_DOC_LINKS = [doc('MDN Web Docs', 'https://developer.mozilla.org/en-US/docs/Web')]
 
+// "Getting started" on the Docs page (main menu): what every quest needs before the stack-specific docs.
+export const GETTING_STARTED_DOC_LINKS = [
+  doc('Git', 'https://git-scm.com/doc'),
+  doc('Creating a GitHub repository', 'https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository'),
+  ...COMMON_DOC_LINKS,
+]
+
 // Step checks: when a folder is linked, a step with a `check` is ticked off automatically once the
 // files match (see src/sync/detectSteps.js). A check is one rule or a list of rules that must all match.
 // Steps without a check (deploying, writing content) are ticked off by hand.
