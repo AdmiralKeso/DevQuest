@@ -48,7 +48,6 @@ export default function ProjectPage({ project }) {
   const percent = steps.length === 0 ? 0 : Math.round((doneCount / steps.length) * 100)
 
   // While a repository is linked, auto-tracked steps follow its files; manual steps are left alone.
-  // The result is saved, so progress still shows after the repository is unlinked.
   useEffect(() => {
     if (!syncing) return
     const projectSteps = project.steps ?? []
@@ -59,6 +58,16 @@ export default function ProjectPage({ project }) {
       return sameIds(next, current) ? current : next
     })
   }, [syncing, link.files, project, updateCompleted])
+
+  // Unlinking also unticks the auto-tracked steps, since nothing tracks them anymore.
+  function unlink() {
+    link.unlink()
+    const autoIds = tracked.map((s) => s.id)
+    updateCompleted((current) => {
+      const next = current.filter((id) => !autoIds.includes(id))
+      return next.length === current.length ? current : next
+    })
+  }
 
   function toggleStep(stepId) {
     updateCompleted((current) =>
@@ -116,7 +125,7 @@ export default function ProjectPage({ project }) {
         </div>
 
         <aside className="project-panel">
-          <ProjectLink project={link} />
+          <ProjectLink project={{ ...link, unlink }} />
 
           <section className="todo">
             <h2>To do</h2>
