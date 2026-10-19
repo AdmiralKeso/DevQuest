@@ -110,28 +110,29 @@
     margin: 0 0 2%;
   }
 
+  /* Back link above, then the title on the left with the stack badge right after it */
   .project-page .page-header {
     display: flex;
     flex-shrink: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .project-title {
+    display: flex;
     flex-wrap: wrap;
-    align-items: baseline;
+    align-items: center;
     gap: 4px 16px;
   }
 
-  .project-page .page-header h1,
-  .project-page .page-header p {
+  .project-page .page-header h1 {
     margin: 0;
   }
 
   .project-page h2 {
     margin: 0 0 8px;
     font-size: 1.2em;
-  }
-
-  .project-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
   }
 
   .project-layout {

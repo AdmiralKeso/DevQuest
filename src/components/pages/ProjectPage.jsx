@@ -137,13 +137,10 @@ export default function ProjectPage({ project }) {
         <Link to={`/stack/${stack.id}`} className="back-link">
           ← {stack.label} projects
         </Link>
-        <h1>{project.title}</h1>
-        <p className="project-meta">
+        <div className="project-title">
+          <h1>{project.title}</h1>
           <StackBadge stackId={stack.id} />
-          <a href={stack.docs} target="_blank" rel="noreferrer">
-            {stack.label} docs ↗
-          </a>
-        </p>
+        </div>
       </header>
 
       <div className="project-layout">
