@@ -385,6 +385,19 @@
   }
 
   /*
+    Background of every page (on #root, which fills the window), drawn behind everything.
+    Two layers (the first is drawn on top):
+    attachment2: developer illustration in the bottom-left corner, one --menu-gap in from the edges, about 36% of the width (at most 520px);
+    attachment1: white with a sand wave in the top-right corner, kept in that corner on any screen shape.
+  */
+  #root {
+    background:
+      url('./assets/images/attachments/attachment2.png') no-repeat left var(--menu-gap) bottom var(--menu-gap) /
+        min(36vw, 520px) auto,
+      #fff url('./assets/images/attachments/attachment1.png') no-repeat right top / cover;
+  }
+
+  /*
     Main menu: white tiles with a black border on a white background, filling the whole window.
     Three columns of different widths; each column stacks its tiles with the same gap and splits at
     different heights (flex-grow below), so tiles are uneven but fit together without empty space.
@@ -400,15 +413,6 @@
     padding: var(--menu-gap) var(--header-side-margin);
     /* The board shrinks to fit the window, so the menu never scrolls (phones scroll, see below) */
     overflow: hidden;
-    /*
-      Two background layers (the first is drawn on top), behind the tiles:
-      attachment2: developer illustration in the bottom-left corner, one --menu-gap in from the edges, about 36% of the width (at most 520px);
-      attachment1: white with a sand wave in the top-right corner, kept in that corner on any screen shape.
-    */
-    background:
-      url('./assets/images/attachments/attachment2.png') no-repeat left var(--menu-gap) bottom var(--menu-gap) /
-        min(36vw, 520px) auto,
-      #fff url('./assets/images/attachments/attachment1.png') no-repeat right top / cover;
   }
 
   /* Header: title and tagline on the left, nav justified to the right, same gap below it as everywhere else */
@@ -702,9 +706,12 @@
       min-height: 0;
     }
 
-    /* Tall screens: scale the backgrounds to the width so the illustration and the wave stay corner accents */
     .main-menu {
       overflow: auto;
+    }
+
+    /* Tall screens: scale the backgrounds to the width so the illustration and the wave stay corner accents */
+    #root {
       background-size: 55vw auto, 100% auto;
     }
 
