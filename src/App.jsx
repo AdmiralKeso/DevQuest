@@ -10,16 +10,20 @@ import ProjectList from './components/ProjectList.jsx'
 import ProjectPage from './components/pages/ProjectPage.jsx'
 import Sidebar from './components/Sidebar.jsx'
 import SiteHeader from './components/SiteHeader.jsx'
+import { useInProgress } from './hooks/useInProgress.js'
 import TermsPage from './components/pages/TermsPage.jsx'
 import { OBJECTIVES, STACKS } from './data/objectives.js'
 import './App.css'
 
 // Projects page: stack sidebar next to the project cards. Project pages don't show the sidebar.
+// `inProgress` (projects linked and not completed) is loaded once here for the sidebar count and the list.
+// Shows one stack (`stackId`), In progress, or everything.
 function ProjectsPage({ stackId }) {
+  const inProgress = useInProgress()
   return (
     <div className="app-layout">
-      <Sidebar />
-      <ProjectList stackId={stackId} />
+      <Sidebar inProgressCount={inProgress.length} stackId={stackId} />
+      <ProjectList stackId={stackId} inProgress={inProgress} />
     </div>
   )
 }
@@ -68,6 +72,7 @@ function App() {
           <Route path="/achievements" element={<AchievementsPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/projects/in-progress" element={<ProjectsPage stackId="in-progress" />} />
           <Route path="/stack/:stackId" element={<StackRoute />} />
           <Route path="/projects/:projectId" element={<ProjectRoute />} />
           <Route path="/projects/:projectId/js-linter" element={<JsLinterRoute />} />

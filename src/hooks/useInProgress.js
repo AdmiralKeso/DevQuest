@@ -1,0 +1,39 @@
+import { useState } from 'react'
+import { OBJECTIVES } from '../data/objectives.js'
+import { useCompletedProjects } from './useCompletedProjects.js'
+import { isProjectCompleted, useAllProgress } from './useProgress.js'
+
+// Projects started by linking a repository are kept in the browser only (not in the database),
+// key `devquest.inProgress`: [project ids], most recently linked first.
+const STORAGE_KEY = 'devquest.inProgress'
+
+function readIds() {
+  try {
+    const ids = JSON.parse(localStorage.getItem(STORAGE_KEY))
+    return Array.isArray(ids) ? ids.filter((id) => typeof id === 'string') : []
+  } catch {
+    return []
+  }
+}
+
+// Saves that a project was linked (`linked` true), or removes it on unlink.
+export function saveProjectLink(projectId, linked) {
+  const ids = readIds().filter((id) => id !== projectId)
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(linked ? [projectId, ...ids] : ids))
+  } catch {
+    // Storage can be unavailable (private mode, quota); the project just won't show under In progress.
+  }
+}
+
+// Projects in progress: started by linking a repository and not completed yet (all steps done, or saved
+// as finished in the database), most recently linked first.
+export function useInProgress() {
+  const [saved] = useAllProgress()
+  const finishedIds = useCompletedProjects()
+  const [ids] = useState(readIds)
+
+  return ids
+    .map((id) => OBJECTIVES.find((o) => o.id === id))
+    .filter((project) => project && !finishedIds.includes(project.id) && !isProjectCompleted(project, saved))
+}
