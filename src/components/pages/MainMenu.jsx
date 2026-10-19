@@ -53,11 +53,11 @@ export default function MainMenu() {
           </Link>
           {/* Not built yet: greyed out and not a link */}
           <div className="menu-tile tile-achievements disabled" aria-disabled="true">
+            <span className="tile-coming-soon">Coming soon</span>
             <div className="menu-title-container">
               <span className="tile-label">
                 <i className="fa-solid fa-trophy" aria-hidden="true"></i> Achievements
               </span>
-              <span className="tile-detail">Coming soon</span>
             </div>
           </div>
         </div>

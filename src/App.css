@@ -828,11 +828,21 @@
     right: 0;
   }
 
-  /* A tile that isn't built yet (Achievements): grey and see-through, and its button stays put on hover */
+  /*
+    A tile that isn't built yet (Achievements): faded and partly grey, with "Coming soon" in the middle,
+    and its button stays put on hover
+  */
   .menu-tile.disabled {
-    opacity: 0.5;
-    filter: grayscale(1);
+    opacity: 0.75;
+    filter: grayscale(0.6);
     cursor: default;
+  }
+
+  .tile-coming-soon {
+    position: relative;
+    color: #ff8f16;
+    font-size: clamp(1rem, 2.2vw, 1.5rem);
+    font-weight: 700;
   }
 
   .menu-tile.disabled:hover .menu-title-container {
