@@ -32,7 +32,7 @@ Main menu
 - Footer under the tiles (same gap above and below): "© <year> DevQuest · Terms and conditions" (link to /terms) and "Learn web development one quest at a time".
 
 Project page template
-- Every project fills the same page. Header (back link, title, stack badge, tags, docs link; the description only shows on the main page cards), then two columns:
+- Every project fills the same page. Header (back link: to "Projects in progress" when the project was in progress when the page opened or was refreshed, otherwise to its stack's projects; title, stack badge, tags, docs link; the description only shows on the main page cards), then two columns:
   - Left: stat circles (progress rings with the percentage inside and the name under them: overall progress titled with the project name, then Code Comprehension, Semantic HTML, Defensive Programming, Responsive), then the "All objectives" box with the auto-tracked steps: a small header listing the category (skill) names, then every category on one list that scrolls inside the box
   - Right panel: "Link to project" (GitHub URL field and button, plus "Public GitHub repositories only."), then a small "Requirements" box (what you need before starting, as one dot-separated line), then a small "Tools" box like it (each tool as a small heading with its URL written out under it as a link that opens in a new tab, e.g. PokéAPI and https://pokeapi.co/api/v2/; only shown when there are tools), then "Static Analysis" (just a "Js Linter" button to the project's Js Linter page, with a small "Coming soon" note after it, `.coming-soon`), which takes the rest of the height and grows to fit its content (no inner scroll)
   - Under both columns: the Docs block, its own block across the full width under All objectives and the right panel, with "How to start" (the stack's `gettingStarted` then `COMMON_GETTING_STARTED`, numbered) and "Docs" (documentation links as one dot-separated line) side by side, then "Tips" (the `tip` of each step not done yet) across the whole width under them (all three stacked below 720px)
@@ -106,7 +106,7 @@ Structure
 - `src/components/StepList.jsx`: step checklist (auto-tracked steps can only be ticked by the repository)
 - `src/components/ProjectLink.jsx`: "Link to project" box: "Saved repositories" dropdown, the "Linked repositories" popup (remove with an X) and GitHub URL form, or the linked repository with Check now / Unlink
 - `src/hooks/useProjectLink.js`: linked repository for the open project (not saved; picked again each visit) and the 30-second check
-- `src/hooks/useInProgress.js`: projects in progress (linked and not completed) from localStorage, and `saveProjectLink` used by useProjectLink on link and unlink
+- `src/hooks/useInProgress.js`: projects in progress (linked and not completed) from localStorage, `isInProgress` (used by the project page's back link) and `saveProjectLink` used by useProjectLink on link and unlink
 - `src/hooks/useRepositories.js`: saved repositories from the API, for the "Saved repositories" dropdown and the "Linked repositories" list (add and remove)
 - `src/hooks/useProgress.js`: saved steps in localStorage (`useProgress(projectId)` for one project, `useAllProgress()` for all) and `isProjectCompleted`
 - `src/hooks/useCompletedProjects.js`: finished projects in the database (`useCompletedProjects()` to read them, `saveCompletedProject(projectId)` to save one)

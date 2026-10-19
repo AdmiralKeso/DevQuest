@@ -16,6 +16,13 @@ function readIds() {
   }
 }
 
+// Whether a project is on the In progress list right now: linked before and not completed (`completedIds`: its done steps).
+export function isInProgress(project, completedIds) {
+  const steps = project.steps ?? []
+  const completed = steps.length > 0 && steps.every((s) => completedIds.includes(s.id))
+  return !completed && readIds().includes(project.id)
+}
+
 // Saves that a project was linked (`linked` true), or removes it on unlink.
 export function saveProjectLink(projectId, linked) {
   const ids = readIds().filter((id) => id !== projectId)

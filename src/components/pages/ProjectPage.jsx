@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { COMMON_DOC_LINKS, COMMON_GETTING_STARTED, COMMON_REQUIREMENTS, SKILLS, STACKS } from '../../data/objectives.js'
+import { isInProgress } from '../../hooks/useInProgress.js'
 import { useProjectLink } from '../../hooks/useProjectLink.js'
 import { useLocalStorage } from '../../hooks/useLocalStorage.js'
 import { useProgress } from '../../hooks/useProgress.js'
@@ -18,6 +19,9 @@ export default function ProjectPage({ project }) {
   const stack = STACKS.find((s) => s.id === project.stack)
   const [completed, updateCompleted] = useProgress(project.id)
   const link = useProjectLink(project.id)
+  // Back goes to In progress when the project was in progress when the page opened (or was refreshed);
+  // linking or unlinking during the visit doesn't change it.
+  const [cameFromInProgress] = useState(() => isInProgress(project, completed))
 
   // Remembered for "Continue" on the main menu.
   const [, setLastProject] = useLocalStorage('devquest.lastProject', null)
@@ -127,9 +131,15 @@ export default function ProjectPage({ project }) {
   return (
     <main className="project-page">
       <header className="page-header">
-        <Link to={`/stack/${stack.id}`} className="back-link">
-          ← {stack.label} projects
-        </Link>
+        {cameFromInProgress ? (
+          <Link to="/projects/in-progress" className="back-link">
+            ← Projects in progress
+          </Link>
+        ) : (
+          <Link to={`/stack/${stack.id}`} className="back-link">
+            ← {stack.label} projects
+          </Link>
+        )}
         <div className="project-title">
           <h1>{project.title}</h1>
           <StackBadge stackId={stack.id} />
