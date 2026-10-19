@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 
 // Ring in the style of src/assets/images/attachments/ProgressCircle .svg: a dark grey track and a cyan arc
 // (rounded ends, soft inner glow) that starts at the top and runs clockwise. It fills the box it is placed in;
@@ -12,14 +12,21 @@ const STROKE = 10.4
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS
 const TRACK_COLOR = '#2E2F2E'
 const ARC_COLOR = '#00C0E8'
+// When the page opens, the ring waits until the page's slide-in is mostly done, then fills up.
+const FILL_DELAY_MS = 400
 
 export default function ProgressRing({ percent = null, className = '' }) {
   const id = useId()
-  // Starts empty and fills to `percent` right after the first paint, so the transition plays when it appears.
+  // Starts empty and fills to `percent` after FILL_DELAY_MS; later changes move straight to the new value.
   const [shown, setShown] = useState(0)
+  const appeared = useRef(false)
   useEffect(() => {
-    const frame = requestAnimationFrame(() => setShown(percent ?? 0))
-    return () => cancelAnimationFrame(frame)
+    const delay = appeared.current ? 0 : FILL_DELAY_MS
+    const timer = setTimeout(() => {
+      appeared.current = true
+      setShown(percent ?? 0)
+    }, delay)
+    return () => clearTimeout(timer)
   }, [percent])
 
   const filled = Math.min(100, Math.max(0, shown))
@@ -49,9 +56,10 @@ export default function ProgressRing({ percent = null, className = '' }) {
         stroke={TRACK_COLOR}
         strokeWidth={STROKE}
       />
-      {percent !== null && filled > 0 && (
+      {/* Always drawn (so it can animate from empty); hidden while empty, where the round ends would leave a dot */}
+      {percent !== null && (
         <circle
-          className="progress-ring-arc motion-safe:transition-[stroke-dashoffset] motion-safe:duration-1000 motion-safe:ease-out"
+          className={`progress-ring-arc motion-safe:transition-[stroke-dashoffset] motion-safe:duration-1000 motion-safe:ease-out ${filled > 0 ? '' : 'invisible'}`}
           cx="50"
           cy="50"
           r={RADIUS}
