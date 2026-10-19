@@ -808,7 +808,8 @@
     }
   }
 
-  /* How to play, Docs, About: back link and title stay put, the content scrolls */
+  /* How to play, Docs, About, Achievements, Profile, Terms: back link and title stay put, the content scrolls.
+     Full width of .page-content, the same as the projects page. */
   .info-page {
     display: flex;
     flex: 1;
@@ -819,7 +820,6 @@
   .info-content {
     flex: 1;
     min-height: 0;
-    max-width: 760px;
     margin-top: 16px;
     overflow-y: auto;
   }
