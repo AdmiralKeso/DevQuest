@@ -2,11 +2,11 @@
 
 Pick a quest. Build a real website. Level up your skills.
 
-![The DevQuest main menu](src/assets/images/attachments/mainpage.png)
-
-![The project list with the tech stacks on the left](src/assets/images/attachments/projectspage.png)
-
-![A project page with progress rings, objectives and a linked repository](src/assets/images/attachments/project.png)
+<div align="center">
+  <img src="src/assets/images/attachments/mainpage.png" alt="The DevQuest main menu" width="400">
+  &nbsp;&nbsp;
+  <img src="src/assets/images/attachments/project.png" alt="DevQuest project page" width="400">
+</div>
 
 DevQuest helps you learn web development by building real projects. You choose a goal, like a portfolio or a small app that uses an API. DevQuest gives you the steps, tips and links you need. You write the code in your own GitHub repository, and DevQuest ticks off each step as soon as it finds your code. I want you to have fun developing and giving you inspiration on the way for new projects to explore on your own. I try to cover the "basics" of what a recruiter might ask.
 
