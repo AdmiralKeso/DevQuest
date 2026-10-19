@@ -18,6 +18,13 @@ export function isProjectCompleted(project, saved) {
   return steps.length > 0 && steps.every((s) => done.includes(s.id))
 }
 
+// Overall progress of a project: the share of its steps that are done, 0-100 (0 without steps).
+export function projectPercent(project, saved) {
+  const steps = project.steps ?? []
+  const done = completedIn(saved, project.id)
+  return steps.length === 0 ? 0 : Math.round((steps.filter((s) => done.includes(s.id)).length / steps.length) * 100)
+}
+
 function readLocal() {
   try {
     return asObject(JSON.parse(localStorage.getItem(STORAGE_KEY)))

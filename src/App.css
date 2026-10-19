@@ -130,6 +130,20 @@
     flex: 1;
   }
 
+  /* In progress: the title with the overall progress ring on its right; the description under them uses the full width */
+  .project-card-heading {
+    display: flex;
+    align-self: stretch;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .project-card .stat-circle.project-card-progress {
+    --stat-size: 64px;
+    width: var(--stat-size);
+  }
+
   .quit-button {
     position: absolute;
     right: 16px;

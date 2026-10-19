@@ -1,9 +1,12 @@
 import { STACKS, getProjectsForStack } from '../data/objectives.js'
+import { projectPercent, useAllProgress } from '../hooks/useProgress.js'
 import ProjectCard from './ProjectCard.jsx'
 
 // `stackId` is a stack, 'all', or 'in-progress' (shows `inProgress`: projects linked and not completed).
-// On In progress each card has a Quit button (a red X) (`onQuit(projectId)`); it sits next to the card's link, not inside it.
+// On In progress each card shows its overall progress ring and has a Quit button (a red X) (`onQuit(projectId)`);
+// the button sits next to the card's link, not inside it.
 export default function ProjectList({ stackId = 'all', inProgress = [], onQuit }) {
+  const [saved] = useAllProgress()
   const stack = STACKS.find((s) => s.id === stackId)
   const showInProgress = stackId === 'in-progress'
   const projects = showInProgress ? inProgress : getProjectsForStack(stackId)
@@ -34,7 +37,7 @@ export default function ProjectList({ stackId = 'all', inProgress = [], onQuit }
         {projects.map((o) =>
           showInProgress ? (
             <div key={o.id} className="project-card-item">
-              <ProjectCard project={o} />
+              <ProjectCard project={o} percent={projectPercent(o, saved)} />
               <button
                 type="button"
                 className="quit-button"
