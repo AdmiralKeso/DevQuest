@@ -12,20 +12,16 @@ export default function ProjectList({ stackId = 'all', inProgress = [], onQuit }
   const projects = showInProgress ? inProgress : getProjectsForStack(stackId)
 
   let title = 'What do you want to build?'
-  let description = 'Pick a project, or choose a tech stack on the left to narrow it down.'
   if (stack) {
     title = `Projects with ${stack.label}`
-    description = stack.description
   } else if (showInProgress) {
     title = 'Projects in progress'
-    description = 'Projects you have started by linking a GitHub repository and not completed yet.'
   }
 
   return (
     <main className="project-list">
       <header className="page-header">
         <h1>{title}</h1>
-        <p>{description}</p>
       </header>
 
       {showInProgress && projects.length === 0 && (
