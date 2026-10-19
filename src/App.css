@@ -840,7 +840,8 @@
 
   .tile-coming-soon {
     position: relative;
-    color: #ff8f16;
+    color: #000;
+    font-style: italic;
     font-size: clamp(1rem, 2.2vw, 1.5rem);
     font-weight: 700;
   }
