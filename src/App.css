@@ -217,6 +217,15 @@
     border: 2px solid;
   }
 
+  /* White for now, so the page background (sand wave, illustration) doesn't show through the project page */
+  .stat-circle,
+  .complete,
+  .objectives,
+  .project-panel,
+  .project-panel > section {
+    background: #fff;
+  }
+
   /* Requirements and Docs: small boxes in the panel under Link to project, label above the wrapping items */
   .project-page .requirements,
   .project-page .docs {
