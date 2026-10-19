@@ -633,39 +633,44 @@
   }
 
   /*
-    The other pages come in the same way as the menu tiles: the top piece of each column slides down from above,
-    the pieces under it slide up from below, and columns follow one after another, left to right.
-    The shared site header stays still. On the projects page and the project page everything slides down
-    (sidebar, header and cards; header and both columns).
+    The other pages come in like the menu tiles, but everything slides down from above: the header first,
+    then the content (projects page: sidebar, then header and cards; project page: left column, then right;
+    How to play, Docs, About, Achievements, Profile, Terms and Js Linter: header, then content).
+    The shared site header stays still.
   */
   .app-layout > .sidebar,
   .page-content > main > .page-header,
   .project-list > .page-header,
-  .project-grid > .project-card,
+  .project-grid > *,
   .project-list > .empty,
   .project-main,
-  .project-panel {
+  .project-panel,
+  .project-layout > .docs,
+  .info-content,
+  .js-linter-page > :not(.page-header) {
     animation: tile-slide-down 0.7s ease-out both;
   }
 
-  .info-content,
-  .js-linter-page > :not(.page-header) {
-    animation: tile-slide-up 0.7s ease-out both;
+  /* Project page: Docs, under both columns, comes in last */
+  .project-layout > .docs {
+    animation-delay: 0.2s;
   }
 
-  /* Projects page: the list is the second column; its cards come in one after another */
+  /* The piece after the first one in each page follows a moment later; project cards come in one after another */
   .project-list > .page-header,
   .project-list > .empty,
-  .project-panel {
+  .project-panel,
+  .info-content,
+  .js-linter-page > :not(.page-header) {
     animation-delay: 0.1s;
   }
 
-  .project-grid > .project-card:nth-child(1) { animation-delay: 0.1s; }
-  .project-grid > .project-card:nth-child(2) { animation-delay: 0.15s; }
-  .project-grid > .project-card:nth-child(3) { animation-delay: 0.2s; }
-  .project-grid > .project-card:nth-child(4) { animation-delay: 0.25s; }
-  .project-grid > .project-card:nth-child(5) { animation-delay: 0.3s; }
-  .project-grid > .project-card:nth-child(n + 6) { animation-delay: 0.35s; }
+  .project-grid > *:nth-child(1) { animation-delay: 0.1s; }
+  .project-grid > *:nth-child(2) { animation-delay: 0.15s; }
+  .project-grid > *:nth-child(3) { animation-delay: 0.2s; }
+  .project-grid > *:nth-child(4) { animation-delay: 0.25s; }
+  .project-grid > *:nth-child(5) { animation-delay: 0.3s; }
+  .project-grid > *:nth-child(n + 6) { animation-delay: 0.35s; }
 
   @media (prefers-reduced-motion: reduce) {
     .menu-title-container {
@@ -680,7 +685,8 @@
     .js-linter-page > :not(.page-header),
     .project-main,
     .project-panel,
-    .project-grid > .project-card,
+    .project-layout > .docs,
+    .project-grid > *,
     .project-list > .empty {
       animation: none;
     }
