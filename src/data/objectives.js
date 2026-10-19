@@ -151,6 +151,7 @@ export const SKILLS = [
 //     stack: 'react',               // one of the STACKS ids
 //     difficulty: 'easy',           // optional: easy, medium or hard, shown on the card
 //     requirements: ['...'],        // optional, extra requirements on top of the stack's
+//     tools: [doc('Label', 'https://...')],    // optional, extra tools on top of the stack's (the Tools box)
 //     docLinks: [doc('Label', 'https://...')], // optional, extra docs on top of the stack's
 //     steps: [                      // optional, the page shows a placeholder without it
 //       { id: 'step-id', title: 'Do this', tip: 'How to do it.', check: file(/regex/), skill: SEMANTIC_HTML },
@@ -164,6 +165,7 @@ export const OBJECTIVES = [
     description: 'A search page that requests a Pokémon from PokéAPI with fetch and shows it, errors included.',
     stack: 'javascript',
     difficulty: 'medium',
+    tools: [doc('PokéAPI', 'https://pokeapi.co/api/v2/')],
     docLinks: [
       doc('PokéAPI', 'https://pokeapi.co/docs/v2'),
       doc('async function', 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function'),

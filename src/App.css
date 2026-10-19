@@ -322,8 +322,9 @@
     background: #fff;
   }
 
-  /* Requirements: small box in the panel under Link to project, label above the wrapping items */
-  .project-page .requirements {
+  /* Requirements and Tools: small boxes in the panel under Link to project, label above the wrapping items */
+  .project-page .requirements,
+  .project-page .tools {
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
@@ -332,10 +333,22 @@
     font-size: 0.85em;
   }
 
-  .project-page .requirements h2 {
+  .project-page .requirements h2,
+  .project-page .tools h2 {
     margin: 0;
     font-size: 1em;
     white-space: nowrap;
+  }
+
+  /* A tool: its name as a small bold heading, the URL under it (long URLs wrap) */
+  .tool h3 {
+    margin: 0;
+    font-size: 1em;
+    font-weight: bold;
+  }
+
+  .tool a {
+    overflow-wrap: anywhere;
   }
 
   /* Docs, full width under the columns: How to start, Tips and Docs side by side (stacked when narrow) */

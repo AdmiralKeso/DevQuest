@@ -27,6 +27,8 @@ export default function ProjectPage({ project }) {
   const requirements = [
     ...new Set([...COMMON_REQUIREMENTS, ...(stack.requirements ?? []), ...(project.requirements ?? [])]),
   ]
+  // Tools (apps, APIs) to build it with: the stack's, then this project's.
+  const tools = [...(stack.tools ?? []), ...(project.tools ?? [])]
   // Docs in the same order: common, the stack's, then this project's tools.
   const docLinks = [...COMMON_DOC_LINKS, ...(stack.docLinks ?? []), ...(project.docLinks ?? [])]
   // How to start: setting up a project in this stack, then linking it here.
@@ -222,6 +224,21 @@ export default function ProjectPage({ project }) {
               ))}
             </ul>
           </section>
+
+          {tools.length > 0 && (
+            <section className="tools">
+              <h2>Tools:</h2>
+              {/* Each tool: its name as a small heading, the URL written out under it */}
+              {tools.map((tool) => (
+                <div key={tool.url} className="tool">
+                  <h3>{tool.label}</h3>
+                  <a href={tool.url} target="_blank" rel="noreferrer">
+                    {tool.url}
+                  </a>
+                </div>
+              ))}
+            </section>
+          )}
 
           <section className="todo static-analysis">
             <h2>Static Analysis</h2>
