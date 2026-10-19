@@ -501,22 +501,22 @@
   }
 
   /*
-    Background of every page (on #root, which fills the window), drawn behind everything.
-    Two layers (the first is drawn on top):
-    attachment2: developer illustration in the bottom-left corner, one --menu-gap in from the edges, about 36% of the width (at most 520px);
+    Background of every page (on #root, which fills the window), drawn behind everything:
     attachment1: white with a sand wave in the top-right corner, kept in that corner on any screen shape.
   */
   #root {
+    background: #fff url('./assets/images/attachments/attachment1.png') no-repeat right top / cover;
+  }
+
+  /*
+    The main menu also has attachment2 (drawn on top): the developer illustration in the bottom-left corner,
+    one --menu-gap in from the edges, about 36% of the width (at most 520px).
+  */
+  #root:has(.page-content.home) {
     background:
       url('./assets/images/attachments/attachment2.png') no-repeat left var(--menu-gap) bottom var(--menu-gap) /
         min(36vw, 520px) auto,
       #fff url('./assets/images/attachments/attachment1.png') no-repeat right top / cover;
-  }
-
-  /* The projects pages and project pages keep the sand wave (attachment1) but not the developer illustration */
-  #root:has(.app-layout),
-  #root:has(.project-page) {
-    background: #fff url('./assets/images/attachments/attachment1.png') no-repeat right top / cover;
   }
 
   /* On project pages the whole window scrolls (header included), so the scrollbar covers the whole page */
@@ -890,6 +890,10 @@
 
     /* Tall screens: scale the backgrounds to the width so the illustration and the wave stay corner accents */
     #root {
+      background-size: 100% auto;
+    }
+
+    #root:has(.page-content.home) {
       background-size: 55vw auto, 100% auto;
     }
 
