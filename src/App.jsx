@@ -19,11 +19,11 @@ import './App.css'
 // `inProgress` (projects linked and not completed) is loaded once here for the sidebar count and the list.
 // Shows one stack (`stackId`), In progress, or everything.
 function ProjectsPage({ stackId }) {
-  const inProgress = useInProgress()
+  const [inProgress, quitProject] = useInProgress()
   return (
     <div className="app-layout">
       <Sidebar inProgressCount={inProgress.length} stackId={stackId} />
-      <ProjectList stackId={stackId} inProgress={inProgress} />
+      <ProjectList stackId={stackId} inProgress={inProgress} onQuit={quitProject} />
     </div>
   )
 }

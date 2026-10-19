@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { OBJECTIVES } from '../data/objectives.js'
 import { useCompletedProjects } from './useCompletedProjects.js'
 import { isProjectCompleted, useAllProgress } from './useProgress.js'
@@ -28,12 +28,19 @@ export function saveProjectLink(projectId, linked) {
 
 // Projects in progress: started by linking a repository and not completed yet (all steps done, or saved
 // as finished in the database), most recently linked first.
+// Returns [projects, quit]: `quit(projectId)` takes a project off In progress (its steps stay saved).
 export function useInProgress() {
   const [saved] = useAllProgress()
   const finishedIds = useCompletedProjects()
-  const [ids] = useState(readIds)
+  const [ids, setIds] = useState(readIds)
 
-  return ids
+  const quit = useCallback((projectId) => {
+    saveProjectLink(projectId, false)
+    setIds((current) => current.filter((id) => id !== projectId))
+  }, [])
+
+  const projects = ids
     .map((id) => OBJECTIVES.find((o) => o.id === id))
     .filter((project) => project && !finishedIds.includes(project.id) && !isProjectCompleted(project, saved))
+  return [projects, quit]
 }

@@ -112,6 +112,25 @@
     line-height: 24px;
   }
 
+  /* In progress: the card and its Quit button; the button sits in the card's bottom-right corner */
+  .project-card-item {
+    position: relative;
+    display: flex;
+  }
+
+  .project-card-item > .project-card {
+    flex: 1;
+  }
+
+  .quit-button {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    padding: 2px 8px;
+    border: 2px solid #000;
+    background: #fff;
+  }
+
   /* Stack label (Laravel, Django, Node, React) in its own small bordered box */
   .stack-badge {
     padding: 2px 8px;
