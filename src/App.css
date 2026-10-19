@@ -828,6 +828,18 @@
     right: 0;
   }
 
+  /* A tile that isn't built yet (Achievements): grey and see-through, and its button stays put on hover */
+  .menu-tile.disabled {
+    opacity: 0.5;
+    filter: grayscale(1);
+    cursor: default;
+  }
+
+  .menu-tile.disabled:hover .menu-title-container {
+    background-color: #ffd9a8;
+    right: 50%;
+  }
+
   /*
     The other pages come in like the menu tiles, but everything slides down from above: the header first,
     then the content (projects page: sidebar, then header and cards; project page: left column, then right;

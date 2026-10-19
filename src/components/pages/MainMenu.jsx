@@ -51,13 +51,15 @@ export default function MainMenu() {
               What is <strong className="tile-brand">DevQuest</strong> and how does it work?
             </span>
           </Link>
-          <Link to="/achievements" className="menu-tile tile-achievements">
+          {/* Not built yet: greyed out and not a link */}
+          <div className="menu-tile tile-achievements disabled" aria-disabled="true">
             <div className="menu-title-container">
               <span className="tile-label">
                 <i className="fa-solid fa-trophy" aria-hidden="true"></i> Achievements
               </span>
+              <span className="tile-detail">Coming soon</span>
             </div>
-          </Link>
+          </div>
         </div>
 
         <div className="menu-column column-right">
