@@ -145,6 +145,7 @@
   }
 
   /* Project page: compact header, then two columns that fill the rest of the window */
+  /* Project page: the whole window scrolls (see #root:has(.project-page)), so Docs under the columns always has room */
   .project-page {
     display: flex;
     flex: 1;
@@ -181,15 +182,20 @@
 
   .project-layout {
     display: grid;
-    flex: 1;
+    flex: 1 0 auto;
     grid-template-columns: 1fr 340px;
-    grid-template-rows: minmax(0, 1fr);
+    /*
+      First row: All objectives and the panel, at least the rest of the window (never under 480px) and taller
+      when the panel needs it. Second row: Docs under both, as tall as its content.
+    */
+    grid-template-rows: minmax(max(480px, 100dvh - 330px), auto) auto;
     gap: 24px;
-    min-height: 0;
     margin-top: 16px;
   }
 
+  /* Its size doesn't push the row taller (contain), so All objectives scrolls inside instead */
   .project-main {
+    contain: size;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -420,11 +426,9 @@
     flex-shrink: 0;
   }
 
+  /* Static Analysis takes the rest of the panel and grows to fit its content (no inner scroll) */
   .project-panel > .todo {
-    flex: 1;
-    flex-shrink: 1;
-    min-height: 0;
-    overflow-y: auto;
+    flex: 1 0 auto;
   }
 
   .project-link {
@@ -507,6 +511,16 @@
       url('./assets/images/attachments/attachment2.png') no-repeat left var(--menu-gap) bottom var(--menu-gap) /
         min(36vw, 520px) auto,
       #fff url('./assets/images/attachments/attachment1.png') no-repeat right top / cover;
+  }
+
+  /*
+    Project pages keep the sand wave (attachment1) but not the developer illustration, and the whole window
+    scrolls (header included) instead of the page fitting the window, so the scrollbar covers the whole page.
+  */
+  #root:has(.project-page) {
+    height: auto;
+    min-height: 100dvh;
+    background: #fff url('./assets/images/attachments/attachment1.png') no-repeat right top / cover;
   }
 
   /*
@@ -942,10 +956,13 @@
       grid-template-rows: none;
     }
 
+    .project-main {
+      contain: none;
+    }
+
     .app-layout > main,
     .info-content,
-    .objectives-scroll,
-    .project-panel > .todo {
+    .objectives-scroll {
       overflow-y: visible;
     }
 
