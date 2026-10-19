@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import { OBJECTIVES, STACKS } from '../../data/objectives.js'
+import { OBJECTIVES } from '../../data/objectives.js'
 import { useLocalStorage } from '../../hooks/useLocalStorage.js'
 import SiteHeader from '../SiteHeader.jsx'
 
@@ -12,7 +12,6 @@ const YEAR = new Date().getFullYear()
 export default function MainMenu() {
   const [lastProjectId] = useLocalStorage('devquest.lastProject', null)
   const lastProject = OBJECTIVES.find((o) => o.id === lastProjectId)
-  const lastStack = lastProject && STACKS.find((s) => s.id === lastProject.stack)
 
   return (
     <main className="main-menu">
