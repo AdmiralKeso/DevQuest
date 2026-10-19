@@ -1,35 +1,15 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { COMMON_DOC_LINKS, COMMON_REQUIREMENTS, SKILLS, STACKS } from '../../data/objectives.js'
 import { useProjectLink } from '../../hooks/useProjectLink.js'
 import { useLocalStorage } from '../../hooks/useLocalStorage.js'
+import { useProgress } from '../../hooks/useProgress.js'
+import { saveCompletedProject } from '../../hooks/useCompletedProjects.js'
 import { detectSteps, isAutoTracked } from '../../sync/detectSteps.js'
 import ProjectLink from '../ProjectLink.jsx'
 import StackBadge from '../StackBadge.jsx'
 import StatCircle from '../StatCircle.jsx'
 import StepList from '../StepList.jsx'
-
-// Progress for every project is kept in one object: { [projectId]: [completed step ids] }
-const asObject = (saved) => (saved && typeof saved === 'object' && !Array.isArray(saved) ? saved : {})
-const completedIn = (saved, projectId) => {
-  const ids = asObject(saved)[projectId]
-  return Array.isArray(ids) ? ids : []
-}
-
-function useProgress(projectId) {
-  const [saved, setSaved] = useLocalStorage('devquest.progress', {})
-  // `update` gets the latest completed ids and returns the new ones (or the same array for no change).
-  const updateCompleted = useCallback(
-    (update) =>
-      setSaved((prev) => {
-        const current = completedIn(prev, projectId)
-        const next = update(current)
-        return next === current ? prev : { ...asObject(prev), [projectId]: next }
-      }),
-    [setSaved, projectId],
-  )
-  return [completedIn(saved, projectId), updateCompleted]
-}
 
 const sameIds = (a, b) => a.length === b.length && a.every((id) => b.includes(id))
 
@@ -53,6 +33,12 @@ export default function ProjectPage({ project }) {
   const syncing = link.repo !== null && link.files !== null
   const doneCount = steps.filter((s) => completed.includes(s.id)).length
   const percent = steps.length === 0 ? 0 : Math.round((doneCount / steps.length) * 100)
+  const finished = steps.length > 0 && doneCount === steps.length
+
+  // A finished project is saved in the database (steps themselves stay in localStorage).
+  useEffect(() => {
+    if (finished) saveCompletedProject(project.id)
+  }, [finished, project.id])
 
   // Skill rings: the share of each skill's steps (tracked and to do) that are done.
   const skillStats = SKILLS.map((skill) => {
@@ -165,7 +151,7 @@ export default function ProjectPage({ project }) {
               )
             })}
           </section>
-          {steps.length > 0 && doneCount === steps.length && (
+          {finished && (
             <p className="complete">Project complete!</p>
           )}
 
