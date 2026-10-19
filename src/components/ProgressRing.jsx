@@ -7,6 +7,8 @@ import { useEffect, useId, useRef, useState } from 'react'
 // changes (no animation with reduced motion). With `percent` null only the track is drawn.
 // All of its styling lives here (SVG attributes and Tailwind classes), not in App.css.
 // Same proportions as the design: the ring is about a tenth of the circle's width thick.
+// Design: "Progress Circle" on the Figma Community, DESIGN_SOURCE below (also set as `data-design-source` on the SVG).
+const DESIGN_SOURCE = 'https://www.figma.com/community/file/1666459251011120303/progress-circle'
 const RADIUS = 44.5
 const STROKE = 10.4
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS
@@ -32,7 +34,12 @@ export default function ProgressRing({ percent = null, className = '' }) {
   const filled = Math.min(100, Math.max(0, shown))
 
   return (
-    <svg className={`progress-ring size-full ${className}`} viewBox="0 0 100 100" aria-hidden="true">
+    <svg
+      className={`progress-ring size-full ${className}`}
+      viewBox="0 0 100 100"
+      aria-hidden="true"
+      data-design-source={DESIGN_SOURCE}
+    >
       <defs>
         {/* Soft white inner glow along the arc, like the Figma design's inner shadow */}
         <filter id={`${id}-glow`} x="-10%" y="-10%" width="120%" height="120%">
