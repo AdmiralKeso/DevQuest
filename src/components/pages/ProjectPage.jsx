@@ -254,7 +254,7 @@ export default function ProjectPage({ project }) {
         </aside>
 
         {/* Docs: its own block across the full width, under All objectives and the panel:
-            how to start, tips for the steps still to do, and documentation links */}
+            how to start and documentation links side by side, then tips for the steps still to do across the width */}
         <section className="docs">
           <div className="docs-start">
             <h2>How to start</h2>
@@ -263,6 +263,19 @@ export default function ProjectPage({ project }) {
                 <li key={item}>{item}</li>
               ))}
             </ol>
+          </div>
+
+          <div className="docs-links">
+            <h2>Docs</h2>
+            <ul className="doc-list">
+              {docLinks.map((docLink) => (
+                <li key={docLink.url}>
+                  <a href={docLink.url} target="_blank" rel="noreferrer">
+                    {docLink.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
 
           <div className="docs-tips">
@@ -278,19 +291,6 @@ export default function ProjectPage({ project }) {
                 ))}
               </ul>
             )}
-          </div>
-
-          <div className="docs-links">
-            <h2>Docs</h2>
-            <ul className="doc-list">
-              {docLinks.map((docLink) => (
-                <li key={docLink.url}>
-                  <a href={docLink.url} target="_blank" rel="noreferrer">
-                    {docLink.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
           </div>
         </section>
       </div>

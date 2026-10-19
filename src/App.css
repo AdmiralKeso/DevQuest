@@ -355,12 +355,19 @@
     overflow-wrap: anywhere;
   }
 
-  /* Docs, full width under the columns: How to start, Tips and Docs side by side (stacked when narrow) */
+  /*
+    Docs, full width under the columns: How to start and Docs side by side, Tips across the whole width under them
+    (all stacked on narrow screens)
+  */
   .project-layout > .docs {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px 32px;
     align-items: start;
+  }
+
+  .project-layout > .docs > .docs-tips {
+    grid-column: 1 / -1;
   }
 
   .project-layout > .docs h2 {
@@ -1096,6 +1103,10 @@
     .project-layout {
       grid-template-columns: 1fr;
       grid-template-rows: none;
+    }
+
+    .project-layout > .docs {
+      grid-template-columns: 1fr;
     }
 
     .project-main {
