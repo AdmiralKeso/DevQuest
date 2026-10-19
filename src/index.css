@@ -24,9 +24,9 @@
     --side-margin: max(clamp(16px, 3vw, 48px), calc((100vw - var(--content-max)) / 2));
   }
 
-  /* Black scrollbars everywhere (inherited by every scrolling area). */
+  /* Black scrollbars on a light grey track everywhere (inherited by every scrolling area). */
   html {
-    scrollbar-color: black transparent;
+    scrollbar-color: black #e5e5e5;
   }
 
   body {

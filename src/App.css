@@ -25,6 +25,13 @@
     overflow-y: auto;
   }
 
+  /* Scrolling areas keep a little space between their content and the scrollbar, so it doesn't hug the boxes */
+  .app-layout > main,
+  .objectives-scroll,
+  .info-content {
+    padding-right: 12px;
+  }
+
   /* Sidebar */
   .sidebar {
     width: 220px;
