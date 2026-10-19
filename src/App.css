@@ -551,6 +551,20 @@
     line-height: 1;
   }
 
+  /* The Js Linter button with a small "Coming soon" note after it */
+  .js-linter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+  }
+
+  .coming-soon {
+    font-size: 0.85em;
+    font-style: italic;
+  }
+
   /* "Js Linter" is a link (it changes page) that looks like the other buttons */
   .js-linter-link {
     display: inline-block;

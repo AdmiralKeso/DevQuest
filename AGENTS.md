@@ -32,7 +32,7 @@ Main menu
 Project page template
 - Every project fills the same page. Header (back link, title, stack badge, docs link; the description only shows on the main page cards), then two columns:
   - Left: stat circles (progress rings with the percentage inside and the name under them: overall progress titled with the project name, then Code Comprehension, Semantic HTML, Defensive Programming, Responsive), then the "All objectives" box with the auto-tracked steps: a small header listing the category (skill) names, then every category on one list that scrolls inside the box
-  - Right panel: "Link to project" (GitHub URL field and button, plus "Public GitHub repositories only."), then a small "Requirements" box (what you need before starting, as one dot-separated line), then "Static Analysis" (just a "Js Linter" button to the project's Js Linter page), which takes the rest of the height and grows to fit its content (no inner scroll)
+  - Right panel: "Link to project" (GitHub URL field and button, plus "Public GitHub repositories only."), then a small "Requirements" box (what you need before starting, as one dot-separated line), then "Static Analysis" (just a "Js Linter" button to the project's Js Linter page, with a small "Coming soon" note after it, `.coming-soon`), which takes the rest of the height and grows to fit its content (no inner scroll)
   - Under both columns: the Docs block, its own block across the full width under All objectives and the right panel, with three parts side by side: "How to start" (the stack's `gettingStarted` then `COMMON_GETTING_STARTED`, numbered), "Tips" (the `tip` of each step not done yet) and "Docs" (documentation links as one dot-separated line)
 - Skills (categories): every step has a `skill` (Code Comprehension, Semantic HTML, Defensive Programming or Responsive; deploy steps have none). Each skill ring shows the % of that skill's steps that are done (tracked and to do), or "-" when the project has no steps for it.
 - Rings and "All objectives" are linked: clicking a category name in the header or a skill ring scrolls the list to that category, and the header and ring highlight the category in view (classes `.category-link.active`, `.stat-circle.selected`). Categories with no tracked steps are skipped, and tracked steps without a skill go in "Other".
@@ -81,7 +81,7 @@ Routes
 - `/projects/in-progress` projects that were linked and are not completed yet
 - `/stack/:stackId` projects for one stack
 - `/projects/:projectId` project page (see Project page template)
-- `/projects/:projectId/js-linter` Js Linter page for that project (empty for now), opened from Static Analysis
+- `/projects/:projectId/js-linter` Js Linter page for that project (just "Coming soon" for now), opened from Static Analysis
 - anything else shows "Page not found"
 
 Structure
@@ -110,7 +110,7 @@ Structure
 - `src/hooks/useCooldown.js`: short wait after an action before it can run again (used by the Link to project and Check now buttons)
 - `src/sync/readGitHub.js`: parses GitHub URLs, checks the repository exists, reads its files through the GitHub API (skipping installed/generated folders, caching unchanged files)
 - `src/sync/detectSteps.js`: matches step `check` rules (file path regex + optional content regex) against the files
-- `src/components/pages/JsLinterPage.jsx`: Js Linter page for a project (empty placeholder; the linter will be added later)
+- `src/components/pages/JsLinterPage.jsx`: Js Linter page for a project (placeholder that says "Coming soon"; the linter will be added later)
 - `src/components/StackBadge.jsx`: stack label with a `data-stack` attribute for per-stack styling
 - `src/App.css`: layout styles (plus the colours asked for on the main menu, header and project cards)
 

@@ -225,9 +225,12 @@ export default function ProjectPage({ project }) {
 
           <section className="todo static-analysis">
             <h2>Static Analysis</h2>
-            <Link to={`/projects/${project.id}/js-linter`} className="js-linter-link">
-              Js Linter
-            </Link>
+            <p className="js-linter">
+              <Link to={`/projects/${project.id}/js-linter`} className="js-linter-link">
+                Js Linter
+              </Link>
+              <span className="coming-soon">Coming soon</span>
+            </p>
           </section>
         </aside>
 
