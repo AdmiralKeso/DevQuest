@@ -681,32 +681,39 @@
   .menu-title-container{
     display: flex;
     background: #ffd9a8;
-    transition: background-color 0.4s ease, right 0.4s ease;
+    transition: background-color 0.4s ease, min-width 0.4s ease;
     /* An arrow along the bottom of the tile, half the width and pointing right; on hover it slides across to the right edge */
     clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 50%, calc(100% - 16px) 100%, 0 100%);
     padding: 4px 26px 4px 10px;
     position: absolute;
     bottom: 0;
     left: 0;
-    right: 50%;
-    /* Never narrower than its text, so labels aren't cut off on smaller tiles */
-    min-width: max-content;
+    /* As wide as its text, at least half the tile, and never past the tile's right edge */
+    width: max-content;
+    min-width: 50%;
+    max-width: 100%;
     align-items: baseline;
     gap: 8px;
     color: black;
   }
 
-  /* Smaller text in the Continue and New Project buttons */
-  /* Kept on one line, so an icon stays to the left of its label */
+  /*
+    Arrow text is sized from the tile's own width (cqi, see container-type on .menu-tile), so it fits narrow and
+    wide tiles alike. Kept on one line, so an icon stays to the left of its label
+  */
   .menu-title-container .tile-label {
-    font-size: clamp(0.5rem, 2vw, 1rem);
+    font-size: clamp(0.7rem, 5cqi, 1rem);
     white-space: nowrap;
   }
 
-  /* Project name sits at the right end of the bar, the label stays on the left */
+  /* Project name sits at the right end of the bar, the label stays on the left; a long name ends in "..." */
   .menu-title-container .tile-detail {
-    font-size: clamp(0.35rem, 2vw, 0.85rem);
+    font-size: clamp(0.65rem, 4cqi, 0.85rem);
+    width: auto;
+    min-width: 0;
     margin-left: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
     text-align: right;
   }
   
@@ -820,6 +827,8 @@
     color: #000;
     text-align: center;
     text-decoration: none;
+    /* Lets the arrow text be sized from the tile's width (cqi) */
+    container-type: inline-size;
     /* Page load: the top tile of each column slides down from above, the others slide up from below */
     animation: tile-slide-up 0.7s ease-out both;
   }
@@ -855,7 +864,7 @@
   .menu-tile:hover .menu-title-container,
   .menu-tile:focus-visible .menu-title-container {
     background-color: #ff8f16;
-    right: 0;
+    min-width: 100%;
   }
 
   /*
@@ -878,7 +887,7 @@
 
   .menu-tile.disabled:hover .menu-title-container {
     background-color: #ffd9a8;
-    right: 50%;
+    min-width: 50%;
   }
 
   /*
@@ -964,7 +973,7 @@
 
   /* Continue's arrow starts wider, to fit the project name next to the label */
   .tile-continue .menu-title-container {
-    right: 20%;
+    min-width: 80%;
   }
 
   .tile-continue .tile-detail {
