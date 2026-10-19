@@ -82,6 +82,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    cursor: pointer;
     gap: 8px;
     padding: 16px;
     border: 2px solid var(--border-color);
@@ -119,7 +120,7 @@
     line-height: 24px;
   }
 
-  /* In progress: the card and its Quit button; the button sits in the card's bottom-right corner */
+  /* In progress: the card and its Quit button (a single red X) in the card's bottom-right corner */
   .project-card-item {
     position: relative;
     display: flex;
@@ -132,10 +133,14 @@
   .quit-button {
     position: absolute;
     right: 16px;
-    bottom: 16px;
-    padding: 2px 8px;
-    border: 2px solid var(--border-color);
-    background: #fff;
+    bottom: 12px;
+    padding: 0 4px;
+    border: none;
+    color: #d32f2f;
+    cursor: pointer;
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1;
   }
 
   /* Stack label (Laravel, Django, Node, React) in its own small bordered box */

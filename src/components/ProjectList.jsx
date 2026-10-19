@@ -2,7 +2,7 @@ import { STACKS, getProjectsForStack } from '../data/objectives.js'
 import ProjectCard from './ProjectCard.jsx'
 
 // `stackId` is a stack, 'all', or 'in-progress' (shows `inProgress`: projects linked and not completed).
-// On In progress each card has a Quit button (`onQuit(projectId)`); it sits next to the card's link, not inside it.
+// On In progress each card has a Quit button (a red X) (`onQuit(projectId)`); it sits next to the card's link, not inside it.
 export default function ProjectList({ stackId = 'all', inProgress = [], onQuit }) {
   const stack = STACKS.find((s) => s.id === stackId)
   const showInProgress = stackId === 'in-progress'
@@ -35,8 +35,14 @@ export default function ProjectList({ stackId = 'all', inProgress = [], onQuit }
           showInProgress ? (
             <div key={o.id} className="project-card-item">
               <ProjectCard project={o} />
-              <button type="button" className="quit-button" onClick={() => onQuit?.(o.id)}>
-                Quit
+              <button
+                type="button"
+                className="quit-button"
+                aria-label={`Quit ${o.title}`}
+                title="Quit"
+                onClick={() => onQuit?.(o.id)}
+              >
+                ×
               </button>
             </div>
           ) : (
