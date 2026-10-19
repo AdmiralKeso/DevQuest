@@ -238,8 +238,9 @@
     flex-wrap: wrap;
     /* The rings are centred on one line; the labels hang under them, so the row keeps room for two label lines */
     align-items: center;
-    gap: 24px;
-    padding-bottom: 2.4em;
+    /* Rows keep room for the labels of the row above when the rings wrap */
+    gap: 2.6em 32px;
+    padding-bottom: 2.6em;
   }
 
   /*
@@ -253,9 +254,9 @@
     flex-direction: column;
     align-items: center;
     gap: 6px;
-    /* One size per circle, used by the disc and to keep the label about as wide as it */
+    /* One size per circle, used by the disc; the label gets some extra width on both sides so long words fit */
     --stat-size: clamp(76px, 12vh, 100px);
-    width: calc(var(--stat-size) + 24px);
+    width: calc(var(--stat-size) + 48px);
     /* Skill rings are buttons: no button border or padding */
     padding: 0;
     border: 0;
