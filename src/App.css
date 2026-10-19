@@ -494,7 +494,10 @@
     display: contents;
   }
 
+  /* Last in the Link to project box, in its bottom-right corner */
   .linked-repositories-toggle {
+    order: 1;
+    align-self: flex-end;
     padding: 0;
     border: none;
     font-size: 0.85em;
