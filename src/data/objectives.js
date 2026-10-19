@@ -121,6 +121,7 @@ const BLADE = 'blade\\.php'
 const migration = (table) => file(new RegExp(`database/migrations/.*create_${table}_table\\.php$`))
 const djangoSetup = (app) => [named('manage\\.py'), file(new RegExp(`(^|/)${app}/apps\\.py$`))]
 const MAP_EMBED = code(`${BLADE}|html|jsx|tsx`, /<iframe[^>]*(google\.com\/maps|openstreetmap)/)
+const indexHtml = (content) => file(/(^|\/)index\.html$/, content)
 
 // Difficulty shown on the project cards. A project's `difficulty` is one of these ids.
 export const DIFFICULTIES = [
@@ -155,8 +156,48 @@ export const SKILLS = [
 //       { id: 'step-id', title: 'Do this', tip: 'How to do it.', check: file(/regex/), skill: SEMANTIC_HTML },
 //     ],
 //   },
-// Projects: none yet, add new ones here (see the template above).
-export const OBJECTIVES = []
+export const OBJECTIVES = [
+  // Pokémon search
+  {
+    id: 'pokemon-javascript',
+    title: 'Fetch a Pokémon from an API',
+    description: 'A search page that requests a Pokémon from PokéAPI with fetch and shows it, errors included.',
+    stack: 'javascript',
+    difficulty: 'medium',
+    docLinks: [
+      doc('PokéAPI', 'https://pokeapi.co/docs/v2'),
+      doc('async function', 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function'),
+      doc('try...catch', 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch'),
+      doc('Response.ok', 'https://developer.mozilla.org/en-US/docs/Web/API/Response/ok'),
+      doc('aria-label', 'https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-label'),
+      doc('ESLint', 'https://eslint.org/docs/latest/use/getting-started'),
+    ],
+    steps: [
+      // Files
+      { id: 'html', title: 'Create index.html with the page structure', tip: 'Start with <!DOCTYPE html>, a <title>, and a <main> for the search and the result.', check: indexHtml(/<!doctype html>/i), skill: SEMANTIC_HTML },
+      { id: 'script', title: 'Create script.js and load it from index.html', tip: 'Put <script src="script.js" defer></script> in the head so the page is parsed before your code runs.', check: [indexHtml(/<script[^>]+src=["'][^"']*\.js["']/i), code(JS)], skill: COMPREHENSION },
+      { id: 'styles', title: 'Create styles.css and link it from index.html', tip: 'Add <link rel="stylesheet" href="styles.css"> in the head.', check: [indexHtml(/<link[^>]+rel=["']stylesheet["']/i), code('css')], skill: SEMANTIC_HTML },
+      // Search
+      { id: 'search-form', title: 'Add a search form with a text field and a search button', tip: 'A <form> lets the Enter key search too; give the button type="submit".', check: indexHtml(/<form[\s\S]*<input[\s\S]*<button[\s\S]*<\/form>/i), skill: SEMANTIC_HTML },
+      { id: 'submit', title: 'Search on submit without reloading the page', tip: 'Listen for the form\'s submit event and call event.preventDefault() first.', check: code(JS, /addEventListener\(\s*["']submit["'][\s\S]*preventDefault\(\)/), skill: COMPREHENSION },
+      { id: 'clean-input', title: 'Trim and lowercase the search before using it', tip: 'PokéAPI only knows lowercase names: "Pikachu " has to become "pikachu". Don\'t search when it\'s empty.', check: [code(JS, /\.trim\(\)/), code(JS, /\.toLowerCase\(\)/)], skill: DEFENSIVE },
+      // Fetch
+      // Only the function is checked (fetch called inside a function), not which URL it requests or what comes back
+      { id: 'fetch', title: 'Write a function that requests a Pokémon with fetch', tip: 'The API lives at https://pokeapi.co/api/v2/; one Pokémon is pokemon/ plus its name or number, e.g. https://pokeapi.co/api/v2/pokemon/pikachu.', check: code(JS, /(\bfunction\b[^{]*|=>\s*)\{[\s\S]*?\bfetch\(\s*\S/), skill: COMPREHENSION },
+      { id: 'async-await', title: 'Use async and await instead of .then()', tip: 'Mark the function async, then await both fetch() and res.json().', check: [code(JS, /\basync\b/), code(JS, /await\s+fetch\(/), code(JS, /await\s+\w+\.json\(\)/)], skill: COMPREHENSION },
+      { id: 'show-result', title: 'Show the Pokémon\'s name, image and types', tip: 'The image is in sprites.front_default and the types in types[].type.name.', check: [code(JS, /sprites/), code(JS, /\btypes\b/)], skill: COMPREHENSION },
+      // Errors
+      { id: 'try-catch', title: 'Wrap the request in try...catch', tip: 'fetch only rejects when the network fails, so catch also needs the error you throw for a bad response.', check: code(JS, /\btry\s*\{[\s\S]*\}\s*catch\s*(\(\s*\w+\s*\))?\s*\{/), skill: DEFENSIVE },
+      { id: 'res-ok', title: 'Throw an error when the server answers with an error (!res.ok)', tip: 'A misspelled name returns 404 and a server problem 500; both still resolve, so check res.ok and throw.', check: [code(JS, /!\s*\w+\.ok\b/), code(JS, /throw\s+new\s+Error\(/)], skill: DEFENSIVE },
+      { id: 'show-error', title: 'Show the error on the page, not only in the console', tip: 'In catch, write a message like "Pokémon not found" into the result area with textContent.', check: code(JS, /catch\s*(\(\s*\w+\s*\))?\s*\{[\s\S]{0,400}\.textContent\s*=/), skill: DEFENSIVE },
+      // Accessibility and mobile
+      { id: 'aria-labels', title: 'Give the search field and button aria-labels', tip: 'A screen reader reads aria-label out loud, e.g. aria-label="Pokémon name or number".', check: indexHtml(/<input[^>]+aria-label=["'][^"']+["'][\s\S]*<button[^>]+aria-label=["'][^"']+["']|<button[^>]+aria-label=["'][^"']+["'][\s\S]*<input[^>]+aria-label=["'][^"']+["']/i), skill: SEMANTIC_HTML },
+      { id: 'responsive', title: 'Make the page work on a mobile phone', tip: 'Add the viewport meta tag, then a @media query; test at 375px wide in the browser\'s device mode.', check: [indexHtml(/<meta[^>]+name=["']viewport["']/i), code('css', /@media/)], skill: RESPONSIVE },
+      // Code quality
+      { id: 'lint', title: 'Check for unused variables and functions with ESLint', tip: 'Run npm init @eslint/config@latest, turn on no-unused-vars, then remove whatever it reports.', check: file(/(^|\/)eslint\.config\.(js|mjs|cjs)$/, /no-unused-vars|recommended/), skill: COMPREHENSION },
+    ],
+  },
+]
 
 export function getProjectsForStack(stackId) {
   return stackId === 'all' ? OBJECTIVES : OBJECTIVES.filter((o) => o.stack === stackId)
