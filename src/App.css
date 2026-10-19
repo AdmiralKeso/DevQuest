@@ -513,14 +513,16 @@
       #fff url('./assets/images/attachments/attachment1.png') no-repeat right top / cover;
   }
 
-  /*
-    Project pages keep the sand wave (attachment1) but not the developer illustration, and the whole window
-    scrolls (header included) instead of the page fitting the window, so the scrollbar covers the whole page.
-  */
+  /* The projects pages and project pages keep the sand wave (attachment1) but not the developer illustration */
+  #root:has(.app-layout),
+  #root:has(.project-page) {
+    background: #fff url('./assets/images/attachments/attachment1.png') no-repeat right top / cover;
+  }
+
+  /* On project pages the whole window scrolls (header included), so the scrollbar covers the whole page */
   #root:has(.project-page) {
     height: auto;
     min-height: 100dvh;
-    background: #fff url('./assets/images/attachments/attachment1.png') no-repeat right top / cover;
   }
 
   /*
