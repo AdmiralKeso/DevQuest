@@ -28,16 +28,21 @@ export function saveProjectLink(projectId, linked) {
 
 // Projects in progress: started by linking a repository and not completed yet (all steps done, or saved
 // as finished in the database), most recently linked first.
-// Returns [projects, quit]: `quit(projectId)` takes a project off In progress (its steps stay saved).
+// Returns [projects, quit]: `quit(projectId)` takes a project off In progress and resets it (its ticked steps
+// are cleared, so its project page starts from 0% again).
 export function useInProgress() {
-  const [saved] = useAllProgress()
+  const [saved, updateCompleted] = useAllProgress()
   const finishedIds = useCompletedProjects()
   const [ids, setIds] = useState(readIds)
 
-  const quit = useCallback((projectId) => {
-    saveProjectLink(projectId, false)
-    setIds((current) => current.filter((id) => id !== projectId))
-  }, [])
+  const quit = useCallback(
+    (projectId) => {
+      saveProjectLink(projectId, false)
+      updateCompleted(projectId, () => [])
+      setIds((current) => current.filter((id) => id !== projectId))
+    },
+    [updateCompleted],
+  )
 
   const projects = ids
     .map((id) => OBJECTIVES.find((o) => o.id === id))
