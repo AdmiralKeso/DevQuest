@@ -7,6 +7,7 @@ import { useProgress } from '../../hooks/useProgress.js'
 import { saveCompletedProject } from '../../hooks/useCompletedProjects.js'
 import { detectSteps, isAutoTracked } from '../../sync/detectSteps.js'
 import ProjectLink from '../ProjectLink.jsx'
+import ProjectTags from '../ProjectTags.jsx'
 import StackBadge from '../StackBadge.jsx'
 import StatCircle from '../StatCircle.jsx'
 import StepList from '../StepList.jsx'
@@ -132,6 +133,7 @@ export default function ProjectPage({ project }) {
         <div className="project-title">
           <h1>{project.title}</h1>
           <StackBadge stackId={stack.id} />
+          <ProjectTags tags={project.tags} />
         </div>
       </header>
 

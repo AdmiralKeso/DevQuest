@@ -96,8 +96,11 @@
     margin: 0;
   }
 
-  /* Badge sits at the bottom, so badges line up across a row */
-  .project-card .stack-badge {
+  /* Stack badge and tags sit at the bottom, so they line up across a row */
+  .project-card-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
     margin-top: auto;
   }
 
@@ -157,8 +160,9 @@
     line-height: 1;
   }
 
-  /* Stack label (Laravel, Django, Node, React) in its own small bordered box */
-  .stack-badge {
+  /* Stack label (Laravel, Django, Node, React) and project tags (API) each in their own small bordered box */
+  .stack-badge,
+  .project-tag {
     padding: 2px 8px;
     border: 2px solid var(--border-color);
   }

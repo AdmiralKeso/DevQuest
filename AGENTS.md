@@ -8,6 +8,7 @@ Users start with a goal instead of a blank canvas.
 - Launch a landing page
 - Build a blog
 - Create a business website
+- Tags: each project has optional `tags` (e.g. `["API", "JSON"]` on the Pokémon project), shown as small bordered labels (`.project-tag` with `data-tag`, `src/components/ProjectTags.jsx`) next to the stack badge on the card and in the project page header
 - Easy, Medium, Hard: each project has an optional `difficulty` (`DIFFICULTIES` in `objectives.js`), shown as a bold tab sitting on top of the card's top-right corner (`.difficulty-badge` with `data-difficulty`)
 
 Categories (sidebar on the left) are tech stacks:
@@ -31,7 +32,7 @@ Main menu
 - Footer under the tiles (same gap above and below): "© <year> DevQuest · Terms and conditions" (link to /terms) and "Learn web development one quest at a time".
 
 Project page template
-- Every project fills the same page. Header (back link, title, stack badge, docs link; the description only shows on the main page cards), then two columns:
+- Every project fills the same page. Header (back link, title, stack badge, tags, docs link; the description only shows on the main page cards), then two columns:
   - Left: stat circles (progress rings with the percentage inside and the name under them: overall progress titled with the project name, then Code Comprehension, Semantic HTML, Defensive Programming, Responsive), then the "All objectives" box with the auto-tracked steps: a small header listing the category (skill) names, then every category on one list that scrolls inside the box
   - Right panel: "Link to project" (GitHub URL field and button, plus "Public GitHub repositories only."), then a small "Requirements" box (what you need before starting, as one dot-separated line), then a small "Tools" box like it (each tool as a small heading with its URL written out under it as a link that opens in a new tab, e.g. PokéAPI and https://pokeapi.co/api/v2/; only shown when there are tools), then "Static Analysis" (just a "Js Linter" button to the project's Js Linter page, with a small "Coming soon" note after it, `.coming-soon`), which takes the rest of the height and grows to fit its content (no inner scroll)
   - Under both columns: the Docs block, its own block across the full width under All objectives and the right panel, with three parts side by side: "How to start" (the stack's `gettingStarted` then `COMMON_GETTING_STARTED`, numbered), "Tips" (the `tip` of each step not done yet) and "Docs" (documentation links as one dot-separated line)
@@ -98,7 +99,7 @@ Structure
 - `src/components/LanguageSelect.jsx`: language dropdown in the main menu nav (remembers the choice; translations to be added)
 - `src/components/Sidebar.jsx`: All projects, In progress, and the groups with their stack links (groups are dropdowns; a stack in more than one group is listed under each)
 - `src/components/ProjectList.jsx`: the project list (header and grid of project cards)
-- `src/components/ProjectCard.jsx`: one project card (difficulty tab, title, description, stack badge) linking to its project page; used by the project list and Profile
+- `src/components/ProjectCard.jsx`: one project card (difficulty tab, title, description, stack badge and tags) linking to its project page; used by the project list and Profile
 - `src/components/pages/ProjectPage.jsx`: the project page template (sections with placeholders), saved progress; applies repository detection to auto-tracked steps
 - `src/components/StatCircle.jsx`: round stat: a white disc with a ProgressRing filled to `percent` and the value inside, the label under the disc; a button when given `onClick` (skill rings)
 - `src/components/ProgressRing.jsx`: SVG progress ring in the style of `src/assets/images/attachments/ProgressCircle .svg` (dark grey track `#2E2F2E`, cyan arc `#00C0E8` with rounded ends and a soft inner glow, starting at the top); when the page opens it waits for the slide-in (0.4s), then fills up from 0, and it moves smoothly when the value changes (off with reduced motion); its styling lives in the component (SVG attributes and Tailwind classes), not in App.css; it credits the Figma Community "Progress Circle" design (`DESIGN_SOURCE`, set as `data-design-source` on the SVG)
@@ -114,6 +115,7 @@ Structure
 - `src/sync/detectSteps.js`: matches step `check` rules (file path regex + optional content regex) against the files
 - `src/components/pages/JsLinterPage.jsx`: Js Linter page for a project (placeholder that says "Coming soon"; the linter will be added later)
 - `src/components/StackBadge.jsx`: stack label with a `data-stack` attribute for per-stack styling
+- `src/components/ProjectTags.jsx`: a project's tags as small labels with a `data-tag` attribute
 - `src/App.css`: layout styles (plus the colours asked for on the main menu, header and project cards)
 
 Commit rules.

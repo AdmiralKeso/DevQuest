@@ -1,9 +1,10 @@
 import { Link } from 'react-router'
 import { DIFFICULTIES } from '../data/objectives.js'
+import ProjectTags from './ProjectTags.jsx'
 import StackBadge from './StackBadge.jsx'
 import StatCircle from './StatCircle.jsx'
 
-// Project card (difficulty tab, title, description, stack badge) that links to its project page.
+// Project card (difficulty tab, title, description, stack badge and tags) that links to its project page.
 // With `percent` (In progress) it also shows the project's overall progress ring (the project page's StatCircle).
 export default function ProjectCard({ project, percent = null }) {
   return (
@@ -22,7 +23,10 @@ export default function ProjectCard({ project, percent = null }) {
         <h2>{project.title}</h2>
       )}
       <p>{project.description}</p>
-      <StackBadge stackId={project.stack} />
+      <span className="project-card-badges">
+        <StackBadge stackId={project.stack} />
+        <ProjectTags tags={project.tags} />
+      </span>
     </Link>
   )
 }
