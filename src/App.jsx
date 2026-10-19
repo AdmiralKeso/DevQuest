@@ -1,6 +1,5 @@
 import { Link, Route, Routes, useLocation, useParams } from 'react-router'
 import AboutPage from './components/pages/AboutPage.jsx'
-import AchievementsPage from './components/pages/AchievementsPage.jsx'
 import DocsPage from './components/pages/DocsPage.jsx'
 import HowToPlay from './components/pages/HowToPlay.jsx'
 import JsLinterPage from './components/pages/JsLinterPage.jsx'
@@ -69,7 +68,6 @@ function App() {
           <Route path="/docs" element={<DocsPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/achievements" element={<AchievementsPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/projects/in-progress" element={<ProjectsPage stackId="in-progress" />} />

@@ -843,7 +843,7 @@
   /*
     The other pages come in like the menu tiles, but everything slides down from above: the header first,
     then the content (projects page: sidebar, then header and cards; project page: left column, then right;
-    How to play, Docs, About, Achievements, Profile, Terms and Js Linter: header, then content).
+    How to play, Docs, About, Profile, Terms and Js Linter: header, then content).
     The shared site header stays still.
   */
   .app-layout > .sidebar,
@@ -1020,7 +1020,7 @@
     }
   }
 
-  /* How to play, Docs, About, Achievements, Profile, Terms: back link and title stay put, the content scrolls.
+  /* How to play, Docs, About, Profile, Terms: back link and title stay put, the content scrolls.
      Full width of .page-content, the same as the projects page. */
   .info-page {
     display: flex;
