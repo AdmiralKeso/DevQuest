@@ -1,27 +1,73 @@
+// Groups shown in the sidebar above their stacks. Every stack belongs to one or more groups (`groups` on the stack,
+// e.g. Python is both functional and object-oriented). Groups are headings only, not pages.
+export const GROUPS = [
+  { id: 'functional', label: 'Functional programming', description: 'Projects built from functions without a framework: JavaScript and Python.' },
+  { id: 'oop', label: 'Object-oriented programming', description: 'Projects built from classes and objects without a framework: Java, C++, Python and JavaScript.' },
+  { id: 'ux', label: 'UX', description: 'Projects about design and user experience: layout, accessibility and usability, in HTML, CSS and JavaScript.' },
+  { id: 'frameworks', label: 'Frameworks', description: 'Projects built with a framework or library: Laravel, Django, Node and React.' },
+  { id: 'server', label: 'Server programming', description: 'Projects that run on the server and store data: Node, Java, Python and SQL.' },
+]
+
 // Tech stacks shown as categories in the sidebar. Each project is built with exactly one stack.
+// `groups` are GROUPS ids.
 // `requirements` are what you need installed or set up before starting any project in that stack.
 // `docLinks` are the documentation shown in the Docs section of every project in that stack.
 const doc = (label, url) => ({ label, url })
 export const STACKS = [
   {
-    id: 'laravel', label: 'Laravel', description: 'PHP framework with routing, Blade templates and Eloquent ORM built in.', docs: 'https://laravel.com/docs',
+    id: 'laravel', label: 'Laravel', groups: ['frameworks'], description: 'PHP framework with routing, Blade templates and Eloquent ORM built in.', docs: 'https://laravel.com/docs',
     requirements: ['PHP 8.2 or newer', 'Composer', 'Basic PHP'],
     docLinks: [doc('Laravel', 'https://laravel.com/docs'), doc('Blade', 'https://laravel.com/docs/blade'), doc('Eloquent', 'https://laravel.com/docs/eloquent')],
   },
   {
-    id: 'django', label: 'Django', description: 'Python framework with an admin panel, ORM and templates out of the box.', docs: 'https://docs.djangoproject.com',
+    id: 'django', label: 'Django', groups: ['frameworks'], description: 'Python framework with an admin panel, ORM and templates out of the box.', docs: 'https://docs.djangoproject.com',
     requirements: ['Python 3.10 or newer', 'pip', 'Basic Python'],
     docLinks: [doc('Django', 'https://docs.djangoproject.com/en/stable/'), doc('Django tutorial', 'https://docs.djangoproject.com/en/stable/intro/tutorial01/'), doc('Django forms', 'https://docs.djangoproject.com/en/stable/topics/forms/')],
   },
   {
-    id: 'node', label: 'Node', description: 'JavaScript on the server, usually with Express for routing.', docs: 'https://nodejs.org/en/learn',
+    id: 'node', label: 'Node', groups: ['server', 'frameworks'], description: 'JavaScript on the server, usually with Express for routing.', docs: 'https://nodejs.org/en/learn',
     requirements: ['Node.js 20 or newer', 'npm', 'Basic JavaScript'],
     docLinks: [doc('Node.js', 'https://nodejs.org/en/learn'), doc('Express', 'https://expressjs.com/en/guide/routing.html'), doc('EJS', 'https://github.com/mde/ejs')],
   },
   {
-    id: 'react', label: 'React', description: 'Component-based UI library for building interactive front ends.', docs: 'https://react.dev/learn',
+    id: 'react', label: 'React', groups: ['frameworks'], description: 'Component-based UI library for building interactive front ends.', docs: 'https://react.dev/learn',
     requirements: ['Node.js 20 or newer', 'npm', 'Basic JavaScript'],
     docLinks: [doc('React', 'https://react.dev/learn'), doc('Vite', 'https://vite.dev/guide/'), doc('React Router', 'https://reactrouter.com/home')],
+  },
+  {
+    id: 'html', label: 'HTML', groups: ['ux'], description: 'The structure and content of every web page, written by hand.', docs: 'https://developer.mozilla.org/en-US/docs/Web/HTML',
+    requirements: ['A code editor', 'A web browser'],
+    docLinks: [doc('HTML', 'https://developer.mozilla.org/en-US/docs/Web/HTML'), doc('HTML elements', 'https://developer.mozilla.org/en-US/docs/Web/HTML/Element'), doc('HTML forms', 'https://developer.mozilla.org/en-US/docs/Learn/Forms')],
+  },
+  {
+    id: 'javascript', label: 'JavaScript', groups: ['functional', 'oop', 'ux'], description: 'The language of the browser, without a framework: the DOM, events and fetch.', docs: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript',
+    requirements: ['A code editor', 'A web browser', 'Basic HTML'],
+    docLinks: [doc('JavaScript', 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide'), doc('DOM', 'https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model'), doc('Fetch API', 'https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API')],
+  },
+  {
+    id: 'css', label: 'CSS', groups: ['ux'], description: 'Layout and styling of web pages: flexbox, grid and media queries.', docs: 'https://developer.mozilla.org/en-US/docs/Web/CSS',
+    requirements: ['A code editor', 'A web browser', 'Basic HTML'],
+    docLinks: [doc('CSS', 'https://developer.mozilla.org/en-US/docs/Web/CSS'), doc('Flexbox', 'https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Flexbox'), doc('Grid', 'https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Grids')],
+  },
+  {
+    id: 'java', label: 'Java', groups: ['oop', 'server'], description: 'Typed, object-oriented language that runs on the JVM, also used for web servers.', docs: 'https://dev.java/learn/',
+    requirements: ['JDK 21 or newer', 'Basic Java'],
+    docLinks: [doc('Java', 'https://dev.java/learn/'), doc('Java API', 'https://docs.oracle.com/en/java/javase/21/docs/api/'), doc('HttpServer', 'https://docs.oracle.com/en/java/javase/21/docs/api/jdk.httpserver/com/sun/net/httpserver/HttpServer.html')],
+  },
+  {
+    id: 'cpp', label: 'C++', groups: ['oop'], description: 'Fast, compiled language with manual control over memory.', docs: 'https://en.cppreference.com',
+    requirements: ['A C++ compiler (g++, clang or MSVC)', 'CMake', 'Basic C++'],
+    docLinks: [doc('cppreference', 'https://en.cppreference.com'), doc('Learn C++', 'https://www.learncpp.com'), doc('CMake', 'https://cmake.org/cmake/help/latest/guide/tutorial/index.html')],
+  },
+  {
+    id: 'python', label: 'Python', groups: ['functional', 'oop', 'server'], description: 'Readable language with a big standard library, without a web framework.', docs: 'https://docs.python.org/3/',
+    requirements: ['Python 3.10 or newer', 'pip', 'Basic Python'],
+    docLinks: [doc('Python', 'https://docs.python.org/3/tutorial/'), doc('Standard library', 'https://docs.python.org/3/library/'), doc('http.server', 'https://docs.python.org/3/library/http.server.html')],
+  },
+  {
+    id: 'sql', label: 'SQL', groups: ['server'], description: 'Storing and querying data in a database: tables, joins and migrations.', docs: 'https://www.sqlite.org/docs.html',
+    requirements: ['SQLite, MySQL or PostgreSQL', 'Basic SQL'],
+    docLinks: [doc('SQLite', 'https://www.sqlite.org/lang.html'), doc('PostgreSQL', 'https://www.postgresql.org/docs/current/tutorial.html'), doc('MySQL', 'https://dev.mysql.com/doc/refman/8.4/en/tutorial.html')],
   },
 ]
 
@@ -351,4 +397,8 @@ export const OBJECTIVES = [
 
 export function getProjectsForStack(stackId) {
   return stackId === 'all' ? OBJECTIVES : OBJECTIVES.filter((o) => o.stack === stackId)
+}
+
+export function getStacksForGroup(groupId) {
+  return STACKS.filter((s) => s.groups.includes(groupId))
 }

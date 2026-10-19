@@ -41,8 +41,26 @@
     justify-content: space-between;
   }
 
-  .category.active {
+  /* Groups (Functional, Object-oriented, UX, Frameworks) with their stacks indented under them */
+  .category-group {
+    margin-top: 12px;
+  }
+
+  .category-group-heading {
+    margin: 0 0 4px;
+    font-size: 1em;
     font-weight: bold;
+  }
+
+  /* The heading's button opens and closes the group's stack list; it fills the row like the links */
+  .category-group-toggle {
+    width: 100%;
+    font-weight: inherit;
+    text-align: left;
+  }
+
+  .stack-list {
+    padding-left: 16px;
   }
 
   /* Project list */
