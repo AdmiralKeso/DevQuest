@@ -77,14 +77,14 @@
     gap: 12px;
   }
 
-  /* Each project is a white card with a black border, like the main menu tiles */
+  /* Each project is a white card with a grey border, like the main menu tiles */
   .project-card {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
     padding: 16px;
-    border: 2px solid #000;
+    border: 2px solid var(--border-color);
     background: #fff;
     color: #000;
     text-decoration: none;
@@ -112,7 +112,7 @@
     bottom: 100%;
     right: 16px;
     padding: 2px 8px;
-    border: 2px solid #000;
+    border: 2px solid var(--border-color);
     border-bottom: 0;
     background: #fff;
     font-weight: bold;
@@ -134,14 +134,14 @@
     right: 16px;
     bottom: 16px;
     padding: 2px 8px;
-    border: 2px solid #000;
+    border: 2px solid var(--border-color);
     background: #fff;
   }
 
   /* Stack label (Laravel, Django, Node, React) in its own small bordered box */
   .stack-badge {
     padding: 2px 8px;
-    border: 2px solid #000;
+    border: 2px solid var(--border-color);
   }
 
   /* Project page: compact header, then two columns that fill the rest of the window */
@@ -286,7 +286,7 @@
   .project-panel > section,
   .project-layout > .docs {
     padding: 16px;
-    border: 2px solid;
+    border: 2px solid var(--border-color);
   }
 
   /* Docs spans both columns of the project layout */
@@ -473,7 +473,7 @@
   .js-linter-link {
     display: inline-block;
     padding: 2px 8px;
-    border: 1px solid;
+    border: 1px solid var(--border-color);
     text-decoration: none;
   }
 
@@ -526,7 +526,7 @@
   }
 
   /*
-    Main menu: white tiles with a black border on a white background, filling the whole window.
+    Main menu: white tiles with a grey border on a white background, filling the whole window.
     Three columns of different widths; each column stacks its tiles with the same gap and splits at
     different heights (flex-grow below), so tiles are uneven but fit together without empty space.
   */
@@ -626,7 +626,7 @@
   .nav-signup {
     display: inline-block;
     padding: 2px 10px;
-    border: 1px solid;
+    border: 1px solid var(--border-color);
   }
 
   /* Sized to the selected language (not the longest one) with little padding, so the arrow sits close to the text */
@@ -689,7 +689,7 @@
     justify-content: center;
     gap: 8px;
     padding: 16px;
-    border: 2px solid #000;
+    border: 2px solid var(--border-color);
     background: #fff;
     color: #000;
     text-align: center;

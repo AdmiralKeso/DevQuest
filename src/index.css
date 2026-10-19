@@ -22,6 +22,8 @@
     --content-max: 1600px;
     --header-side-margin: max(clamp(16px, 3vw, 48px), calc((100vw - var(--header-max)) / 2));
     --side-margin: max(clamp(16px, 3vw, 48px), calc((100vw - var(--content-max)) / 2));
+    /* Dark grey, softer than black, for every border (boxes, cards, badges, menu tiles, buttons and fields) */
+    --border-color: #4a4a4a;
   }
 
   /* Black scrollbars on a light grey track everywhere (inherited by every scrolling area). */
@@ -87,7 +89,7 @@
   input,
   select {
     padding: 2px 8px;
-    border: 1px solid;
+    border: 1px solid var(--border-color);
   }
 
   button:not(:disabled) {
