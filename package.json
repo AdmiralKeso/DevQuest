@@ -4,21 +4,30 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently -n web,api \"vite\" \"npm run server\"",
+    "server": "node --watch server/index.js",
     "build": "vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "migrate": "knex migrate:latest",
+    "migrate:rollback": "knex migrate:rollback",
+    "migrate:make": "knex migrate:make"
   },
   "dependencies": {
+    "dotenv": "^18.0.8",
+    "express": "^5.3.0",
+    "knex": "^3.3.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "react-router": "^7.18.4"
+    "react-router": "^7.18.4",
+    "sqlite3": "^6.0.1"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
+    "concurrently": "^10.0.6",
     "oxlint": "^1.81.0",
     "tailwindcss": "^4.3.3",
     "vite": "^8.3.0"
