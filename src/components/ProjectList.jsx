@@ -28,6 +28,7 @@ export default function ProjectList({ stackId = 'all', inProgress = [], onQuit }
         <p className="empty">No projects in progress yet. Link a repository on a project page to start one.</p>
       )}
       {stack && projects.length === 0 && <p className="empty">No {stack.label} projects yet. They will be added soon.</p>}
+      {stackId === 'all' && projects.length === 0 && <p className="empty">No projects yet. They will be added soon.</p>}
 
       <section className="project-grid">
         {projects.map((o) =>
