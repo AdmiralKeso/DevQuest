@@ -270,23 +270,28 @@
 
   .objectives,
   .project-panel,
-  .project-panel > section {
+  .project-panel > section,
+  .project-layout > .docs {
     padding: 16px;
     border: 2px solid;
   }
 
+  /* Docs spans both columns of the project layout */
+  .project-layout > .docs {
+    grid-column: 1 / -1;
+  }
+
   /* White for now, so the page background (sand wave, illustration) doesn't show through the project page */
-  .stat-circle,
   .complete,
   .objectives,
   .project-panel,
-  .project-panel > section {
+  .project-panel > section,
+  .project-layout > .docs {
     background: #fff;
   }
 
-  /* Requirements and Docs: small boxes in the panel under Link to project, label above the wrapping items */
-  .project-page .requirements,
-  .project-page .docs {
+  /* Requirements: small box in the panel under Link to project, label above the wrapping items */
+  .project-page .requirements {
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
@@ -295,11 +300,44 @@
     font-size: 0.85em;
   }
 
-  .project-page .requirements h2,
-  .project-page .docs h2 {
+  .project-page .requirements h2 {
     margin: 0;
     font-size: 1em;
     white-space: nowrap;
+  }
+
+  /* Docs, full width under the columns: How to start, Tips and Docs side by side (stacked when narrow) */
+  .project-layout > .docs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px 32px;
+    align-items: start;
+  }
+
+  .project-layout > .docs h2 {
+    margin: 0 0 8px;
+    font-size: 1em;
+  }
+
+  .start-list {
+    margin: 0;
+    padding-left: 20px;
+    list-style: decimal;
+  }
+
+  .tip-list {
+    margin: 0;
+    padding-left: 20px;
+    list-style: disc;
+  }
+
+  .start-list li + li,
+  .tip-list li + li {
+    margin-top: 6px;
+  }
+
+  .tip-step {
+    font-weight: bold;
   }
 
   /* Items flow as one line of text separated by dots, wrapping like a sentence */

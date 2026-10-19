@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
-import { COMMON_DOC_LINKS, COMMON_REQUIREMENTS, SKILLS, STACKS } from '../../data/objectives.js'
+import { COMMON_DOC_LINKS, COMMON_GETTING_STARTED, COMMON_REQUIREMENTS, SKILLS, STACKS } from '../../data/objectives.js'
 import { useProjectLink } from '../../hooks/useProjectLink.js'
 import { useLocalStorage } from '../../hooks/useLocalStorage.js'
 import { useProgress } from '../../hooks/useProgress.js'
@@ -29,11 +29,15 @@ export default function ProjectPage({ project }) {
   ]
   // Docs in the same order: common, the stack's, then this project's tools.
   const docLinks = [...COMMON_DOC_LINKS, ...(stack.docLinks ?? []), ...(project.docLinks ?? [])]
+  // How to start: setting up a project in this stack, then linking it here.
+  const gettingStarted = [...(stack.gettingStarted ?? []), ...COMMON_GETTING_STARTED]
   const tracked = steps.filter(isAutoTracked)
   const syncing = link.repo !== null && link.files !== null
   const doneCount = steps.filter((s) => completed.includes(s.id)).length
   const percent = steps.length === 0 ? 0 : Math.round((doneCount / steps.length) * 100)
   const finished = steps.length > 0 && doneCount === steps.length
+  // Tips for the steps that aren't done yet, in step order.
+  const tipSteps = steps.filter((s) => s.tip && !completed.includes(s.id))
 
   // A finished project is saved in the database (steps themselves stay in localStorage).
   useEffect(() => {
@@ -219,8 +223,43 @@ export default function ProjectPage({ project }) {
             </ul>
           </section>
 
-          <section className="docs">
-            <h2>Docs:</h2>
+          <section className="todo static-analysis">
+            <h2>Static Analysis</h2>
+            <Link to={`/projects/${project.id}/js-linter`} className="js-linter-link">
+              Js Linter
+            </Link>
+          </section>
+        </aside>
+
+        {/* Docs: its own block across the full width, under All objectives and the panel:
+            how to start, tips for the steps still to do, and documentation links */}
+        <section className="docs">
+          <div className="docs-start">
+            <h2>How to start</h2>
+            <ol className="start-list">
+              {gettingStarted.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ol>
+          </div>
+
+          <div className="docs-tips">
+            <h2>Tips</h2>
+            {tipSteps.length === 0 ? (
+              <p className="placeholder">Every step is done.</p>
+            ) : (
+              <ul className="tip-list">
+                {tipSteps.map((step) => (
+                  <li key={step.id}>
+                    <span className="tip-step">{step.title}:</span> {step.tip}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <div className="docs-links">
+            <h2>Docs</h2>
             <ul className="doc-list">
               {docLinks.map((docLink) => (
                 <li key={docLink.url}>
@@ -230,15 +269,8 @@ export default function ProjectPage({ project }) {
                 </li>
               ))}
             </ul>
-          </section>
-
-          <section className="todo static-analysis">
-            <h2>Static Analysis</h2>
-            <Link to={`/projects/${project.id}/js-linter`} className="js-linter-link">
-              Js Linter
-            </Link>
-          </section>
-        </aside>
+          </div>
+        </section>
       </div>
     </main>
   )
