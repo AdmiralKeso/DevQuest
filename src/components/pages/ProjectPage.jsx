@@ -136,6 +136,7 @@ export default function ProjectPage({ project }) {
               className="stat-progress"
               label={project.title}
               value={`${percent}%`}
+              percent={percent}
             />
             {skillStats.map((skill) => {
               const hasCategory = categories.some((c) => c.id === skill.id)
@@ -145,6 +146,7 @@ export default function ProjectPage({ project }) {
                   className={`stat-${skill.label.toLowerCase().replaceAll(' ', '-')}`}
                   label={skill.label}
                   value={skill.total ? `${Math.round((skill.done / skill.total) * 100)}%` : '-'}
+                  percent={skill.total ? Math.round((skill.done / skill.total) * 100) : null}
                   onClick={hasCategory ? () => scrollToCategory(skill.id) : undefined}
                   selected={hasCategory && activeCategory === skill.id}
                 />

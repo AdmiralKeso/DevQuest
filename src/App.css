@@ -194,33 +194,72 @@
     display: flex;
     flex-shrink: 0;
     flex-wrap: wrap;
+    /* The rings are centred on one line; the labels hang under them, so the row keeps room for two label lines */
     align-items: center;
     gap: 24px;
+    padding-bottom: 2.4em;
   }
 
-  /* Circles are part of the layout; restyle freely. They shrink on short screens. */
+  /*
+    Stat circles: a white disc with a ProgressRing (in the style of attachments/ProgressCircle .svg) and the value
+    inside, the label under it so whole words always fit. The discs shrink on short screens.
+  */
   .stat-circle {
+    position: relative;
     display: flex;
+    flex-shrink: 0;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    width: clamp(90px, 15vh, 120px);
-    height: clamp(90px, 15vh, 120px);
-    padding: 8px;
-    box-sizing: border-box;
+    gap: 6px;
+    /* One size per circle, used by the disc and to keep the label about as wide as it */
+    --stat-size: clamp(76px, 12vh, 100px);
+    width: calc(var(--stat-size) + 24px);
+    /* Skill rings are buttons: no button border or padding */
+    padding: 0;
+    border: 0;
+    background: none;
     text-align: center;
-    border: 2px solid;
-    border-radius: 50%;
   }
 
   .stat-circle.stat-progress {
-    width: clamp(110px, 20vh, 160px);
-    height: clamp(110px, 20vh, 160px);
+    --stat-size: clamp(100px, 16vh, 132px);
   }
 
-  /* Smaller, tighter labels so two-word skills fit inside the circle on short screens */
+  .stat-disc {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--stat-size);
+    height: var(--stat-size);
+    border-radius: 50%;
+    /* White like the other project page boxes, not the design's dark background */
+    background: #fff;
+  }
+
+  /* The skill ring whose category is in view in "All objectives": bold label, no edge around the ring */
+  .stat-circle.selected .stat-label {
+    font-weight: bold;
+  }
+
+  .stat-value {
+    position: relative;
+    font-size: 1.15em;
+    font-weight: bold;
+    line-height: 1.1;
+  }
+
+  .stat-progress .stat-value {
+    font-size: 1.5em;
+  }
+
+  /* Under the disc, outside the row's centring, so a two-line label doesn't move its ring */
   .stat-label {
-    font-size: 0.85em;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    font-size: 0.8em;
     line-height: 1.2;
   }
 
