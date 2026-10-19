@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 
 // Repositories the user has linked before, saved in the database through the local API (server/index.js).
-// Returns [repositories, addRepository]; without the API the list is just empty.
+// Returns [repositories, addRepository, removeRepository]; without the API the list is just empty.
 export function useRepositories() {
   const [repositories, setRepositories] = useState([])
 
@@ -36,5 +36,15 @@ export function useRepositories() {
     }
   }, [])
 
-  return [repositories, addRepository]
+  // Removes a saved repository from the list.
+  const removeRepository = useCallback(async (id) => {
+    try {
+      const res = await fetch(`/api/repositories/${id}`, { method: 'DELETE' })
+      if (res.ok) setRepositories((list) => list.filter((r) => r.id !== id))
+    } catch {
+      // API not running; the list stays as it is.
+    }
+  }, [])
+
+  return [repositories, addRepository, removeRepository]
 }

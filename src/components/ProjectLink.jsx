@@ -10,8 +10,10 @@ const COOLDOWN_MS = 5000
 // or show the linked one with Check now / Unlink.
 export default function ProjectLink({ project }) {
   const { repo, files, lastScan, error, link, unlink, checkNow } = project
-  const [repositories, addRepository] = useRepositories()
+  const [repositories, addRepository, removeRepository] = useRepositories()
   const [url, setUrl] = useState('')
+  // "Linked repositories" opens a small popup with the saved repositories, each with an X to remove it.
+  const linkedDialog = useRef(null)
   const [linking, setLinking] = useState(false)
   // A ref also blocks clicks that land before React re-renders the button as disabled.
   const busy = useRef(false)
@@ -74,6 +76,56 @@ export default function ProjectLink({ project }) {
               </select>
             </label>
           )}
+          {/* The popup stays mounted so removing the last repository doesn't close it; the link needs one saved */}
+          <div className={`linked-repositories ${hiddenWhileLinking}`}>
+            {repositories.length > 0 && (
+              <button
+                type="button"
+                className="linked-repositories-toggle"
+                aria-haspopup="dialog"
+                onClick={() => linkedDialog.current?.showModal()}
+              >
+                Linked repositories
+              </button>
+            )}
+            {/* Closes with Close, Escape, or a click outside the box */}
+            <dialog
+              ref={linkedDialog}
+              className="linked-repositories-dialog"
+              aria-labelledby="linked-repositories-title"
+              onClick={(e) => e.target === e.currentTarget && e.currentTarget.close()}
+            >
+              <h2 id="linked-repositories-title">Linked repositories</h2>
+              <ul className="linked-repositories-list">
+                {repositories.map((r) => {
+                  const name = `${r.owner}/${r.repo}${r.path ? `/${r.path}` : ''}`
+                  return (
+                    <li key={r.id} className="linked-repository">
+                      <span>
+                        {name} ({r.branch})
+                      </span>
+                      <button
+                        type="button"
+                        className="remove-repository"
+                        aria-label={`Remove ${name}`}
+                        title="Remove"
+                        onClick={() => {
+                          if (url === r.url) setUrl('')
+                          removeRepository(r.id)
+                        }}
+                      >
+                        ×
+                      </button>
+                    </li>
+                  )
+                })}
+              </ul>
+              {repositories.length === 0 && <p className="empty">No saved repositories.</p>}
+              <button type="button" className="close-dialog" onClick={() => linkedDialog.current?.close()}>
+                Close
+              </button>
+            </dialog>
+          </div>
           <form className={`github-form ${hiddenWhileLinking}`} onSubmit={submit}>
             <input
               type="url"

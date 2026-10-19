@@ -488,6 +488,66 @@
     min-width: 0;
   }
 
+  /* "Linked repositories": a small link under Saved repositories that opens a popup box with the list, each with a red X */
+  /* No box of its own, so with nothing saved (only the closed popup inside) it adds no gap */
+  .linked-repositories {
+    display: contents;
+  }
+
+  .linked-repositories-toggle {
+    padding: 0;
+    border: none;
+    font-size: 0.85em;
+    text-decoration: underline;
+  }
+
+  /* The popup: a small white box with a grey border in the middle of the window */
+  .linked-repositories-dialog {
+    width: min(420px, calc(100vw - 32px));
+    max-height: min(480px, calc(100dvh - 32px));
+    margin: auto;
+    padding: 16px;
+    overflow-y: auto;
+    border: 2px solid var(--border-color);
+    background: #fff;
+  }
+
+  .linked-repositories-dialog h2 {
+    margin: 0 0 12px;
+    font-size: 1.2em;
+  }
+
+  .linked-repositories-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .linked-repositories-dialog .close-dialog {
+    margin-top: 16px;
+  }
+
+  .linked-repository {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    overflow-wrap: anywhere;
+  }
+
+  .remove-repository {
+    flex-shrink: 0;
+    padding: 0 4px;
+    border: none;
+    color: #d32f2f;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
   /* "Js Linter" is a link (it changes page) that looks like the other buttons */
   .js-linter-link {
     display: inline-block;

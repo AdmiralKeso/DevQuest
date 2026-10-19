@@ -52,6 +52,12 @@ app.post('/api/repositories', async (req, res) => {
   res.json(saved)
 })
 
+// Removes a saved repository from the list (projects linked to it keep their steps).
+app.delete('/api/repositories/:id', async (req, res) => {
+  await db('repositories').where('id', req.params.id).del()
+  res.status(204).end()
+})
+
 app.use((err, req, res, _next) => {
   console.error(err)
   res.status(500).json({ error: 'Something went wrong' })
