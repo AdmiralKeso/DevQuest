@@ -342,6 +342,17 @@
     min-width: 0;
   }
 
+  .saved-repositories {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+  }
+
+  .saved-repositories select {
+    min-width: 0;
+  }
+
   /* "Js Linter" is a link (it changes page) that looks like the other buttons */
   .js-linter-link {
     display: inline-block;

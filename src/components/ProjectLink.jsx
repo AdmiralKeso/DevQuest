@@ -1,13 +1,16 @@
 import { useRef, useState } from 'react'
 import { useCooldown } from '../hooks/useCooldown.js'
+import { useRepositories } from '../hooks/useRepositories.js'
 
 // Every click on "Link to project" or "Check now" calls the GitHub API (60 requests an hour without a login),
 // so each is blocked for a few seconds after use.
 const COOLDOWN_MS = 5000
 
-// "Link to project" box: link a public GitHub repository, or show the linked one with Check now / Unlink.
+// "Link to project" box: pick a saved repository or paste a public GitHub URL and link it,
+// or show the linked one with Check now / Unlink.
 export default function ProjectLink({ project }) {
   const { repo, files, lastScan, error, link, unlink, checkNow } = project
+  const [repositories, addRepository] = useRepositories()
   const [url, setUrl] = useState('')
   const [linking, setLinking] = useState(false)
   // A ref also blocks clicks that land before React re-renders the button as disabled.
@@ -28,7 +31,11 @@ export default function ProjectLink({ project }) {
     setTriedTooSoon(false)
     busy.current = true
     setLinking(true)
-    if (await link(url)) setUrl('')
+    const linked = await link(url)
+    if (linked) {
+      addRepository(url.trim(), linked)
+      setUrl('')
+    }
     setLinking(false)
     linkCooldown.start()
     busy.current = false
@@ -50,6 +57,23 @@ export default function ProjectLink({ project }) {
     >
       {!repo && (
         <>
+          {repositories.length > 0 && (
+            <label className={`saved-repositories ${hiddenWhileLinking}`}>
+              Saved repositories
+              <select
+                value={repositories.some((r) => r.url === url) ? url : ''}
+                onChange={(e) => setUrl(e.target.value)}
+              >
+                <option value="">Choose a repository</option>
+                {repositories.map((r) => (
+                  <option key={r.id} value={r.url}>
+                    {r.owner}/{r.repo}
+                    {r.path && `/${r.path}`} ({r.branch})
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
           <form className={`github-form ${hiddenWhileLinking}`} onSubmit={submit}>
             <input
               type="url"
