@@ -119,7 +119,18 @@ const REACT_SETUP = [pkg('react'), pkg('vite')]
 const ROUTE_PARAM = [pkg('react-router(-dom)?'), code(JSX, /<Route[^>]*path=["'][^"']*:\w+/)]
 const LARAVEL_SETUP = [named('artisan'), composer('laravel/framework')]
 const BLADE = 'blade\\.php'
-const migration = (table) => file(new RegExp(`database/migrations/.*create_${table}_table\\.php$`))
+const migration = (table, content) => file(new RegExp(`database/migrations/.*create_${table}_table\\.php$`), content)
+// A file at a path inside the Laravel project, e.g. laravel('app/Models/Thread\\.php', /hasMany/)
+const laravel = (path, content) => file(new RegExp(`(^|/)${path}$`), content)
+const ANY_PHP = '(?:[^/]+/)*[^/]+\\.php'
+const MIGRATIONS = 'database/migrations/[^/]+\\.php'
+const MODELS = 'app/Models/[^/]+\\.php'
+// Your own controllers and views, without the ones Breeze and a new Laravel project come with
+const CONTROLLERS = `app/Http/Controllers/(?!Auth/)${ANY_PHP}`
+const VIEWS = 'resources/views/(?!auth/|profile/|layouts/|components/|welcome\\.|dashboard\\.)(?:[^/]+/)*[^/]+\\.blade\\.php'
+// The logged-in user's id compared with a record's user_id, e.g. abort_if(Auth::id() !== $post->user_id, 403)
+const USER_ID = String.raw`(?:Auth::id\(\)|auth\(\)->id\(\)|\$user->id|->user\(\)->id)`
+const OWNER_CHECK = new RegExp(String.raw`${USER_ID}\s*[!=]==?\s*\$\w+->user_id|\$\w+->user_id\s*[!=]==?\s*${USER_ID}`)
 const djangoSetup = (app) => [named('manage\\.py'), file(new RegExp(`(^|/)${app}/apps\\.py$`))]
 const MAP_EMBED = code(`${BLADE}|html|jsx|tsx`, /<iframe[^>]*(google\.com\/maps|openstreetmap)/)
 const indexHtml = (content) => file(/(^|\/)index\.html$/, content)
@@ -257,6 +268,55 @@ export const OBJECTIVES = [
       { id: 'fieldset', title: 'Group the fields in a fieldset element with a legend element', tip: 'A fieldset element around the fields with a legend element like Your details tells a screen reader what they belong to.', check: indexHtml(/<fieldset\b[\s\S]*<legend\b[\s\S]*<\/fieldset>/i), skill: SEMANTIC_HTML },
       // Mobile
       { id: 'responsive', title: 'Make the form work on a mobile phone', tip: 'Add the viewport meta tag, make the fields `width: 100%` with a `max-width` on the form, add a @media query, and test at 375px wide in the browser\'s device mode.', check: [indexHtml(/<meta[^>]+name=["']viewport["']/i), code('css', /@media/), code('css', /width:\s*100%/)], skill: RESPONSIVE },
+    ],
+  },
+  // Forum with Laravel: threads and replies by logged-in users
+  {
+    id: 'forum-laravel',
+    title: 'Build a forum',
+    description: 'A forum where logged-in users start threads and reply to them, built with Laravel, Eloquent and Blade.',
+    stack: 'laravel',
+    difficulty: 'hard',
+    tags: ['Database', 'Auth', 'CRUD'],
+    requirements: ['Node.js and npm (if you use Breeze)'],
+    docLinks: [
+      doc('Breeze', 'https://laravel.com/docs/starter-kits#laravel-breeze'),
+      doc('Migrations', 'https://laravel.com/docs/migrations'),
+      doc('Eloquent relationships', 'https://laravel.com/docs/eloquent-relationships'),
+      doc('Resource controllers', 'https://laravel.com/docs/controllers#resource-controllers'),
+      doc('Validation', 'https://laravel.com/docs/validation'),
+      doc('CSRF', 'https://laravel.com/docs/csrf'),
+      doc('Policies', 'https://laravel.com/docs/authorization#creating-policies'),
+      doc('Pagination', 'https://laravel.com/docs/pagination'),
+    ],
+    // Checks look at what the code does, not at file or model names, so posts and comments work as well as threads and replies
+    steps: [
+      // Setup
+      { id: 'setup', title: 'Create a Laravel project', tip: 'Run `composer create-project laravel/laravel forum`, then `php artisan serve` and open http://localhost:8000.', check: LARAVEL_SETUP, skill: COMPREHENSION },
+      { id: 'auth', title: 'Add login and registration', tip: 'Use Laravel Breeze (`composer require laravel/breeze --dev`, then `php artisan breeze:install blade`), or write your own controller that logs users in with `Auth::attempt()` and `Auth::login()`.', check: laravel(`(?:routes|app)/${ANY_PHP}`, /Auth::(attempt|login)\(/), skill: COMPREHENSION },
+      // Database
+      { id: 'threads-table', title: 'Create a table for the threads with a migration', tip: '`php artisan make:model Thread -mc` makes the model, migration and controller at once (any name works, e.g. Post). Give the table a title, a body and `$table->foreignId(\'user_id\')->constrained()` for its author, then run `php artisan migrate`.', check: laravel(MIGRATIONS, /foreignId\(\s*['"]user_id['"]\s*\)\s*->constrained\(/), skill: COMPREHENSION },
+      { id: 'replies-table', title: 'Create a table for the replies that belongs to a thread', tip: 'A second model and migration (e.g. Reply or Comment) with a body, a user_id and `$table->foreignId(\'thread_id\')->constrained()`.', check: laravel(MIGRATIONS, /foreignId\(\s*['"](?!user_id['"])\w+_id['"]\s*\)\s*->constrained\(/), skill: COMPREHENSION },
+      { id: 'cascade', title: 'Delete the replies together with their thread', tip: 'Add `->cascadeOnDelete()` to the thread_id column, so deleting a thread doesn\'t leave replies pointing at nothing.', check: laravel(MIGRATIONS, /foreignId\(\s*['"](?!user_id['"])\w+_id['"]\s*\)[^;]*(cascadeOnDelete\(\)|onDelete\(\s*['"]cascade)/), skill: DEFENSIVE },
+      { id: 'relations', title: 'Connect the models with Eloquent relationships', tip: 'A thread has many replies: `return $this->hasMany(Reply::class)`. A reply and a thread belong to their author: `return $this->belongsTo(User::class)`.', check: [laravel(MODELS, /hasMany\(/), laravel(MODELS, /belongsTo\(/)], skill: COMPREHENSION },
+      { id: 'fillable', title: 'Only allow the form fields to be filled with $fillable', tip: 'Add `protected $fillable = [\'title\', \'body\']` to your models and set the user_id yourself in the controller, so nobody can send another user\'s id along with the form.', check: laravel('app/Models/(?!User\\.php)[^/]+\\.php', /\$fillable\s*=/), skill: DEFENSIVE },
+      // Threads
+      { id: 'routes', title: 'Add the routes for the threads', tip: '`Route::resource(\'threads\', ThreadController::class)` in routes/web.php makes the index, create, store, show, edit, update and destroy routes in one line. Separate routes like `Route::get(\'/threads/{thread}\', ...)` work too.', check: laravel('routes/web\\.php', /Route::resource\(|Route::get\(\s*['"][^'"]*\{\w+\}/), skill: COMPREHENSION },
+      { id: 'auth-middleware', title: 'Only let logged-in users post', tip: 'Put the routes that create, change or delete in `Route::middleware(\'auth\')->group(...)`, or add `->middleware(\'auth\')` to each of them. Guests are then sent to the login page.', check: laravel('routes/web\\.php', /Route::(post|put|patch|delete|resource)\([^;]*->middleware\(\s*\[?\s*['"]auth['"]|middleware\(\s*\[?\s*['"]auth['"][^;]*->group\(\s*function\s*\(\)\s*\{[^}]*Route::(post|resource)\(/), skill: DEFENSIVE },
+      { id: 'index', title: 'List the threads newest first, 20 per page', tip: 'In the controller: `Thread::latest()->paginate(20)` instead of `get()`, and `{{ $threads->links() }}` in the view for the page links.', check: [laravel(CONTROLLERS, /latest\(\)[\s\S]*?paginate\(/), laravel(VIEWS, /->links\(\)/)], skill: COMPREHENSION },
+      { id: 'eager-loading', title: 'Load the authors in one query with with()', tip: '`Thread::with(\'user\')->latest()` loads all the authors at once. Without it every thread in the list runs its own query for its author.', check: laravel(CONTROLLERS, /::with\(\s*\[?\s*['"]/), skill: COMPREHENSION },
+      { id: 'show', title: 'Show a thread with its replies', tip: 'On the thread\'s page show the title and body, then `@foreach ($thread->replies as $reply)` with each reply and its author\'s name.', check: laravel(VIEWS, /@(foreach|forelse)\s*\(\s*\$(\w+->)?(replies|comments)\s+as\b/), skill: COMPREHENSION },
+      { id: 'create-form', title: 'Make a form to start a thread, with @csrf', tip: 'A form element with `method="POST"` and `action="{{ route(\'threads.store\') }}"`, a title field, a body textarea and `@csrf` inside, so Laravel accepts the form.', check: laravel(VIEWS, /<form\b[^>]*method=["']post["'][\s\S]*?@csrf/i), skill: DEFENSIVE },
+      { id: 'validation', title: 'Validate the thread before saving it', tip: 'In store: `$request->validate([\'title\' => \'required|max:255\', \'body\' => \'required\'])`, and show what went wrong in the form with `@error(\'title\')`.', check: [laravel(CONTROLLERS, /->validate\(\s*\[/), laravel(VIEWS, /@error\(/)], skill: DEFENSIVE },
+      // Replies
+      { id: 'reply-form', title: 'Let logged-in users reply to a thread', tip: 'Add `Route::post(\'/threads/{thread}/replies\', ...)` with the auth middleware and a reply form under the replies. Save it with `$thread->replies()->create([...])` with the body and the user\'s id.', check: [laravel('routes/web\\.php', /Route::post\(\s*['"][^'"]*\{\w+\}\/\w+/), laravel(`app/${ANY_PHP}`, /->\w+\(\)->create\(/)], skill: COMPREHENSION },
+      { id: 'policy', title: 'Only let the author edit or delete their thread', tip: 'In the controller compare the ids, e.g. `abort_if(Auth::id() !== $thread->user_id, 403)`, or put that in a policy (`php artisan make:policy ThreadPolicy --model=Thread`). Only show the buttons to the author with `@can(\'update\', $thread)` or `@if (Auth::id() === $thread->user_id)`.', check: [laravel(`app/${ANY_PHP}`, OWNER_CHECK), laravel(VIEWS, /@can\(|@if\s*\(.*user_id/)], skill: DEFENSIVE },
+      // Semantic HTML
+      { id: 'article', title: 'Show each thread and reply in an article element', tip: 'An article element is a piece that stands on its own, like a post: one around each thread in the list and each reply.', check: laravel(VIEWS, /<article\b/), skill: SEMANTIC_HTML },
+      { id: 'headings', title: 'Use an h1 element for the page title and h2 elements in the list', tip: 'Each page has one h1 element, e.g. the thread title on its page; in the list, each thread title is an h2 element.', check: [laravel(VIEWS, /<h1\b/), laravel(VIEWS, /<h2\b/)], skill: SEMANTIC_HTML },
+      { id: 'labels', title: 'Give the form fields label elements', tip: 'A label element with `for="title"` belongs to the field with `id="title"`: clicking it focuses the field and a screen reader reads it out. Breeze\'s `x-input-label` component works too.', check: laravel(VIEWS, /<(label|x-input-label)\b[^>]*\sfor=/), skill: SEMANTIC_HTML },
+      // Mobile
+      { id: 'responsive', title: 'Make the forum work on a mobile phone', tip: 'Add a @media query to your CSS, or with Tailwind style for the phone first and add `sm:` and `md:` classes for wider screens, e.g. `flex-col sm:flex-row`. Test at 375px wide in the browser\'s device mode.', check: laravel(`(?:resources/css/[^/]+\\.css|${VIEWS})`, /@media|\b(sm|md|lg):[a-z]/), skill: RESPONSIVE },
     ],
   },
 ]
