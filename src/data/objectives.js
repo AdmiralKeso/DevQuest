@@ -136,7 +136,14 @@ const MAP_EMBED = code(`${BLADE}|html|jsx|tsx`, /<iframe[^>]*(google\.com\/maps|
 const indexHtml = (content) => file(/(^|\/)index\.html$/, content)
 // An HTML tag with all the given attributes in any order, e.g. tag('input', 'type=["\']tel["\']', 'pattern=')
 const tag = (name, ...attrs) => new RegExp(`<${name}\\b${attrs.map((a) => `(?=[^>]*\\s${a})`).join('')}[^>]*>`, 'i')
+// SQL projects (`editor: 'sql'`) are checked from their text box by src/sync/readSql.js: a rule matches a statement
+// of a type ('create table', 'insert', 'select', 'update', 'delete', 'alter table', 'drop table', 'create index',
+// 'begin', 'commit'...), optionally with content. Comments and text in quotes don't count.
+const sql = (statement, content) => ({ statement, content })
+// A statement without WHERE, e.g. UPDATE books SET year = 2000 (changes every row)
+const NO_WHERE = /^(?![\s\S]*\bwhere\b)/i
 // Matches when no file matches the rule, e.g. no HTML file with an onclick attribute
+// (works the same for SQL rules: no statement matches)
 const absent = (rule) => ({ ...rule, absent: true })
 
 // Difficulty shown on the project cards. A project's `difficulty` is one of these ids.
@@ -369,6 +376,65 @@ export const OBJECTIVES = [
       { id: 'labels', title: 'Give the form fields label elements', tip: 'A label element with `for="title"` belongs to the field with `id="title"`: clicking it focuses the field and a screen reader reads it out. Breeze\'s `x-input-label` component works too.', check: laravel(VIEWS, /<(label|x-input-label)\b[^>]*\sfor=/), skill: SEMANTIC_HTML },
       // Mobile
       { id: 'responsive', title: 'Make the forum work on a mobile phone', tip: 'Add a @media query to your CSS, or with Tailwind style for the phone first and add `sm:` and `md:` classes for wider screens, e.g. `flex-col sm:flex-row`. Test at 375px wide in the browser\'s device mode.', check: laravel(`(?:resources/css/[^/]+\\.css|${VIEWS})`, /@media|\b(sm|md|lg):[a-z]/), skill: RESPONSIVE },
+    ],
+  },
+  // Library database in SQL: create, read, update and delete, written in the text box on the project page
+  {
+    id: 'library-sql',
+    title: 'Build a library database',
+    description: 'Tables for authors and books, filled, searched, counted, changed and cleaned up with SQL.',
+    stack: 'sql',
+    difficulty: 'medium',
+    tags: ['CRUD', 'Database'],
+    // Written in the SQL text box under the rings instead of a GitHub repository
+    editor: 'sql',
+    tools: [doc('DB Browser for SQLite', 'https://sqlitebrowser.org/')],
+    docLinks: [
+      doc('CREATE TABLE', 'https://www.sqlite.org/lang_createtable.html'),
+      doc('INSERT', 'https://www.sqlite.org/lang_insert.html'),
+      doc('SELECT', 'https://www.sqlite.org/lang_select.html'),
+      doc('Aggregate functions', 'https://www.sqlite.org/lang_aggfunc.html'),
+      doc('UPDATE', 'https://www.sqlite.org/lang_update.html'),
+      doc('DELETE', 'https://www.sqlite.org/lang_delete.html'),
+      doc('ALTER TABLE', 'https://www.sqlite.org/lang_altertable.html'),
+      doc('Foreign keys', 'https://www.sqlite.org/foreignkeys.html'),
+      doc('Transactions', 'https://www.sqlite.org/lang_transaction.html'),
+    ],
+    gettingStarted: [
+      'Write your SQL in the text box under the rings; end every statement with a semicolon',
+      'The objectives tick off as you type, and your SQL is saved in this browser',
+      'To run it for real, open DB Browser for SQLite or `sqlite3 library.db` and paste it in',
+    ],
+    steps: [
+      // Create the tables
+      { id: 'drop-first', title: 'Start with DROP TABLE IF EXISTS', tip: 'Begin with `DROP TABLE IF EXISTS books;` and `DROP TABLE IF EXISTS authors;` so you can run the whole script again from scratch.', check: sql('drop table', /\bif\s+exists\b/i), skill: DEFENSIVE },
+      { id: 'create-authors', title: 'Create an `authors` table with a primary key', tip: '`CREATE TABLE authors (id INTEGER PRIMARY KEY, name TEXT, country TEXT);` The primary key gives every row its own id.', check: sql('create table', /^create\s+table\s+(if\s+not\s+exists\s+)?["`]?authors\b[\s\S]*\bprimary\s+key\b/i), skill: COMPREHENSION },
+      { id: 'create-books', title: 'Create a `books` table that refers to `authors`', tip: 'Give books a title, a year and `author_id INTEGER REFERENCES authors(id)`, so every book belongs to an author.', check: sql('create table', /^create\s+table\s+(if\s+not\s+exists\s+)?["`]?books\b[\s\S]*\breferences\s+["`]?authors\b/i), skill: COMPREHENSION },
+      { id: 'not-null', title: 'Make the important columns NOT NULL and UNIQUE', tip: '`name TEXT NOT NULL` stops empty rows, `isbn TEXT UNIQUE` stops the same book being added twice.', check: [sql('create table', /\bnot\s+null\b/i), sql('create table', /\bunique\b/i)], skill: DEFENSIVE },
+      { id: 'check-constraint', title: 'Check the values with a CHECK constraint', tip: 'For example `year INTEGER CHECK (year > 0)`: the database then refuses a book with a negative year.', check: sql('create table', /\bcheck\s*\(/i), skill: DEFENSIVE },
+      { id: 'cascade', title: 'Delete an author\'s books with ON DELETE CASCADE', tip: '`REFERENCES authors(id) ON DELETE CASCADE` removes the books when their author is deleted, so no book points at nothing.', check: sql('create table', /\breferences\b[^,)]*\([^)]*\)\s*on\s+delete\s+(cascade|set\s+null)\b/i), skill: DEFENSIVE },
+      // Create rows
+      { id: 'insert', title: 'Add rows to `authors` and `books` with INSERT INTO', tip: '`INSERT INTO authors (name, country) VALUES (\'Tolkien\', \'UK\');` Name the columns, so the order of the table doesn\'t matter.', check: [sql('insert', /^insert\s+into\s+["`]?authors\b/i), sql('insert', /^insert\s+into\s+["`]?books\b/i)], skill: COMPREHENSION },
+      { id: 'insert-many', title: 'Add several rows with one INSERT', tip: 'Put the rows after VALUES with commas between them: `VALUES (\'Dune\', 1965, 2), (\'Emma\', 1815, 3);`', check: sql('insert', /\bvalues\s*\([^)]*\)\s*,\s*\(/i), skill: COMPREHENSION },
+      // Read
+      { id: 'select-columns', title: 'Select only the columns you need', tip: '`SELECT title, year FROM books;` instead of `SELECT *`, so you only get what you use.', check: sql('select', /^select\s+(?!\*)[\s\S]*\bfrom\s+["`]?books\b/i), skill: COMPREHENSION },
+      { id: 'where', title: 'Filter rows with WHERE', tip: '`SELECT title FROM books WHERE year < 1950;` Only the rows that match come back.', check: sql('select', /\bwhere\b/i), skill: COMPREHENSION },
+      { id: 'like', title: 'Search on part of a title with LIKE', tip: '`WHERE title LIKE \'%ring%\'` finds every title with "ring" in it; % stands for any text.', check: sql('select', /\blike\s+'[^']*%/i), skill: COMPREHENSION },
+      { id: 'order-limit', title: 'Sort with ORDER BY and take the first rows with LIMIT', tip: '`SELECT title, year FROM books ORDER BY year DESC LIMIT 5;` gives the five newest books.', check: sql('select', /\border\s+by\b[\s\S]*\blimit\s+\d+/i), skill: COMPREHENSION },
+      { id: 'join', title: 'Show each book with its author using JOIN', tip: '`SELECT books.title, authors.name FROM books JOIN authors ON books.author_id = authors.id;`', check: sql('select', /\bjoin\b[\s\S]*\bon\b/i), skill: COMPREHENSION },
+      { id: 'left-join', title: 'Find authors without books with LEFT JOIN', tip: 'A LEFT JOIN keeps every author, also those without books; `WHERE books.id IS NULL` then leaves only those.', check: sql('select', /\bleft\s+(outer\s+)?join\b[\s\S]*\bis\s+null\b/i), skill: COMPREHENSION },
+      { id: 'group-by', title: 'Count the books per author with GROUP BY', tip: '`SELECT author_id, COUNT(*) AS books FROM books GROUP BY author_id;` makes one row per author.', check: sql('select', /\bcount\s*\([\s\S]*\bgroup\s+by\b/i), skill: COMPREHENSION },
+      { id: 'having', title: 'Keep only the groups you want with HAVING', tip: 'WHERE filters rows before grouping, HAVING filters the groups after it: `... GROUP BY author_id HAVING COUNT(*) > 1;`', check: sql('select', /\bgroup\s+by\b[\s\S]*\bhaving\b/i), skill: COMPREHENSION },
+      { id: 'aggregate', title: 'Use AVG, MIN or MAX', tip: 'For example `SELECT MIN(year), MAX(year), AVG(year) FROM books;` for the oldest, newest and average year.', check: sql('select', /\b(avg|min|max|sum)\s*\(/i), skill: COMPREHENSION },
+      // Update
+      { id: 'update', title: 'Change a row with UPDATE ... SET ... WHERE', tip: '`UPDATE books SET year = 1954 WHERE id = 1;` The WHERE picks the row to change.', check: sql('update', /\bset\b[\s\S]*\bwhere\b/i), skill: COMPREHENSION },
+      { id: 'alter', title: 'Add a column to a table with ALTER TABLE', tip: '`ALTER TABLE books ADD COLUMN pages INTEGER;` adds a column without losing the rows.', check: sql('alter table', /\badd\s+(column\s+)?\w+/i), skill: COMPREHENSION },
+      // Delete
+      { id: 'delete', title: 'Remove a row with DELETE FROM ... WHERE', tip: '`DELETE FROM books WHERE id = 3;` removes only that book.', check: sql('delete', /^delete\s+from\s+["`]?\w+["`]?\s+where\b/i), skill: COMPREHENSION },
+      { id: 'safe-changes', title: 'Never UPDATE or DELETE without a WHERE', tip: 'Without WHERE, UPDATE changes every row and DELETE empties the whole table. Every UPDATE and DELETE in your SQL needs one.', check: [sql('update'), sql('delete'), absent(sql('update', NO_WHERE)), absent(sql('delete', NO_WHERE))], skill: DEFENSIVE },
+      { id: 'transaction', title: 'Wrap changes in a transaction with BEGIN and COMMIT', tip: 'Between `BEGIN;` and `COMMIT;` all changes go through together or not at all; `ROLLBACK;` undoes them.', check: [sql('begin'), sql('commit')], skill: DEFENSIVE },
+      // Speed
+      { id: 'index', title: 'Speed up searches with CREATE INDEX', tip: '`CREATE INDEX idx_books_author ON books (author_id);` makes looking up an author\'s books fast on a big table.', check: sql('create index'), skill: COMPREHENSION },
     ],
   },
 ]
