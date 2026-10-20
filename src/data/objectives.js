@@ -110,7 +110,7 @@ const named = (name) => file(new RegExp(`(^|/)${name}$`))
 const code = (ext, content) => file(new RegExp(`\\.(${ext})$`), content)
 const pkg = (name) => file(/(^|\/)package\.json$/, new RegExp(`"${name}"`))
 const composer = (name) => file(/(^|\/)composer\.json$/, new RegExp(`"${name}"`))
-const component = (name) => file(new RegExp(`(^|/)${name}\\.(jsx|tsx)$`))
+const component = (name, content) => file(new RegExp(`(^|/)${name}\\.(jsx|tsx)$`), content)
 
 const JS = 'js|mjs|cjs|ts'
 const JSX = 'jsx|tsx|js'
@@ -187,6 +187,41 @@ export const OBJECTIVES = [
       { id: 'responsive', title: 'Make the page work on a mobile phone', tip: 'Add the viewport meta tag, then a @media query; test at 375px wide in the browser\'s device mode.', check: [indexHtml(/<meta[^>]+name=["']viewport["']/i), code('css', /@media/)], skill: RESPONSIVE },
       // Code quality
       { id: 'lint', title: 'Check for unused variables and functions with ESLint', tip: 'Run npm init @eslint/config@latest, turn on no-unused-vars, then remove whatever it reports.', check: file(/(^|\/)eslint\.config\.(js|mjs|cjs)$/, /no-unused-vars|recommended/), skill: COMPREHENSION },
+    ],
+  },
+  // Timer with React components, state and setInterval
+  {
+    id: 'timer-react',
+    title: 'Build a timer',
+    description: 'A stopwatch made of React components that counts up with setInterval and keeps its time in state.',
+    stack: 'react',
+    difficulty: 'medium',
+    tags: ['Components', 'State', 'Props'],
+    docLinks: [
+      doc('Your first component', 'https://react.dev/learn/your-first-component'),
+      doc('Passing props', 'https://react.dev/learn/passing-props-to-a-component'),
+      doc('useState', 'https://react.dev/reference/react/useState'),
+      doc('useEffect', 'https://react.dev/reference/react/useEffect'),
+      doc('setInterval', 'https://developer.mozilla.org/en-US/docs/Web/API/Window/setInterval'),
+    ],
+    // Checks look in the named component files, because Vite's starter App.jsx already uses useState
+    steps: [
+      // Components
+      { id: 'timer-component', title: 'Make a Timer component in Timer.jsx and render it in App', tip: 'Create src/components/Timer.jsx with export default function Timer() { return ... }, then import it in App.jsx and render Timer in the JSX.', check: [component('Timer'), code(JSX, /<Timer\b/)], skill: COMPREHENSION },
+      { id: 'display-component', title: 'Show the time in a TimeDisplay component that gets the seconds as a prop', tip: 'Write function TimeDisplay({ seconds }) in TimeDisplay.jsx and render it from Timer with the prop seconds={seconds}. The component only shows the time, it doesn\'t keep it.', check: [component('TimeDisplay', /TimeDisplay\s*(=\s*)?\(\s*(\{[^}]*\}|props)\s*\)/), component('Timer', /<TimeDisplay\s+\w+=\{/)], skill: COMPREHENSION },
+      { id: 'controls-component', title: 'Put the Start, Pause and Reset buttons in a Controls component', tip: 'Give Controls the click handlers as props, e.g. Controls with onStart={start}, onPause={pause} and onReset={reset}, and use them on the buttons as onClick={onStart}. The state stays in Timer.', check: [component('Controls', /<button[^>]*onClick=\{/), component('Timer', /<Controls\s[^>]*on\w+=\{/)], skill: COMPREHENSION },
+      // State
+      { id: 'seconds-state', title: 'Keep the elapsed seconds in state with useState', tip: 'const [seconds, setSeconds] = useState(0) in Timer. Changing state re-renders the component, so the new time shows up by itself.', check: component('Timer', /useState\(\s*0\s*\)/), skill: COMPREHENSION },
+      { id: 'running-state', title: 'Keep whether the timer is running in a second state', tip: 'const [isRunning, setIsRunning] = useState(false). Start sets it to true and Pause to false.', check: component('Timer', /useState\(\s*false\s*\)/), skill: COMPREHENSION },
+      // Interval
+      { id: 'set-interval', title: 'Count up every second with setInterval inside useEffect', tip: 'useEffect(() => { if (!isRunning) return; const id = setInterval(() => ..., 1000); ... }, [isRunning]) starts the interval only while the timer runs.', check: component('Timer', /useEffect\([\s\S]*setInterval\(/), skill: COMPREHENSION },
+      { id: 'clear-interval', title: 'Stop the interval in the effect\'s cleanup with clearInterval', tip: 'End the effect with return () => clearInterval(id). Without it every Start adds another interval and the timer speeds up (React\'s StrictMode even runs effects twice in development to show this).', check: component('Timer', /return\s*\(\s*\)\s*=>[\s\S]{0,60}clearInterval\(/), skill: DEFENSIVE },
+      { id: 'updater', title: 'Add a second with an updater function', tip: 'setSeconds((s) => s + 1) always uses the latest value. setSeconds(seconds + 1) inside the interval keeps reading the value from when the effect started, so the timer gets stuck at 1.', check: component('Timer', /set\w+\(\s*\(?\s*\w+\s*\)?\s*=>/), skill: DEFENSIVE },
+      { id: 'reset', title: 'Make Reset stop the timer and set it back to 0', tip: 'In reset, call setIsRunning(false) and setSeconds(0).', check: [component('Timer', /set\w+\(\s*0\s*\)/), component('Timer', /set\w+\(\s*false\s*\)/)], skill: COMPREHENSION },
+      { id: 'disable-buttons', title: 'Disable Start while running and Pause while stopped', tip: 'Pass isRunning to Controls and use disabled={isRunning} on Start and disabled={!isRunning} on Pause, so a double click can\'t start a second interval.', check: component('Controls', /disabled=\{/), skill: DEFENSIVE },
+      // Semantic HTML
+      { id: 'semantic', title: 'Give the page an h1 element and show the time in a p element', tip: 'Put an h1 element like Timer above it, and in TimeDisplay return the seconds in a p element.', check: [code(JSX, /<h1\b/), component('TimeDisplay', /<p\b/)], skill: SEMANTIC_HTML },
+      { id: 'timer-section', title: 'Wrap the timer in a section element with an aria-label', tip: 'A section element with aria-label="Timer" tells a screen reader what the buttons and time belong to.', check: component('Timer', /<section[^>]*aria-label=/), skill: SEMANTIC_HTML },
     ],
   },
 ]
