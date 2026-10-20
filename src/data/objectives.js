@@ -4,7 +4,8 @@ export const GROUPS = [
   { id: 'functional', label: 'Functional programming', description: 'Projects built from functions without a framework: JavaScript and Python.' },
   { id: 'oop', label: 'Object-oriented programming', description: 'Projects built from classes and objects without a framework: Java, C++, Python and JavaScript.' },
   { id: 'ux', label: 'UX', description: 'Projects about design and user experience: layout, accessibility and usability, in HTML, CSS and JavaScript.' },
-  { id: 'frameworks', label: 'Frameworks', description: 'Projects built with a framework or library: Laravel, Django, Node and React.' },
+  { id: 'frameworks', label: 'Frameworks', description: 'Projects built with a framework: Laravel, Django and Node.' },
+  { id: 'libraries', label: 'Libraries', description: 'Projects built with a library: React.' },
   { id: 'server', label: 'Server programming', description: 'Projects that run on the server and store data: Node, Java, Python and SQL.' },
 ]
 
@@ -34,7 +35,7 @@ export const STACKS = [
     docLinks: [doc('Node.js', 'https://nodejs.org/en/learn'), doc('Express', 'https://expressjs.com/en/guide/routing.html'), doc('EJS', 'https://github.com/mde/ejs')],
   },
   {
-    id: 'react', label: 'React', groups: ['frameworks'], description: 'Component-based UI library for building interactive front ends.', docs: 'https://react.dev/learn',
+    id: 'react', label: 'React', groups: ['libraries'], description: 'Component-based UI library for building interactive front ends.', docs: 'https://react.dev/learn',
     requirements: ['Node.js 20 or newer', 'npm', 'Basic JavaScript'],
     gettingStarted: ['Create the project: npm create vite@latest my-project -- --template react', 'Go into the folder and install: npm install', 'Start it with npm run dev and edit src/App.jsx'],
     docLinks: [doc('React', 'https://react.dev/learn'), doc('Vite', 'https://vite.dev/guide/'), doc('React Router', 'https://reactrouter.com/home')],
