@@ -123,6 +123,8 @@ const migration = (table) => file(new RegExp(`database/migrations/.*create_${tab
 const djangoSetup = (app) => [named('manage\\.py'), file(new RegExp(`(^|/)${app}/apps\\.py$`))]
 const MAP_EMBED = code(`${BLADE}|html|jsx|tsx`, /<iframe[^>]*(google\.com\/maps|openstreetmap)/)
 const indexHtml = (content) => file(/(^|\/)index\.html$/, content)
+// An HTML tag with all the given attributes in any order, e.g. tag('input', 'type=["\']tel["\']', 'pattern=')
+const tag = (name, ...attrs) => new RegExp(`<${name}\\b${attrs.map((a) => `(?=[^>]*\\s${a})`).join('')}[^>]*>`, 'i')
 // Matches when no file matches the rule, e.g. no HTML file with an onclick attribute
 const absent = (rule) => ({ ...rule, absent: true })
 
@@ -223,6 +225,38 @@ export const OBJECTIVES = [
       // Semantic HTML
       { id: 'semantic', title: 'Give the page an h1 element and show the time in a p element', tip: 'Put an h1 element like Timer above it, and in TimeDisplay return the seconds in a p element.', check: [code(JSX, /<h1\b/), component('TimeDisplay', /<p\b/)], skill: SEMANTIC_HTML },
       { id: 'timer-section', title: 'Wrap the timer in a section element with an aria-label', tip: 'A section element with aria-label="Timer" tells a screen reader what the buttons and time belong to.', check: component('Timer', /<section[^>]*aria-label=/), skill: SEMANTIC_HTML },
+    ],
+  },
+  // Contact form in plain HTML
+  {
+    id: 'contact-form-html',
+    title: 'Build a contact form',
+    description: 'A plain HTML form with fields for a username, address, phone number and message, and a submit button.',
+    stack: 'html',
+    difficulty: 'easy',
+    tags: ['Forms'],
+    docLinks: [
+      doc('form', 'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form'),
+      doc('label', 'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label'),
+      doc('input', 'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input'),
+      doc('input type="tel"', 'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/tel'),
+      doc('textarea', 'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea'),
+    ],
+    steps: [
+      // Page
+      { id: 'html', title: 'Create index.html with the page structure', tip: 'Start with the DOCTYPE html line, a title element, an h1 element and a main element that holds the form.', check: [indexHtml(/<!doctype html>/i), indexHtml(/<main\b[\s\S]*<h1\b|<h1\b[\s\S]*<main\b/i)], skill: SEMANTIC_HTML },
+      { id: 'styles', title: 'Create a CSS file and link it from index.html', tip: 'Add a link tag with `rel="stylesheet"` and `href="styles.css"` in the head.', check: [indexHtml(/<link[^>]+rel=["']stylesheet["']/i), code('css')], skill: SEMANTIC_HTML },
+      // Fields
+      { id: 'form', title: 'Add a form element with a submit button', tip: 'Put the fields in a form element and end it with a button element with `type="submit"`. Pressing Enter in a field then sends the form too.', check: indexHtml(/<form\b[\s\S]*<button(?=[^>]*\stype=["']submit["'])[^>]*>[\s\S]*<\/form>/i), skill: SEMANTIC_HTML },
+      { id: 'username', title: 'Add a username field', tip: 'An input element with `type="text"` and `name="username"`. The name is what the field is called when the form is sent.', check: indexHtml(tag('input', 'name=["\']username["\']')), skill: COMPREHENSION },
+      { id: 'address', title: 'Add an address field', tip: 'An input element with `type="text"` and `name="address"`.', check: indexHtml(tag('input', 'name=["\']address["\']')), skill: COMPREHENSION },
+      { id: 'phone', title: 'Add a phone number field with type="tel"', tip: 'An input element with `type="tel"` and `name="phone"`. On a phone this opens the number keyboard.', check: indexHtml(tag('input', 'type=["\']tel["\']', 'name=')), skill: COMPREHENSION },
+      { id: 'message', title: 'Add a text box for a message with a textarea', tip: 'A textarea element with `name="message"` and `rows="5"`; unlike an input it can hold several lines.', check: indexHtml(tag('textarea', 'name=')), skill: COMPREHENSION },
+      // Accessibility
+      { id: 'labels', title: 'Give every field a label element linked with for and id', tip: 'A label element with `for="username"` belongs to the field with `id="username"`: clicking the label focuses the field and a screen reader reads it out.', check: [indexHtml(tag('label', 'for=["\']username["\']')), indexHtml(tag('input', 'id=["\']username["\']')), indexHtml(/(<label\b[^>]*\sfor=[\s\S]*){4}/i)], skill: SEMANTIC_HTML },
+      { id: 'fieldset', title: 'Group the fields in a fieldset element with a legend element', tip: 'A fieldset element around the fields with a legend element like Your details tells a screen reader what they belong to.', check: indexHtml(/<fieldset\b[\s\S]*<legend\b[\s\S]*<\/fieldset>/i), skill: SEMANTIC_HTML },
+      // Mobile
+      { id: 'responsive', title: 'Make the form work on a mobile phone', tip: 'Add the viewport meta tag, make the fields `width: 100%` with a `max-width` on the form, add a @media query, and test at 375px wide in the browser\'s device mode.', check: [indexHtml(/<meta[^>]+name=["']viewport["']/i), code('css', /@media/), code('css', /width:\s*100%/)], skill: RESPONSIVE },
     ],
   },
 ]
