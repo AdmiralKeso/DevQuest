@@ -232,6 +232,33 @@
     min-height: 0;
   }
 
+  /*
+    SQL projects: the left column holds the rings and the text box and grows with them, the first row is as tall as
+    its content, and All objectives is a row of its own across the full width (between the columns and Docs),
+    showing every step without an inner scroll
+  */
+  .project-layout:has(.sql-editor) {
+    grid-template-rows: auto;
+  }
+
+  .project-main:has(.sql-editor) {
+    contain: none;
+  }
+
+  .project-layout > .objectives {
+    grid-column: 1 / -1;
+  }
+
+  .project-main .sql-editor {
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+  }
+
+  .project-main .sql-input {
+    flex: 1;
+  }
+
   .stats {
     display: flex;
     flex-shrink: 0;
@@ -523,6 +550,52 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+  }
+
+  /* SQL projects are checked from their text box: Link to project is greyed out and can't be used */
+  .project-link.disabled {
+    opacity: 0.45;
+    filter: grayscale(1);
+  }
+
+  /* SQL text box under the rings: a white bordered box like All objectives, the text box across its width */
+  .sql-editor {
+    flex-shrink: 0;
+    padding: 16px;
+    border: 2px solid var(--border-color);
+    background: #fff;
+  }
+
+  .sql-editor h2 {
+    margin: 0 0 4px;
+  }
+
+  .sql-input {
+    display: block;
+    width: 100%;
+    min-height: 220px;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 0.9em;
+    line-height: 1.5;
+    resize: vertical;
+    tab-size: 2;
+  }
+
+  .sql-summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 8px 0 0;
+    font-size: 0.85em;
+  }
+
+  .sql-count {
+    padding: 0 6px;
+    border: 1px solid var(--border-color);
+    font-family: ui-monospace, Consolas, monospace;
   }
 
   .project-link p,

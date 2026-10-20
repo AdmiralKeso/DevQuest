@@ -1,15 +1,18 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { COMMON_DOC_LINKS, COMMON_GETTING_STARTED, COMMON_REQUIREMENTS, SKILLS, STACKS } from '../../data/objectives.js'
-import { isInProgress } from '../../hooks/useInProgress.js'
+import { isInProgress, saveProjectLink } from '../../hooks/useInProgress.js'
 import { useProjectLink } from '../../hooks/useProjectLink.js'
 import { useLocalStorage } from '../../hooks/useLocalStorage.js'
 import { useProgress } from '../../hooks/useProgress.js'
 import { saveCompletedProject } from '../../hooks/useCompletedProjects.js'
+import { useSqlCode } from '../../hooks/useSqlCode.js'
 import { detectSteps, isAutoTracked } from '../../sync/detectSteps.js'
+import { detectSqlSteps, readSql } from '../../sync/readSql.js'
 import CodeText from '../CodeText.jsx'
 import ProjectLink from '../ProjectLink.jsx'
 import ProjectTags from '../ProjectTags.jsx'
+import SqlEditor from '../SqlEditor.jsx'
 import StackBadge from '../StackBadge.jsx'
 import StatCircle from '../StatCircle.jsx'
 import StepList from '../StepList.jsx'
@@ -21,6 +24,11 @@ export default function ProjectPage({ project }) {
   const stack = STACKS.find((s) => s.id === project.stack)
   const [completed, updateCompleted] = useProgress(project.id)
   const link = useProjectLink(project.id)
+  // SQL projects (`editor: 'sql'`) are written in a text box under the rings and checked from it, not from GitHub
+  const sqlProject = project.editor === 'sql'
+  const [sql, setSql] = useSqlCode(project.id)
+  const statements = useMemo(() => (sqlProject ? readSql(sql) : []), [sqlProject, sql])
+  const startedSql = sqlProject && sql.trim() !== ''
   // Back goes to In progress when the project was in progress when the page opened (or was refreshed);
   // linking or unlinking during the visit doesn't change it.
   const [cameFromInProgress] = useState(() => isInProgress(project, completed))
@@ -31,17 +39,22 @@ export default function ProjectPage({ project }) {
 
   const steps = project.steps ?? []
   // Everything needed before starting: common to all projects, then the stack's, then this project's extras.
+  // SQL projects are checked in the browser from their text box, so they need nothing installed: only their own
+  // requirements count (none so far), not Git, a GitHub repository or the stack's database.
   const requirements = [
-    ...new Set([...COMMON_REQUIREMENTS, ...(stack.requirements ?? []), ...(project.requirements ?? [])]),
+    ...new Set([
+      ...(sqlProject ? [] : [...COMMON_REQUIREMENTS, ...(stack.requirements ?? [])]),
+      ...(project.requirements ?? []),
+    ]),
   ]
   // Tools (apps, APIs) to build it with: the stack's, then this project's.
   const tools = [...(stack.tools ?? []), ...(project.tools ?? [])]
   // Docs in the same order: common, the stack's, then this project's tools.
   const docLinks = [...COMMON_DOC_LINKS, ...(stack.docLinks ?? []), ...(project.docLinks ?? [])]
-  // How to start: setting up a project in this stack, then linking it here.
-  const gettingStarted = [...(stack.gettingStarted ?? []), ...COMMON_GETTING_STARTED]
+  // How to start: setting up a project in this stack, then linking it here (or the project's own, e.g. for SQL).
+  const gettingStarted = project.gettingStarted ?? [...(stack.gettingStarted ?? []), ...COMMON_GETTING_STARTED]
   const tracked = steps.filter(isAutoTracked)
-  const syncing = link.repo !== null && link.files !== null
+  const syncing = sqlProject || (link.repo !== null && link.files !== null)
   const doneCount = steps.filter((s) => completed.includes(s.id)).length
   const percent = steps.length === 0 ? 0 : Math.round((doneCount / steps.length) * 100)
   const finished = steps.length > 0 && doneCount === steps.length
@@ -99,17 +112,23 @@ export default function ProjectPage({ project }) {
     setVisibleCategory(current?.id ?? categories[0]?.id ?? null)
   }
 
-  // While a repository is linked, auto-tracked steps follow its files; manual steps are left alone.
+  // While a repository is linked (or for SQL, always), auto-tracked steps follow its files or the SQL text box;
+  // manual steps are left alone.
   useEffect(() => {
     if (!syncing) return
     const projectSteps = project.steps ?? []
-    const detected = detectSteps(projectSteps, link.files)
+    const detected = sqlProject ? detectSqlSteps(projectSteps, statements) : detectSteps(projectSteps, link.files)
     const autoIds = projectSteps.filter(isAutoTracked).map((s) => s.id)
     updateCompleted((current) => {
       const next = [...current.filter((id) => !autoIds.includes(id)), ...detected]
       return sameIds(next, current) ? current : next
     })
-  }, [syncing, link.files, project, updateCompleted])
+  }, [syncing, sqlProject, statements, link.files, project, updateCompleted])
+
+  // A SQL project is in progress once something is written in its text box (the same list linking adds to).
+  useEffect(() => {
+    if (startedSql) saveProjectLink(project.id, true)
+  }, [startedSql, project.id])
 
   // Unlinking also unticks the auto-tracked steps, since nothing tracks them anymore.
   function unlink() {
@@ -128,6 +147,63 @@ export default function ProjectPage({ project }) {
   }
 
   const listProps = { completed, syncing, onToggle: toggleStep }
+
+  // All objectives: in the left column under the rings, or on SQL projects (where the text box takes the left
+  // column) a row of its own across the full width, between the columns and Docs.
+  const objectives = (
+    <section className="objectives">
+      <h2>All objectives</h2>
+      <p className="section-note">
+        {sqlProject
+          ? 'Ticked off automatically from the SQL in the text box.'
+          : 'Ticked off automatically when you link your GitHub repository.'}
+      </p>
+
+      {categories.length === 0 && (
+        <p className="placeholder">No objectives that can be tracked yet.</p>
+      )}
+
+      {categories.length > 0 && (
+        <>
+          <nav className="category-nav" aria-label="Categories">
+            <ul>
+              {categories.map((c) => (
+                <li key={c.id}>
+                  <button
+                    type="button"
+                    className={`category-link ${c.id === activeCategory ? 'active' : ''}`}
+                    aria-current={c.id === activeCategory}
+                    onClick={() => scrollToCategory(c.id)}
+                  >
+                    {c.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* Only this list scrolls; the title and category header above stay in place. */}
+          <div className="objectives-scroll" ref={listRef} onScroll={updateVisibleCategory}>
+            {categories.map((c) => {
+              const done = c.steps.filter((s) => completed.includes(s.id)).length
+              return (
+                <section key={c.id} className={`objective-category category-${c.id}`} data-category={c.id}>
+                  <h3 className="category-title">
+                    {c.label}
+                    <span className="category-progress">
+                      {' '}
+                      · {done} of {c.steps.length} done
+                    </span>
+                  </h3>
+                  <StepList {...listProps} steps={c.steps} />
+                </section>
+              )
+            })}
+          </div>
+        </>
+      )}
+    </section>
+  )
 
   // Project page template: every project fills the same sections, with placeholders for missing details.
   return (
@@ -177,67 +253,24 @@ export default function ProjectPage({ project }) {
             <p className="complete">Project complete!</p>
           )}
 
-          <section className="objectives">
-            <h2>All objectives</h2>
-            <p className="section-note">Ticked off automatically when you link your GitHub repository.</p>
+          {sqlProject && <SqlEditor value={sql} onChange={setSql} statements={statements} />}
 
-            {categories.length === 0 && (
-              <p className="placeholder">No objectives that can be tracked yet.</p>
-            )}
-
-            {categories.length > 0 && (
-              <>
-                <nav className="category-nav" aria-label="Categories">
-                  <ul>
-                    {categories.map((c) => (
-                      <li key={c.id}>
-                        <button
-                          type="button"
-                          className={`category-link ${c.id === activeCategory ? 'active' : ''}`}
-                          aria-current={c.id === activeCategory}
-                          onClick={() => scrollToCategory(c.id)}
-                        >
-                          {c.label}
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
-
-                {/* Only this list scrolls; the title and category header above stay in place. */}
-                <div className="objectives-scroll" ref={listRef} onScroll={updateVisibleCategory}>
-                  {categories.map((c) => {
-                    const done = c.steps.filter((s) => completed.includes(s.id)).length
-                    return (
-                      <section key={c.id} className={`objective-category category-${c.id}`} data-category={c.id}>
-                        <h3 className="category-title">
-                          {c.label}
-                          <span className="category-progress">
-                            {' '}
-                            · {done} of {c.steps.length} done
-                          </span>
-                        </h3>
-                        <StepList {...listProps} steps={c.steps} />
-                      </section>
-                    )
-                  })}
-                </div>
-              </>
-            )}
-          </section>
+          {!sqlProject && objectives}
         </div>
 
         <aside className="project-panel">
-          <ProjectLink project={{ ...link, unlink }} />
+          <ProjectLink project={{ ...link, unlink }} disabled={sqlProject} />
 
-          <section className="requirements">
-            <h2>Requirements:</h2>
-            <ul className="requirement-list">
-              {requirements.map((requirement) => (
-                <li key={requirement}>{requirement}</li>
-              ))}
-            </ul>
-          </section>
+          {requirements.length > 0 && (
+            <section className="requirements">
+              <h2>Requirements:</h2>
+              <ul className="requirement-list">
+                {requirements.map((requirement) => (
+                  <li key={requirement}>{requirement}</li>
+                ))}
+              </ul>
+            </section>
+          )}
 
           {project.structure && (
             <section className="structure">
@@ -271,6 +304,8 @@ export default function ProjectPage({ project }) {
             </p>
           </section>
         </aside>
+
+        {sqlProject && objectives}
 
         {/* Docs: its own block across the full width, under All objectives and the panel:
             how to start and documentation links side by side, then tips for the steps still to do across the width */}

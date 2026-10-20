@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react'
 import { OBJECTIVES } from '../data/objectives.js'
 import { useCompletedProjects } from './useCompletedProjects.js'
+import { clearSqlCode } from './useSqlCode.js'
 import { isProjectCompleted, useAllProgress } from './useProgress.js'
 
 // Projects started by linking a repository are kept in the browser only (not in the database),
@@ -46,6 +47,8 @@ export function useInProgress() {
     (projectId) => {
       saveProjectLink(projectId, false)
       updateCompleted(projectId, () => [])
+      // A SQL project would tick its steps again from the saved SQL, so its text box is emptied too
+      clearSqlCode(projectId)
       setIds((current) => current.filter((id) => id !== projectId))
     },
     [updateCompleted],

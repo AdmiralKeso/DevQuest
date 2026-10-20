@@ -8,7 +8,8 @@ const COOLDOWN_MS = 5000
 
 // "Link to project" box: pick a saved repository or paste a public GitHub URL and link it,
 // or show the linked one with Check now / Unlink.
-export default function ProjectLink({ project }) {
+// `disabled` (SQL projects, checked from their text box) greys the box out and makes it unusable.
+export default function ProjectLink({ project, disabled = false }) {
   const { repo, files, lastScan, error, link, unlink, checkNow } = project
   const [repositories, addRepository, removeRepository] = useRepositories()
   const [url, setUrl] = useState('')
@@ -54,9 +55,12 @@ export default function ProjectLink({ project }) {
 
   return (
     <section
-      className={`project-link relative ${repo ? 'linked' : 'none'} ${linking ? 'linking' : ''}`}
+      className={`project-link relative ${repo ? 'linked' : 'none'} ${linking ? 'linking' : ''} ${disabled ? 'disabled' : ''}`}
       aria-busy={linking}
+      aria-disabled={disabled}
+      inert={disabled}
     >
+      {disabled && <p className="link-disabled-note">This project is checked from the SQL text box, not from GitHub.</p>}
       {!repo && (
         <>
           {repositories.length > 0 && (
