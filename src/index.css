@@ -29,6 +29,9 @@
   /* Black scrollbars on a light grey track everywhere (inherited by every scrolling area). */
   html {
     scrollbar-color: black #e5e5e5;
+    /* Always keep room for the page scrollbar, so the header (GitHub, language) doesn't shift left on project
+       pages, which scroll the whole window while the other pages don't */
+    scrollbar-gutter: stable;
   }
 
   body {
