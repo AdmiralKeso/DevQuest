@@ -122,6 +122,8 @@ const migration = (table) => file(new RegExp(`database/migrations/.*create_${tab
 const djangoSetup = (app) => [named('manage\\.py'), file(new RegExp(`(^|/)${app}/apps\\.py$`))]
 const MAP_EMBED = code(`${BLADE}|html|jsx|tsx`, /<iframe[^>]*(google\.com\/maps|openstreetmap)/)
 const indexHtml = (content) => file(/(^|\/)index\.html$/, content)
+// Matches when no file matches the rule, e.g. no HTML file with an onclick attribute
+const absent = (rule) => ({ ...rule, absent: true })
 
 // Difficulty shown on the project cards. A project's `difficulty` is one of these ids.
 export const DIFFICULTIES = [
@@ -142,24 +144,8 @@ export const SKILLS = [
   { id: RESPONSIVE, label: 'Responsive' },
 ]
 
-// The same goal (title) can have one card per stack, each with steps specific to that stack.
-// Every project fills the same project page template. Only id, title and stack are required:
-//   {
-//     id: 'unique-id',              // used in the URL: /projects/unique-id
-//     title: 'Build a ...',
-//     description: 'One sentence.', // optional, the page shows a placeholder without it
-//     stack: 'react',               // one of the STACKS ids
-//     difficulty: 'easy',           // optional: easy, medium or hard, shown on the card
-//     requirements: ['...'],        // optional, extra requirements on top of the stack's
-//     tags: ['API'],                // optional, small labels next to the stack badge
-//     tools: [doc('Label', 'https://...')],    // optional, extra tools on top of the stack's (the Tools box)
-//     docLinks: [doc('Label', 'https://...')], // optional, extra docs on top of the stack's
-//     steps: [                      // optional, the page shows a placeholder without it
-//       { id: 'step-id', title: 'Do this', tip: 'How to do it.', check: file(/regex/), skill: SEMANTIC_HTML },
-//     ],
-//   },
 export const OBJECTIVES = [
-  // Pokémon search
+  // Fetch a pokemon from an API
   {
     id: 'pokemon-javascript',
     title: 'Fetch a Pokémon from an API',
@@ -180,7 +166,9 @@ export const OBJECTIVES = [
       // Files
       { id: 'html', title: 'Create index.html with the page structure', tip: 'Start with <!DOCTYPE html>, a <title>, and a <main> for the search and the result.', check: indexHtml(/<!doctype html>/i), skill: SEMANTIC_HTML },
       { id: 'script', title: 'Create script.js and load it from index.html', tip: 'Put <script src="script.js" defer></script> in the head so the page is parsed before your code runs.', check: [indexHtml(/<script[^>]+src=["'][^"']*\.js["']/i), code(JS)], skill: COMPREHENSION },
-      { id: 'styles', title: 'Create styles.css and link it from index.html', tip: 'Add <link rel="stylesheet" href="styles.css"> in the head.', check: [indexHtml(/<link[^>]+rel=["']stylesheet["']/i), code('css')], skill: SEMANTIC_HTML },
+      // Unobtrusive JavaScript: no inline event attributes, inline script code or javascript: links in the HTML
+      { id: 'unobtrusive', title: 'Keep all JavaScript out of the HTML (unobtrusive JavaScript)', tip: 'No onclick="..." or other on... attributes, no code between <script></script> tags and no href="javascript:...". Select the elements in script.js with document.querySelector and attach the events there with addEventListener.', check: [indexHtml(/<script[^>]+src=/i), code(JS, /addEventListener\(/), absent(code('html', /<[^>]+\son[a-z]+\s*=|href\s*=\s*["']\s*javascript:|<script(?![^>]*\bsrc=)[^>]*>\s*\S/i))], skill: COMPREHENSION },
+      { id: 'styles', title: 'Create a CSS file and link it from index.html', tip: 'Add <link rel="stylesheet" href="styles.css"> in the head.', check: [indexHtml(/<link[^>]+rel=["']stylesheet["']/i), code('css')], skill: SEMANTIC_HTML },
       // Search
       { id: 'search-form', title: 'Add a search form with a text field and a search button', tip: 'A <form> lets the Enter key search too; give the button type="submit".', check: indexHtml(/<form[\s\S]*<input[\s\S]*<button[\s\S]*<\/form>/i), skill: SEMANTIC_HTML },
       { id: 'submit', title: 'Search on submit without reloading the page', tip: 'Listen for the form\'s submit event and call event.preventDefault() first.', check: code(JS, /addEventListener\(\s*["']submit["'][\s\S]*preventDefault\(\)/), skill: COMPREHENSION },
@@ -188,10 +176,10 @@ export const OBJECTIVES = [
       // Fetch
       // Only the function is checked (fetch called inside a function), not which URL it requests or what comes back
       { id: 'fetch', title: 'Write a function that requests a Pokémon with fetch', tip: 'The API lives at https://pokeapi.co/api/v2/; one Pokémon is pokemon/ plus its name or number, e.g. https://pokeapi.co/api/v2/pokemon/pikachu.', check: code(JS, /(\bfunction\b[^{]*|=>\s*)\{[\s\S]*?\bfetch\(\s*\S/), skill: COMPREHENSION },
-      { id: 'async-await', title: 'Use async and await instead of .then()', tip: 'Mark the function async, then await both fetch() and res.json().', check: [code(JS, /\basync\b/), code(JS, /await\s+fetch\(/), code(JS, /await\s+\w+\.json\(\)/)], skill: COMPREHENSION },
-      { id: 'show-result', title: 'Show the Pokémon\'s name, image and types', tip: 'The image is in sprites.front_default and the types in types[].type.name.', check: [code(JS, /sprites/), code(JS, /\btypes\b/)], skill: COMPREHENSION },
+      { id: 'async-await', title: 'Wrap the fetch into an async function and use await to wait for response', tip: 'Mark the function async, then await both fetch() and res.json().', check: [code(JS, /\basync\b/), code(JS, /await\s+fetch\(/), code(JS, /await\s+\w+\.json\(\)/)], skill: COMPREHENSION },
+      { id: 'show-result', title: 'Build the result with createElement: the name in a heading, the image in an <img> and the types in a list', tip: 'Make each element with document.createElement: an <h2> with the name (data.name) as textContent, an <img> with src data.sprites.front_default and the name as alt, and a <ul> with an <li> for each type (data.types[].type.name, e.g. with forEach). Add them to the result area with append() or appendChild(), and empty it first with replaceChildren() so an old Pokémon doesn\'t stay. No innerHTML.', check: [code(JS, /sprites/), code(JS, /\btypes\b/), code(JS, /createElement\(\s*["']h[1-6]["']\s*\)/), code(JS, /createElement\(\s*["']img["']\s*\)/), code(JS, /createElement\(\s*["']li["']\s*\)/), code(JS, /\.(append|appendChild|replaceChildren)\(/)], skill: COMPREHENSION },
       // Errors
-      { id: 'try-catch', title: 'Wrap the request in try...catch', tip: 'fetch only rejects when the network fails, so catch also needs the error you throw for a bad response.', check: code(JS, /\btry\s*\{[\s\S]*\}\s*catch\s*(\(\s*\w+\s*\))?\s*\{/), skill: DEFENSIVE },
+      { id: 'try-catch', title: 'Wrap the request in try/catch', tip: 'fetch only rejects when the network fails, so catch also needs the error you throw for a bad response.', check: code(JS, /\btry\s*\{[\s\S]*\}\s*catch\s*(\(\s*\w+\s*\))?\s*\{/), skill: DEFENSIVE },
       { id: 'res-ok', title: 'Throw an error when the server answers with an error (!res.ok)', tip: 'A misspelled name returns 404 and a server problem 500; both still resolve, so check res.ok and throw.', check: [code(JS, /!\s*\w+\.ok\b/), code(JS, /throw\s+new\s+Error\(/)], skill: DEFENSIVE },
       { id: 'show-error', title: 'Show the error on the page, not only in the console', tip: 'In catch, write a message like "Pokémon not found" into the result area with textContent.', check: code(JS, /catch\s*(\(\s*\w+\s*\))?\s*\{[\s\S]{0,400}\.textContent\s*=/), skill: DEFENSIVE },
       // Accessibility and mobile

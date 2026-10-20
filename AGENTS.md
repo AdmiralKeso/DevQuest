@@ -2,7 +2,7 @@ Imagine an app where a user chooses what they want to achieve, and the platform 
 
 1. Choose an objective
 Users start with a goal instead of a blank canvas.
-- Projects are being written again from scratch. So far there is one: "Fetch a Pokémon from an API" (`pokemon-javascript`, JavaScript stack: a function that fetches from PokéAPI `https://pokeapi.co/api/v2/` (only the function is checked, not the URL or the answer) with async/await, try...catch, `!res.ok`, an HTML page with CSS and a search button, mobile, aria labels, ESLint for unused code). The goals below are the ideas for the rest.
+- Projects are being written again from scratch. So far there is one: "Fetch a Pokémon from an API" (`pokemon-javascript`, JavaScript stack: a function that fetches from PokéAPI `https://pokeapi.co/api/v2/` (only the function is checked, not the URL or the answer) with async/await, try...catch, `!res.ok`, unobtrusive JavaScript (no inline `on...` attributes, inline script code or `javascript:` links; events via addEventListener), the result (name heading, image, list of types) built with createElement, an HTML page with CSS and a search button, mobile, aria labels, ESLint for unused code). The goals below are the ideas for the rest.
 - Build a portfolio
 - Create an online store
 - Launch a landing page
@@ -112,7 +112,7 @@ Structure
 - `src/hooks/useCompletedProjects.js`: finished projects in the database (`useCompletedProjects()` to read them, `saveCompletedProject(projectId)` to save one)
 - `src/hooks/useCooldown.js`: short wait after an action before it can run again (used by the Link to project and Check now buttons)
 - `src/sync/readGitHub.js`: parses GitHub URLs, checks the repository exists, reads its files through the GitHub API (skipping installed/generated folders, caching unchanged files)
-- `src/sync/detectSteps.js`: matches step `check` rules (file path regex + optional content regex) against the files
+- `src/sync/detectSteps.js`: matches step `check` rules (file path regex + optional content regex; an `absent` rule passes when no file matches) against the files
 - `src/components/pages/JsLinterPage.jsx`: Js Linter page for a project (placeholder that says "Coming soon"; the linter will be added later)
 - `src/components/StackBadge.jsx`: stack label with a `data-stack` attribute for per-stack styling
 - `src/components/ProjectTags.jsx`: a project's tags as small labels with a `data-tag` attribute
