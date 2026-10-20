@@ -335,6 +335,7 @@
 
   /* Requirements and Tools: small boxes in the panel under Link to project, label above the wrapping items */
   .project-page .requirements,
+  .project-page .structure,
   .project-page .tools {
     display: flex;
     flex-direction: column;
@@ -345,10 +346,38 @@
   }
 
   .project-page .requirements h2,
+  .project-page .structure h2,
   .project-page .tools h2 {
     margin: 0;
     font-size: 1em;
     white-space: nowrap;
+  }
+
+  /* Required structure: a folder tree (StructureTree.jsx); each folder's contents sit under it behind a thin guide line */
+  .structure-tree {
+    overflow-x: auto;
+    font-family: ui-monospace, Consolas, monospace;
+    line-height: 1.6;
+  }
+
+  .structure-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .structure-list .structure-list {
+    margin: 2px 0 4px 6px;
+    padding-left: 12px;
+    border-left: 1px solid var(--border-color);
+  }
+
+  .structure-name {
+    white-space: nowrap;
+  }
+
+  .structure-folder > .structure-name {
+    font-weight: bold;
   }
 
   /* A tool: its name as a small bold heading, the URL under it (long URLs wrap) */

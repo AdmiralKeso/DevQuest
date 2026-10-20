@@ -13,6 +13,7 @@ import ProjectTags from '../ProjectTags.jsx'
 import StackBadge from '../StackBadge.jsx'
 import StatCircle from '../StatCircle.jsx'
 import StepList from '../StepList.jsx'
+import StructureTree from '../StructureTree.jsx'
 
 const sameIds = (a, b) => a.length === b.length && a.every((id) => b.includes(id))
 
@@ -237,6 +238,13 @@ export default function ProjectPage({ project }) {
               ))}
             </ul>
           </section>
+
+          {project.structure && (
+            <section className="structure">
+              <h2>Required structure:</h2>
+              <StructureTree lines={project.structure} />
+            </section>
+          )}
 
           {tools.length > 0 && (
             <section className="tools">
