@@ -2,7 +2,7 @@ import { Link } from 'react-router'
 import LanguageSelect from './LanguageSelect.jsx'
 import logo from '../assets/images/logo/logodevquest.png'
 
-// Header on every page: logo, title and tagline on the left, nav on the right.
+// Header on every page: logo, title and tagline on the left, nav on the right (GitHub and the language).
 // On the main menu the title is the page's h1; on other pages the logo and title link back to the menu
 // (those pages have their own h1).
 export default function SiteHeader({ home = false }) {
@@ -27,12 +27,6 @@ export default function SiteHeader({ home = false }) {
       )}
       <nav className="menu-nav" aria-label="Site">
         <ul>
-          <li>
-            <Link to="/docs">Docs</Link>
-          </li>
-          <li>
-            <Link to="/about">About</Link>
-          </li>
           <li>
             <a href="https://github.com/AdmiralKeso/DevQuest" target="_blank" rel="noreferrer">
               GitHub
