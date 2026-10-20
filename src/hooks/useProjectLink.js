@@ -2,10 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { readGitHub, resolveGitHubRepo } from '../sync/readGitHub.js'
 import { saveProjectLink } from './useInProgress.js'
 
+// Links a project to a public GitHub repository and reads it once when linked, then again only on "Check now".
 // GitHub allows 60 requests an hour without a login; unchanged checks don't count, a new commit costs two.
-const SCAN_INTERVAL_MS = 30000
-
-// Links a project to a public GitHub repository and rereads it every 30 seconds.
 // The link only lasts while the page is open: the user picks a repository again each visit
 // (saved repositories are offered by useRepositories). Ticked steps stay saved as progress.
 export function useProjectLink(projectId) {
@@ -23,16 +21,13 @@ export function useProjectLink(projectId) {
   const branch = repo?.branch
   const path = repo?.path
 
-  // While linked, reread the repository on an interval (skipped while the tab is hidden). "Check now" restarts it.
+  // Read the repository when it is linked and each time "Check now" is pressed; there is no automatic check.
   useEffect(() => {
     if (!owner) return
     const current = { owner, repo: name, branch, path }
     let cancelled = false
-    let scanning = false
 
     async function scan() {
-      if (scanning || document.hidden) return
-      scanning = true
       try {
         const result = await readGitHub(current, state.current)
         if (!cancelled) {
@@ -42,16 +37,12 @@ export function useProjectLink(projectId) {
         }
       } catch (e) {
         if (!cancelled) setError(e.message)
-      } finally {
-        scanning = false
       }
     }
 
     scan()
-    const timer = setInterval(scan, SCAN_INTERVAL_MS)
     return () => {
       cancelled = true
-      clearInterval(timer)
     }
   }, [owner, name, branch, path, scanRequest])
 

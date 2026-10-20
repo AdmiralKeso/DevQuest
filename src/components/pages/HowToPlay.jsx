@@ -33,8 +33,8 @@ export default function HowToPlay() {
         <li>
           <h2>Build and push</h2>
           <p>
-            Work through the objectives and push your code. DevQuest checks your repository every 30
-            seconds (or press "Check now") and ticks off objectives when it finds the code for them.
+            Work through the objectives and push your code. Press "Check now" to let DevQuest
+            read your repository; it ticks off objectives when it finds the code for them.
           </p>
         </li>
         <li>

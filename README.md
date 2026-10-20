@@ -105,7 +105,7 @@ Then go to [http://localhost:5173](http://localhost:5173) again.
 2. **Read the project page.** It shows what you need, how to start, tips and helpful links.
 3. **Make a public repository on GitHub** for your project and push your code to it.
 4. **Link your repository.** Paste its address (like `https://github.com/your-name/your-project`) under "Link to project" and click the button.
-5. **Write code and push it.** DevQuest checks your repository every 30 seconds and ticks off the steps it finds. Click "Check now" if you don't want to wait.
+5. **Write code and push it.** Click "Check now" and DevQuest reads your repository and ticks off the steps it finds. It doesn't check by itself.
 
 The rings at the top show your progress. Your started projects are listed under "In progress", and finished ones on your Profile.
 
