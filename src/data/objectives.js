@@ -19,7 +19,7 @@ export const STACKS = [
   {
     id: 'laravel', label: 'Laravel', groups: ['frameworks'], description: 'PHP framework with routing, Blade templates and Eloquent ORM built in.', docs: 'https://laravel.com/docs',
     requirements: ['PHP 8.2 or newer', 'Composer', 'Basic PHP'],
-    gettingStarted: ['Create the project: composer create-project laravel/laravel my-project', 'Go into the folder and start it: php artisan serve', 'Open http://localhost:8000 and add your first route in routes/web.php'],
+    gettingStarted: ['Create the project: `composer create-project laravel/laravel my-project`', 'Go into the folder and start it: `cd my-project` then `php artisan serve`', 'Open http://localhost:8000 and add your first route in routes/web.php'],
     docLinks: [doc('Laravel', 'https://laravel.com/docs'), doc('Blade', 'https://laravel.com/docs/blade'), doc('Eloquent', 'https://laravel.com/docs/eloquent')],
   },
   {
