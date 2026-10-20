@@ -342,7 +342,9 @@ export default function ProjectPage({ project }) {
               <ul className="tip-list">
                 {tipSteps.map((step) => (
                   <li key={step.id}>
-                    <span className="tip-step">{step.title}:</span> <CodeText text={step.tip} />
+                    <span className="tip-step">
+                      <CodeText text={step.title} />:
+                    </span> <CodeText text={step.tip} />
                   </li>
                 ))}
               </ul>

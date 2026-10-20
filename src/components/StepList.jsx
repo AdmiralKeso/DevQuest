@@ -1,4 +1,5 @@
 import { isAutoTracked } from '../sync/detectSteps.js'
+import CodeText from './CodeText.jsx'
 
 // A checklist of steps. Auto-tracked steps can only be ticked by the linked repository.
 export default function StepList({ steps, completed, syncing, onToggle, emptyText }) {
@@ -18,7 +19,9 @@ export default function StepList({ steps, completed, syncing, onToggle, emptyTex
                 disabled={isAutoTracked(step)}
                 onChange={() => onToggle(step.id)}
               />
-              <span>{step.title}</span>
+              <span>
+                <CodeText text={step.title} />
+              </span>
             </label>
             {auto && (
               <span className="step-status">{done}</span>

@@ -120,7 +120,7 @@ Structure
 - `src/hooks/useSqlCode.js`: a SQL project's text box in localStorage (`useSqlCode(projectId)`, `clearSqlCode(projectId)`)
 - `src/sync/detectSteps.js`: matches step `check` rules (file path regex + optional content regex; an `absent` rule passes when no file matches) against the files
 - `src/components/pages/JsLinterPage.jsx`: Js Linter page for a project (placeholder that says "Coming soon"; the linter will be added later)
-- `src/components/CodeText.jsx`: text from `objectives.js` with the parts between backticks shown as small code boxes (`.code-box`), used for How to start and Tips (e.g. `` `npm install` ``)
+- `src/components/CodeText.jsx`: text from `objectives.js` with the parts between backticks shown as small code boxes (`.code-box`), used for How to start, Tips and the step titles in All objectives (e.g. the table name in "Create an `authors` table") (e.g. `` `npm install` ``)
 - `src/components/StructureTree.jsx`: a project's `structure` as a folder tree (Required structure box on the project page)
 - `src/components/StackBadge.jsx`: stack label with a `data-stack` attribute for per-stack styling
 - `src/components/ProjectTags.jsx`: a project's tags as small labels with a `data-tag` attribute
