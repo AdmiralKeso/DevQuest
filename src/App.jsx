@@ -2,6 +2,7 @@ import { Link, Route, Routes, useLocation, useParams } from 'react-router'
 import AboutPage from './components/pages/AboutPage.jsx'
 import DocsPage from './components/pages/DocsPage.jsx'
 import HowToPlay from './components/pages/HowToPlay.jsx'
+import InstructionsPage from './components/pages/InstructionsPage.jsx'
 import JsLinterPage from './components/pages/JsLinterPage.jsx'
 import MainMenu from './components/pages/MainMenu.jsx'
 import ProfilePage from './components/pages/ProfilePage.jsx'
@@ -66,6 +67,7 @@ function App() {
           <Route path="/" element={<MainMenu />} />
           <Route path="/how-to-play" element={<HowToPlay />} />
           <Route path="/docs" element={<DocsPage />} />
+          <Route path="/instructions" element={<InstructionsPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/terms" element={<TermsPage />} />

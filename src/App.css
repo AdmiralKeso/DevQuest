@@ -1133,12 +1133,12 @@
     font-size: 1.2em;
   }
 
-  .info-content ul:not(.doc-list),
+  .info-content ul:not(.doc-list, .requirement-list),
   .play-steps {
     padding-left: 20px;
   }
 
-  .info-content ul:not(.doc-list) {
+  .info-content ul:not(.doc-list, .requirement-list) {
     list-style: disc;
   }
 
@@ -1150,6 +1150,69 @@
     margin-top: 16px;
   }
 
+  /*
+    Instructions: How to play on the left, Requirements and GitHub stacked on the right,
+    Docs across the full width under them; white boxes with a grey border like the project page
+  */
+  .instructions-layout {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .instructions-side {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .instructions-box {
+    padding: 16px;
+    border: 2px solid var(--border-color);
+    background: #fff;
+  }
+
+  .instructions-box h2 {
+    margin-bottom: 12px;
+  }
+
+  .instructions-box h3 {
+    margin: 0 0 4px;
+    font-size: 1em;
+    font-weight: bold;
+  }
+
+  .instructions-box p {
+    margin: 0;
+  }
+
+  .instructions-box p + *,
+  .instructions-box ul + * {
+    margin-top: 12px;
+  }
+
+  .instructions-box ul:not(.doc-list):not(.requirement-list) > li + li {
+    margin-top: 6px;
+  }
+
+  .structure-rule {
+    font-weight: bold;
+  }
+
+  .instructions-docs {
+    grid-column: 1 / -1;
+  }
+
+  .instructions-docs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px 24px;
+  }
+
+  .instructions-docs-grid p {
+    margin-bottom: 4px;
+  }
+
   /* Narrow screens: columns stack and the page scrolls normally */
   @media (max-width: 720px) {
     .app-layout,
@@ -1158,7 +1221,8 @@
       grid-template-rows: none;
     }
 
-    .project-layout > .docs {
+    .project-layout > .docs,
+    .instructions-layout {
       grid-template-columns: 1fr;
     }
 

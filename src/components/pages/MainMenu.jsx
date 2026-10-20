@@ -70,7 +70,7 @@ export default function MainMenu() {
               </span>
             </div>
           </Link>
-          <Link to="/docs" className="menu-tile tile-docs">
+          <Link to="/instructions" className="menu-tile tile-docs">
             <div className="menu-title-container">
               <span className="tile-label">
                 <i className="fa-brands fa-readme" aria-hidden="true"></i> Instructions
