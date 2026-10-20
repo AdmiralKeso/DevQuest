@@ -403,6 +403,14 @@
     font-weight: bold;
   }
 
+  /* Commands and code in How to start and Tips (backticks in objectives.js, see CodeText.jsx) */
+  .code-box {
+    padding: 1px 6px;
+    border: 1px solid var(--border-color);
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 0.9em;
+  }
+
   /* Items flow as one line of text separated by dots, wrapping like a sentence */
   .requirement-list,
   .doc-list {

@@ -114,6 +114,7 @@ Structure
 - `src/sync/readGitHub.js`: parses GitHub URLs, checks the repository exists, reads its files through the GitHub API (skipping installed/generated folders, caching unchanged files)
 - `src/sync/detectSteps.js`: matches step `check` rules (file path regex + optional content regex; an `absent` rule passes when no file matches) against the files
 - `src/components/pages/JsLinterPage.jsx`: Js Linter page for a project (placeholder that says "Coming soon"; the linter will be added later)
+- `src/components/CodeText.jsx`: text from `objectives.js` with the parts between backticks shown as small code boxes (`.code-box`), used for How to start and Tips (e.g. `` `npm install` ``)
 - `src/components/StackBadge.jsx`: stack label with a `data-stack` attribute for per-stack styling
 - `src/components/ProjectTags.jsx`: a project's tags as small labels with a `data-tag` attribute
 - `src/App.css`: layout styles (plus the colours asked for on the main menu, header and project cards)

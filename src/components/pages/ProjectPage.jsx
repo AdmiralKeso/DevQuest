@@ -7,6 +7,7 @@ import { useLocalStorage } from '../../hooks/useLocalStorage.js'
 import { useProgress } from '../../hooks/useProgress.js'
 import { saveCompletedProject } from '../../hooks/useCompletedProjects.js'
 import { detectSteps, isAutoTracked } from '../../sync/detectSteps.js'
+import CodeText from '../CodeText.jsx'
 import ProjectLink from '../ProjectLink.jsx'
 import ProjectTags from '../ProjectTags.jsx'
 import StackBadge from '../StackBadge.jsx'
@@ -270,7 +271,9 @@ export default function ProjectPage({ project }) {
             <h2>How to start</h2>
             <ol className="start-list">
               {gettingStarted.map((item) => (
-                <li key={item}>{item}</li>
+                <li key={item}>
+                  <CodeText text={item} />
+                </li>
               ))}
             </ol>
           </div>
@@ -296,7 +299,7 @@ export default function ProjectPage({ project }) {
               <ul className="tip-list">
                 {tipSteps.map((step) => (
                   <li key={step.id}>
-                    <span className="tip-step">{step.title}:</span> {step.tip}
+                    <span className="tip-step">{step.title}:</span> <CodeText text={step.tip} />
                   </li>
                 ))}
               </ul>

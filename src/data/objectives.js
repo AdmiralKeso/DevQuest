@@ -37,7 +37,7 @@ export const STACKS = [
   {
     id: 'react', label: 'React', groups: ['libraries'], description: 'Component-based UI library for building interactive front ends.', docs: 'https://react.dev/learn',
     requirements: ['Node.js 20 or newer', 'npm', 'Basic JavaScript'],
-    gettingStarted: ['Create the project: npm create vite@latest my-project -- --template react', 'Go into the folder and install: npm install', 'Start it with npm run dev and edit src/App.jsx'],
+    gettingStarted: ['Create the project: Run `npm create vite@latest my-react-app`, choose react then javascript and eslint', 'Go into the folder and install: `cd my-react-app` then `npm install`', 'Start the development server with Node: `npm run dev`, then open http://localhost:5173 in your browser', 'Edit src/App.jsx; the page updates by itself when you save'],
     docLinks: [doc('React', 'https://react.dev/learn'), doc('Vite', 'https://vite.dev/guide/'), doc('React Router', 'https://reactrouter.com/home')],
   },
   {
