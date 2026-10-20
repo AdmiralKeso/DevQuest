@@ -3,13 +3,20 @@ import { projectPercent, useAllProgress } from '../hooks/useProgress.js'
 import ProjectCard from './ProjectCard.jsx'
 
 // `stackId` is a stack, 'all', or 'in-progress' (shows `inProgress`: projects linked and not completed).
+// 'all' shows every project except the ones in progress.
 // On In progress each card shows its overall progress ring and has a Quit button (a red X) (`onQuit(projectId)`);
 // the button sits next to the card's link, not inside it.
 export default function ProjectList({ stackId = 'all', inProgress = [], onQuit }) {
   const [saved] = useAllProgress()
   const stack = STACKS.find((s) => s.id === stackId)
   const showInProgress = stackId === 'in-progress'
-  const projects = showInProgress ? inProgress : getProjectsForStack(stackId)
+  // All projects leaves out the ones in progress: they show under In progress instead
+  let projects = getProjectsForStack(stackId)
+  if (showInProgress) {
+    projects = inProgress
+  } else if (stackId === 'all') {
+    projects = projects.filter((o) => !inProgress.some((p) => p.id === o.id))
+  }
 
   let title = 'What do you want to build?'
   if (stack) {
@@ -28,7 +35,11 @@ export default function ProjectList({ stackId = 'all', inProgress = [], onQuit }
         <p className="empty">No projects in progress yet. Link a repository on a project page to start one.</p>
       )}
       {stack && projects.length === 0 && <p className="empty">No {stack.label} projects yet. They will be added soon.</p>}
-      {stackId === 'all' && projects.length === 0 && <p className="empty">No projects yet. They will be added soon.</p>}
+      {stackId === 'all' && projects.length === 0 && (
+        <p className="empty">
+          {inProgress.length > 0 ? 'Every project is in progress.' : 'No projects yet. They will be added soon.'}
+        </p>
+      )}
 
       <section className="project-grid">
         {projects.map((o) =>
