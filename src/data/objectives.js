@@ -168,6 +168,13 @@ export const OBJECTIVES = [
     difficulty: 'medium',
     tags: ['API', 'JSON'],
     tools: [doc('PokéAPI', 'https://pokeapi.co/api/v2/')],
+    structure: [
+      'index.html',
+      'script.js',
+      'styles.css',
+      'eslint.config.js',
+      'package.json',
+    ],
     docLinks: [
       doc('PokéAPI', 'https://pokeapi.co/docs/v2'),
       doc('async function', 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function'),
@@ -211,6 +218,18 @@ export const OBJECTIVES = [
     stack: 'react',
     difficulty: 'medium',
     tags: ['Components', 'State', 'Props'],
+    structure: [
+      'src/',
+      '  components/',
+      '    Timer.jsx',
+      '    TimeDisplay.jsx',
+      '    Controls.jsx',
+      '  App.jsx',
+      '  main.jsx',
+      '  index.css',
+      'index.html',
+      'package.json',
+    ],
     docLinks: [
       doc('Your first component', 'https://react.dev/learn/your-first-component'),
       doc('Passing props', 'https://react.dev/learn/passing-props-to-a-component'),
@@ -246,6 +265,10 @@ export const OBJECTIVES = [
     stack: 'html',
     difficulty: 'easy',
     tags: ['Forms'],
+    structure: [
+      'index.html',
+      'styles.css',
+    ],
     docLinks: [
       doc('form', 'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form'),
       doc('label', 'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label'),
