@@ -34,6 +34,11 @@ export default function SiteHeader({ home = false }) {
             <Link to="/about">About</Link>
           </li>
           <li>
+            <a href="https://github.com/AdmiralKeso/DevQuest" target="_blank" rel="noreferrer">
+              GitHub
+            </a>
+          </li>
+          <li>
             <LanguageSelect />
           </li>
         </ul>
