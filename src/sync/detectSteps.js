@@ -1,9 +1,11 @@
 // A step's `check` is a rule, or a list of rules that must all match.
 // A rule matches when some file's path matches `file` and, if given, its contents match `content`.
+// An `absent` rule matches the other way round: when no such file is found.
 function ruleMatches(rule, files) {
-  return files.some(
+  const found = files.some(
     (f) => rule.file.test(f.path) && (!rule.content || (f.text !== null && rule.content.test(f.text))),
   )
+  return rule.absent ? !found : found
 }
 
 // Returns the ids of the steps whose checks pass for the given files.
