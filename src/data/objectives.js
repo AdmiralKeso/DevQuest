@@ -165,7 +165,7 @@ export const OBJECTIVES = [
     steps: [
       // Files
       { id: 'html', title: 'Create index.html with the page structure', tip: 'Start with <!DOCTYPE html>, a <title>, and a <main> for the search and the result.', check: indexHtml(/<!doctype html>/i), skill: SEMANTIC_HTML },
-      { id: 'script', title: 'Create script.js and load it from index.html', tip: 'Put <script src="script.js" defer></script> in the head so the page is parsed before your code runs.', check: [indexHtml(/<script[^>]+src=["'][^"']*\.js["']/i), code(JS)], skill: COMPREHENSION },
+      { id: 'script', title: 'Create script.js and load it from index.html', tip: 'Put <script src="script.js"></script> at the end of the body, just before </body>, so the elements exist before your code runs.', check: [indexHtml(/<script[^>]+src=["'][^"']*\.js["']/i), code(JS)], skill: COMPREHENSION },
       // Unobtrusive JavaScript: no inline event attributes, inline script code or javascript: links in the HTML
       { id: 'unobtrusive', title: 'Keep all JavaScript out of the HTML (unobtrusive JavaScript)', tip: 'No onclick="..." or other on... attributes, no code between <script></script> tags and no href="javascript:...". Select the elements in script.js with document.querySelector and attach the events there with addEventListener.', check: [indexHtml(/<script[^>]+src=/i), code(JS, /addEventListener\(/), absent(code('html', /<[^>]+\son[a-z]+\s*=|href\s*=\s*["']\s*javascript:|<script(?![^>]*\bsrc=)[^>]*>\s*\S/i))], skill: COMPREHENSION },
       { id: 'styles', title: 'Create a CSS file and link it from index.html', tip: 'Add <link rel="stylesheet" href="styles.css"> in the head.', check: [indexHtml(/<link[^>]+rel=["']stylesheet["']/i), code('css')], skill: SEMANTIC_HTML },
