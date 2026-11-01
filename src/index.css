@@ -29,9 +29,6 @@
   /* Black scrollbars on a light grey track everywhere (inherited by every scrolling area). */
   html {
     scrollbar-color: black #e5e5e5;
-    /* Always keep room for the page scrollbar, so the header (GitHub, language) doesn't shift left on project
-       pages, which scroll the whole window while the other pages don't */
-    scrollbar-gutter: stable;
   }
 
   body {
@@ -45,10 +42,15 @@
     height: 100dvh;
   }
 
-  /* Header on every page except the main menu (which has it inside its board) */
+  /*
+    Header on every page except the main menu (which has it inside its board).
+    --header-side-margin is based on 100vw, which includes the window's scrollbar, so on pages that scroll the
+    whole window the right margin gives up the scrollbar's width (100vw - 100%). That way the nav (GitHub,
+    language) stays in the same place on every page, scrolling or not.
+  */
   .site-header {
     flex-shrink: 0;
-    margin: var(--menu-gap) var(--header-side-margin) 0;
+    margin: var(--menu-gap) calc(var(--header-side-margin) - (100vw - 100%)) 0 var(--header-side-margin);
   }
 
   /* Every page's content, under the header; fills the rest of the window */
