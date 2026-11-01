@@ -10,6 +10,11 @@ What it does
 Steps
 1. A boilerplate PDF that takes the finished projects as arguments.
 
+Files
+- `pdfMaker.js`: importable by the pages (no Node-only code). 
+- `createProgressPdf(projects, { name, date })` returns the PDF as bytes; a project is `{ title, stack?, difficulty?, completedAt? }`. 
+- `downloadPdf(bytes, filename)` downloads it in the browser.
+
 Rules
 - No libraries: everything is written by hand.
 - Keep the code unobtrusive and easy to read, so it's easy to change.
