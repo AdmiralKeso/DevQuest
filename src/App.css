@@ -719,7 +719,7 @@
     gap: 8px;
   }
 
-  /* Profile: "Completed projects" with the Download PDF button next to it, and room above the cards */
+  /* Profile: "Completed projects" with the Certificate builder link next to it, and room above the cards */
   .completed-projects-header {
     display: flex;
     flex-wrap: wrap;
@@ -732,8 +732,118 @@
     margin: 0;
   }
 
+  /* A link (it changes page) that looks like the other buttons, like the Js Linter link */
+  .certificate-builder-link {
+    display: inline-block;
+    padding: 2px 8px;
+    border: 1px solid var(--border-color);
+    text-decoration: none;
+  }
+
   .pdf-error {
-    margin: 0 0 12px;
+    margin: 0;
+  }
+
+  /*
+    Certificate builder: the form (name, up to 5 projects, total, download) on the left, the PDF preview on the
+    right at the certificate's shape (8 x 11); stacked on narrow screens
+  */
+  .certificate-layout {
+    display: grid;
+    grid-template-columns: minmax(260px, 360px) minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* Stays in view while the window scrolls down the preview */
+  .certificate-form {
+    position: sticky;
+    top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    border: 2px solid var(--border-color);
+    background: #fff;
+  }
+
+  .certificate-name {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .certificate-projects {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+    padding: 8px 12px 12px;
+    border: 1px solid var(--border-color);
+  }
+
+  /* "Project 1" and its dropdown on one row; the dropdown takes the rest of the width */
+  .certificate-project {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+  }
+
+  .certificate-project select {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .certificate-total {
+    margin: 0;
+    font-weight: bold;
+  }
+
+  .certificate-form .download-pdf {
+    align-self: flex-start;
+  }
+
+  /*
+    Preview: as wide as its column allows, up to 760px, at the certificate's shape; when it's taller than the
+    window the whole window scrolls (see #root:has(.certificate-page)), the preview itself never does.
+    The design fills it; the texts are placed on it like in the PDF and scale with its width (cqi)
+  */
+  .certificate-preview {
+    position: relative;
+    container-type: inline-size;
+    width: min(100%, 760px);
+    aspect-ratio: 8 / 11;
+    overflow: hidden;
+    border: 2px solid var(--border-color);
+    background: #fff;
+  }
+
+  .certificate-design {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Helvetica like the PDF (Arial where it's missing); `bottom` is the PDF's baseline, so the box drops by the
+     font's descent (about 0.15em at line-height 1) to sit the letters on it */
+  .certificate-text {
+    position: absolute;
+    font-family: Helvetica, Arial, sans-serif;
+    line-height: 1;
+    white-space: nowrap;
+    color: #000;
+    transform: translateY(0.15em);
+  }
+
+  .certificate-text.bold {
+    font-weight: bold;
+  }
+
+  @media (max-width: 720px) {
+    .certificate-layout {
+      grid-template-columns: 1fr;
+    }
   }
 
   .steps {
@@ -773,10 +883,17 @@
       #fff url('./assets/images/attachments/attachment1.png') no-repeat right top / cover;
   }
 
-  /* On project pages the whole window scrolls (header included), so the scrollbar covers the whole page */
-  #root:has(.project-page) {
+  /* On project pages and the certificate builder the whole window scrolls (header included), so the scrollbar
+     covers the whole page */
+  #root:has(.project-page),
+  #root:has(.certificate-page) {
     height: auto;
     min-height: 100dvh;
+  }
+
+  /* The builder's content grows with the preview instead of scrolling inside itself */
+  .certificate-page .info-content {
+    overflow: visible;
   }
 
   /*

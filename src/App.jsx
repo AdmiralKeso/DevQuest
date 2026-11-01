@@ -1,5 +1,6 @@
 import { Link, Route, Routes, useLocation, useParams } from 'react-router'
 import AboutPage from './components/pages/AboutPage.jsx'
+import CertificatePage from './components/pages/CertificatePage.jsx'
 import DocsPage from './components/pages/DocsPage.jsx'
 import HowToPlay from './components/pages/HowToPlay.jsx'
 import InstructionsPage from './components/pages/InstructionsPage.jsx'
@@ -70,6 +71,7 @@ function App() {
           <Route path="/instructions" element={<InstructionsPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile/certificate" element={<CertificatePage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/projects/in-progress" element={<ProjectsPage stackId="in-progress" />} />

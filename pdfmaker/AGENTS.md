@@ -10,6 +10,7 @@ What it does
 Steps
 1. A boilerplate PDF that takes the finished projects as arguments.
 2. A certificate of completed projects on the `pdf.png` design.
+3. A certificate builder page in the app: your name, up to 5 chosen projects and the total completed, with a live preview.
 
 Files
 - `pdf.png`: the certificate design (2400 x 3300 px, 8 x 11 inches at 300 dpi): logo, title, the line under it, the GitHub box, the signature and the curves. Every page of the PDF is drawn on it; the empty space is where the text goes.
@@ -19,7 +20,7 @@ Files
 - `prepareBackground(png)` reads the design once (the slow part, about 0.4s); passing its result as `background` makes each PDF in about 30ms, for a live preview. The positions are the constants at the top (`TEXT_LEFT`, `CONTENT_TOP`, ...), in points from the bottom-left corner.
 - `downloadPdf(bytes, filename)` downloads it in the browser (`devquest-certificate.pdf`).
 - `pngImage.js`: `readPng(bytes)` turns the PNG into an image a PDF can show (the pixels unpacked and packed again as RGB, transparency mixed with white), with the browser's and Node's built-in `DecompressionStream`/`CompressionStream`. Only 8-bit RGB or RGBA PNGs that aren't interlaced.
-- Used by the Profile page (`src/components/pages/ProfilePage.jsx`): its "Download PDF" button loads `pdf.png` (imported through Vite) and makes the certificate of the finished projects.
+- Used by the certificate builder (`src/components/pages/CertificatePage.jsx`, `/profile/certificate`): its preview is `pdf.png` with the texts from `layoutCertificate` on it, and Download PDF loads `pdf.png` (imported through Vite) and makes the PDF.
 - `test.js`: `node pdfmaker/test.js` saves a certificate with sample projects to `pdfmaker/output/devquest-certificate.pdf` with `fs.writeFileSync` (gitignored); `--api` uses the finished projects from the local API, a JSON file path uses the projects in that file.
 
 Rules
