@@ -14,6 +14,7 @@ Files
 - `pdfMaker.js`: importable by the pages (no Node-only code). 
 - `createProgressPdf(projects, { name, date })` returns the PDF as bytes; a project is `{ title, stack?, difficulty?, completedAt? }`. 
 - `downloadPdf(bytes, filename)` downloads it in the browser.
+- Used by the Profile page (`src/components/pages/ProfilePage.jsx`): its "Download PDF" button makes a report of the finished projects.
 - `test.js`: `node pdfmaker/test.js` saves a PDF with sample projects to `pdfmaker/output/` with `fs.writeFileSync` (gitignored); `--api` uses the finished projects from the local API, a JSON file path uses the projects in that file.
 
 Rules

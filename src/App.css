@@ -719,6 +719,23 @@
     gap: 8px;
   }
 
+  /* Profile: "Completed projects" with the Download PDF button next to it, and room above the cards */
+  .completed-projects-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 16px;
+    margin-bottom: 12px;
+  }
+
+  .completed-projects-header h2 {
+    margin: 0;
+  }
+
+  .pdf-error {
+    margin: 0 0 12px;
+  }
+
   .steps {
     margin: 0;
     padding-left: 0;

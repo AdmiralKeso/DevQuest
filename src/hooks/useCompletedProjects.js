@@ -8,16 +8,17 @@ export function saveCompletedProject(projectId) {
   })
 }
 
-// Ids of the finished projects saved in the database, first finished first. Without the API the list is empty.
-export function useCompletedProjects() {
-  const [projectIds, setProjectIds] = useState([])
+// The finished projects saved in the database with their dates, [{ projectId, completedAt }], first finished first.
+// Without the API the list is empty.
+export function useCompletedProjectRows() {
+  const [rows, setRows] = useState([])
 
   useEffect(() => {
     let cancelled = false
     fetch('/api/completed-projects')
       .then((res) => (res.ok ? res.json() : Promise.reject(res)))
-      .then((rows) => {
-        if (!cancelled && Array.isArray(rows)) setProjectIds(rows.map((r) => r.projectId))
+      .then((data) => {
+        if (!cancelled && Array.isArray(data)) setRows(data)
       })
       .catch(() => {
         // API not running; nothing to show.
@@ -27,5 +28,10 @@ export function useCompletedProjects() {
     }
   }, [])
 
-  return projectIds
+  return rows
+}
+
+// Ids of the finished projects saved in the database, first finished first.
+export function useCompletedProjects() {
+  return useCompletedProjectRows().map((row) => row.projectId)
 }
