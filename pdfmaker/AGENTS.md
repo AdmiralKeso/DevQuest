@@ -11,10 +11,12 @@ Steps
 1. A boilerplate PDF that takes the finished projects as arguments.
 
 Files
+- `pdf.png`: the certificate design (2400 x 3300 px, 8 x 11 inches at 300 dpi): logo, title, the line under it, the GitHub box, the signature and the curves. Every page of the PDF is drawn on it; the empty space is where the text goes.
 - `pdfMaker.js`: importable by the pages (no Node-only code). 
 - `createProgressPdf(projects, { name, date })` returns the PDF as bytes; a project is `{ title, stack?, difficulty?, completedAt? }`. 
 - `downloadPdf(bytes, filename)` downloads it in the browser.
 - Used by the Profile page (`src/components/pages/ProfilePage.jsx`): its "Download PDF" button makes a report of the finished projects.
+- `pngImage.js`: `readPng(bytes)` turns the PNG into an image a PDF can show (the pixels unpacked and packed again as RGB, transparency mixed with white), with the browser's and Node's built-in `DecompressionStream`/`CompressionStream`. Only 8-bit RGB or RGBA PNGs that aren't interlaced.
 - `test.js`: `node pdfmaker/test.js` saves a PDF with sample projects to `pdfmaker/output/` with `fs.writeFileSync` (gitignored); `--api` uses the finished projects from the local API, a JSON file path uses the projects in that file.
 
 Rules
