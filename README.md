@@ -64,27 +64,13 @@ cd DevQuest
 npm install
 ```
 
-**4. Create the settings file.** It's a copy of `.env.example`, called `.env`.
-
-On Windows (PowerShell):
-
-```bash
-copy .env.example .env
-```
-
-On Mac or Linux:
-
-```bash
-cp .env.example .env
-```
-
-**5. Start DevQuest:**
+**4. Start DevQuest:**
 
 ```bash
 npm run dev
 ```
 
-**6. Open DevQuest in your browser:** go to [http://localhost:5173](http://localhost:5173).
+**5. Open DevQuest in your browser:** go to [http://localhost:5173](http://localhost:5173).
 
 DevQuest keeps running as long as the terminal stays open.
 

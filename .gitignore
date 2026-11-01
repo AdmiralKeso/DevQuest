@@ -22,7 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-.env
 *.sqlite3
 
 # PDFs made by pdfmaker/test.js
