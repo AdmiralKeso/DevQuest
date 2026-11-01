@@ -1,4 +1,4 @@
-// Test the PDF maker from the terminal: makes a progress report and saves it with fs.writeFileSync.
+// Test the PDF maker from the terminal: makes a certificate on the pdf.png design and saves it with fs.writeFileSync.
 //   node pdfmaker/test.js                 sample projects
 //   node pdfmaker/test.js --api           your finished projects from the local API (npm run server first)
 //   node pdfmaker/test.js projects.json   projects from a JSON file: [{ "title": "...", "stack": "..." }]
@@ -9,6 +9,7 @@ import { OBJECTIVES, STACKS } from '../src/data/objectives.js'
 import { createProgressPdf } from './pdfMaker.js'
 
 const OUTPUT_DIR = new URL('./output/', import.meta.url)
+const BACKGROUND = new URL('./pdf.png', import.meta.url)
 const API_URL = `http://localhost:${process.env.API_PORT ?? 3001}/api/completed-projects`
 
 const SAMPLE_PROJECTS = [
@@ -52,6 +53,16 @@ function projectsFromFile(path) {
   }
 }
 
+// The certificate design every page is drawn on
+function readBackground() {
+  try {
+    return readFileSync(BACKGROUND)
+  } catch (e) {
+    const path = fileURLToPath(BACKGROUND)
+    throw new Error(e.code === 'ENOENT' ? `File not found: ${path}` : `Can't read ${path}: ${e.message}`)
+  }
+}
+
 function capitalize(text) {
   return text ? text[0].toUpperCase() + text.slice(1) : text
 }
@@ -62,9 +73,9 @@ async function main() {
   if (arg === '--api') projects = await projectsFromApi()
   else if (arg) projects = projectsFromFile(arg)
 
-  const pdf = createProgressPdf(projects)
+  const pdf = await createProgressPdf(projects, { background: readBackground() })
   mkdirSync(OUTPUT_DIR, { recursive: true })
-  const file = new URL('devquest-progress.pdf', OUTPUT_DIR)
+  const file = new URL('devquest-certificate.pdf', OUTPUT_DIR)
   writeFileSync(file, pdf)
   console.log(`Saved ${projects.length} finished project(s) to ${fileURLToPath(file)}`)
 }
