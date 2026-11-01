@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 .env
 *.sqlite3
+
+# PDFs made by pdfmaker/test.js
+pdfmaker/output
