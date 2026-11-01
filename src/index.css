@@ -26,9 +26,9 @@
     --border-color: #4a4a4a;
   }
 
-  /* Black scrollbars on a light grey track everywhere (inherited by every scrolling area). */
+  /* Light grey scrollbars on an even lighter grey track everywhere (inherited by every scrolling area). */
   html {
-    scrollbar-color: black #e5e5e5;
+    scrollbar-color: #b3b3b3 #f0f0f0;
   }
 
   body {
