@@ -996,8 +996,8 @@
   }
 
   /*
-    A tile that isn't built yet (Achievements): faded and partly grey, with "Coming soon" in the middle,
-    and its button stays put on hover
+    A tile that can't be opened yet (Achievements, not built; Profile, until a project is finished): faded and
+    partly grey, with a note like "Coming soon" in the middle, and its button stays put on hover
   */
   .menu-tile.disabled {
     opacity: 0.75;

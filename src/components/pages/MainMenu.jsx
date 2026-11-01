@@ -1,6 +1,8 @@
 import { Link } from 'react-router'
 import { OBJECTIVES } from '../../data/objectives.js'
+import { useCompletedProjects } from '../../hooks/useCompletedProjects.js'
 import { useLocalStorage } from '../../hooks/useLocalStorage.js'
+import { isProjectCompleted, useAllProgress } from '../../hooks/useProgress.js'
 import SiteHeader from '../SiteHeader.jsx'
 
 // Worked out once when the app loads, for the footer.
@@ -12,6 +14,10 @@ const YEAR = new Date().getFullYear()
 export default function MainMenu() {
   const [lastProjectId] = useLocalStorage('devquest.lastProject', null)
   const lastProject = OBJECTIVES.find((o) => o.id === lastProjectId)
+  // Profile opens once at least one project is finished: saved in the database, or all steps done in this browser
+  const finishedIds = useCompletedProjects()
+  const [saved] = useAllProgress()
+  const hasFinished = finishedIds.length > 0 || OBJECTIVES.some((project) => isProjectCompleted(project, saved))
 
   return (
     <main className="main-menu">
@@ -63,13 +69,25 @@ export default function MainMenu() {
         </div>
 
         <div className="menu-column column-right">
-          <Link to="/profile" className="menu-tile tile-profile">
-            <div className="menu-title-container">
-              <span className="tile-label">
-                <i className="fa-solid fa-circle-user" aria-hidden="true"></i> Profile
-              </span>
+          {hasFinished ? (
+            <Link to="/profile" className="menu-tile tile-profile">
+              <div className="menu-title-container">
+                <span className="tile-label">
+                  <i className="fa-solid fa-circle-user" aria-hidden="true"></i> Profile
+                </span>
+              </div>
+            </Link>
+          ) : (
+            // Like Achievements: greyed out and not a link until at least one project is finished
+            <div className="menu-tile tile-profile disabled" aria-disabled="true">
+              <span className="tile-coming-soon">Finish a project first</span>
+              <div className="menu-title-container">
+                <span className="tile-label">
+                  <i className="fa-solid fa-circle-user" aria-hidden="true"></i> Profile
+                </span>
+              </div>
             </div>
-          </Link>
+          )}
           <Link to="/instructions" className="menu-tile tile-docs">
             <div className="menu-title-container">
               <span className="tile-label">
