@@ -1,0 +1,4 @@
+# Launch scripts keep the line endings their system needs, also in GitHub's "Source code (zip)":
+# Windows batch files with CRLF, shell scripts with LF (a shell script with CRLF doesn't run)
+*.bat text eol=crlf
+*.sh text eol=lf

@@ -85,6 +85,13 @@ npm run dev
 
 Then go to [http://localhost:5173](http://localhost:5173) again.
 
+### Or start it with the launch script
+
+The DevQuest folder has a launch script that does steps 3 to 5 for you: it installs what DevQuest needs the first time, starts DevQuest and opens it in your browser.
+
+- **Windows:** double-click `start-windows.bat`. Close the window to stop DevQuest.
+- **Mac or Linux:** open a terminal in the DevQuest folder and type `sh start-mac-linux.sh`. Press Ctrl + C to stop DevQuest.
+
 ## How to use DevQuest
 
 1. **Choose a project.** Click "Start a new project" on the main menu and pick one.
