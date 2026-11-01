@@ -1,4 +1,4 @@
-import 'dotenv/config'
+import './loadEnv.js'
 
 // SQLite database. `npm run migrate` creates the file and pushes every
 // migration in db/migrations that hasn't run yet.
